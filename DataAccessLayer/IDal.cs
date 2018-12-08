@@ -22,5 +22,8 @@ namespace DataAccessLayer {
         int InsertSerie(SerieDto serie);
         void AssociateStockAndSerie(int stockId, int serieId);
         SerieFact GetTimeserieId(DateTime time, int serieId);
+        void OpenTimeserieWriter();
+        void CloseWriter();
+        void WriteTimeserieWriter(ISerieFact timeserie);
     }
 }

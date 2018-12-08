@@ -17,7 +17,7 @@ namespace StockMarketService.Importers.NasdaqOmxCsv {
 
             Dictionary<string, NasdaqOmxStock> nasdaqOmxStocks = CreateNasdaqOmxStocks();
 
-            IDal dal = new Dal(programSettings);
+            IDal dal = new Dal(programSettings.GetConnectionString("PostgresDotNet"));
 
             foreach (string fileName in Directory.GetFiles(importFolder)) {
 
