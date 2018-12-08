@@ -65,7 +65,7 @@ CREATE TABLE Country (
 	,	name VARCHAR NOT NULL
 	,	shortname2letter VARCHAR NOT NULL	
 	,	shortname3letter VARCHAR NOT NULL	
-	,	currencyId int NOT NULL
+	,	currencyId SERIAL REFERENCES Currency ( id )
 );
 INSERT INTO Country (name, shortname2letter, shortname3letter, currencyId) VALUES ( 'Denmark', 'DK', 'DNK' 
 	,	(SELECT id FROM Currency WHERE shortname='DKK'));
@@ -96,7 +96,7 @@ INSERT INTO Market (name, shortname, provider, countryId) VALUES
 INSERT INTO Market (Name, shortname, provider, countryId) VALUES 
 	( 'New York Stock Exchange', 'NYSE', 'Intercontinental Exchange', (SELECT id FROM Country WHERE name = 'United States' ));
 INSERT INTO Market (name, shortname, provider, countryId) VALUES 
-	( 'Nasdaq OMX U.S.', 'Nasdaq', 'Nasdaq OMX U.S.', (SELECT id FROM Country WHERE name = 'United States' ));
+	( 'Nasdaq U.S.', 'Nasdaq', 'Nasdaq OMX U.S.', (SELECT id FROM Country WHERE name = 'United States' ));
 
 -- instrument as a stock, obligation, ETN, ETF, CFD etc.
 CREATE TABLE Stock (   
@@ -121,7 +121,7 @@ CREATE TABLE ValueDescription (
 	,	minvalue bigint null	
 );
 
-	-- ,	currencyid SERIAL REFERENCES  Currency ( id )
+-- ,	currencyid SERIAL REFERENCES  Currency ( id )
 -- 	,	(SELECT id FROM Currency WHERE shortname = 'DKK' )
 INSERT INTO ValueDescription (name, valueshift, unit, maxvalue, minvalue) VALUES ( 'currency 2 decimals', 2, 'currency', 1000000000000, 0);
 INSERT INTO ValueDescription (name, valueshift, unit, maxvalue, minvalue) VALUES ( 'whole number', 0, 'currency', 1000000000000, 0);
