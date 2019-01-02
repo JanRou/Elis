@@ -98,7 +98,7 @@ namespace NasdaqOmxScraper {
             }
         }
         public IEnumerable<(double price, double highPrice, double lowPrice, double volume, DateTime date)> Prices() {
-            for (int i = 0; i < RawPrices.Count; i++) {
+            for (int i = 0; i < RawPrices?.Count; i++) {
                 yield return (
                     price: RawPrices[i], 
                     highPrice: RawHighPrices[i],

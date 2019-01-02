@@ -35,15 +35,19 @@ namespace NasdaqOmxScraper {
         public NasdaqPricesDto GetStockQuotes(string instrument, DateTime fromDate ) {
 
             string url = string.Format(_urlTemplate, instrument, fromDate.ToString(_dateFormat));
-            GetNasdaqStockPricesInJson(url);
-
             // Convert JSON to dto
             var result = new NasdaqPricesDto();
             var jsonSettings = new JsonSerializerSettings() {
                 NullValueHandling = NullValueHandling.Ignore,
                 FloatParseHandling = FloatParseHandling.Double
             };
-            result = JsonConvert.DeserializeObject<NasdaqPricesDto>( GetNasdaqStockPricesInJson(url), jsonSettings);
+            try {
+                result = JsonConvert.DeserializeObject<NasdaqPricesDto>(GetNasdaqStockPricesInJson(url), jsonSettings);
+            }
+            catch (Exception excep) {
+                Console.WriteLine($"GetStockQuotes exception:\n {excep.Message}");
+                result = null;
+            }
             return result;
         }
 
@@ -66,7 +70,7 @@ namespace NasdaqOmxScraper {
                 result = reader.ReadToEnd();
             }
             catch (Exception excep) {
-
+                    Console.WriteLine( $"GetNasdaqStockPricesInJson exception:\n {excep.Message}\n\nNasdaq response\n {result}");
             }
             finally {
                 reader?.Close();
