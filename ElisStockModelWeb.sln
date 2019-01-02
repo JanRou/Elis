@@ -15,7 +15,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StockImportService", "Stock
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StockImportService.Test", "StockImporterService.Test\StockImportService.Test.csproj", "{2CC30709-2F96-4429-BB66-D86D8BA43CEE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NasdaqOmxScraperPoc", "NasdaqOmxScraperPoc\NasdaqOmxScraperPoc.csproj", "{59E01D3B-1F69-4B10-9027-C1D4CD001F53}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NasdaqOmxScraper", "NasdaqOmxScraperPoc\NasdaqOmxScraper.csproj", "{59E01D3B-1F69-4B10-9027-C1D4CD001F53}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
