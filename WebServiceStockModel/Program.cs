@@ -1,10 +1,4 @@
-﻿using Nancy.Hosting.Self;
-using System;
-using log4net;
-using log4net.Config;
-using Nancy.TinyIoc;
-using Nancy;
-using Nancy.Bootstrapper;
+﻿using System;
 using DataAccessLayer;
 
 
@@ -20,8 +14,6 @@ namespace WebServiceStockModel {
 
         private static readonly string _url = "http://localhost:8080";
 
-        private static readonly ILog _log = LogManager.GetLogger
-            (System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         // TODO LOG i DATABASE
 
@@ -29,7 +21,6 @@ namespace WebServiceStockModel {
 
         static void Main(string[] args) {
 
-            XmlConfigurator.Configure();
 
             Registry = new Registry() {
                     Url = _url
@@ -43,14 +34,6 @@ namespace WebServiceStockModel {
                 ,   UserInteractive = Environment.UserInteractive
             };
             winService.Run();
-        }
-    }
-
-    public class CustomBootstrapper : DefaultNancyBootstrapper {
-        protected override void ApplicationStartup(TinyIoCContainer container
-            , IPipelines pipelines) {
-            container.Register<IRegistry, Registry>(Program.Registry);
-            container.Register<IProgramSettings, ProgramSettings>();
         }
     }
 
