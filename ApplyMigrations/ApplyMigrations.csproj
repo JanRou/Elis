@@ -15,4 +15,12 @@
     <PackageReference Include="Serilog.Sinks.File" Version="5.0.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Migrations\Functions\" />
+    <Folder Include="Migrations\Views\" />
+    <Folder Include="Migrations\Procedures\" />
+    <Folder Include="Migrations\Types\" />
+    <Folder Include="Migrations\Tables\" />
+  </ItemGroup>
+
 </Project>

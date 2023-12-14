@@ -10,7 +10,7 @@ namespace ApplyMigrations {
     [Migration(20180430121800)]
     public class AddLogTable : Migration {
         public override void Up() {
-            opret noget i databasen
+            //opret noget i databasen
         }
 
         public override void Down() {

@@ -1,0 +1,6 @@
+@ElisBackend_HostAddress = http://localhost:5057
+
+GET {{ElisBackend_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
