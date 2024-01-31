@@ -1,3 +1,5 @@
+using ElisBackend.Application.UseCases;
+using ElisBackend.Gateways.Repositories.Stock;
 using ElisBackend.Presenters.GraphQLSchema;
 using GraphQL;
 using GraphQL.Server.Ui.Playground;
@@ -7,8 +9,11 @@ using Microsoft.AspNetCore.Hosting;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+builder.Services.AddSingleton<IStockRepository, StockRepository>();
+builder.Services.AddSingleton<IStockHandling, StockHandling>();
 
 // Add mediator and assemblies for mediator
+builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(typeof(Program).Assembly));
 
 // Add GraphQL
 builder.Services.AddGraphQL(builder => builder

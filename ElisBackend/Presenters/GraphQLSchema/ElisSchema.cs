@@ -20,7 +20,7 @@ namespace ElisBackend.Presenters.GraphQLSchema {
 
     public class StockQuery : ObjectGraphType {
         public StockQuery() {
-
+            Description = "Stock information";
             Field<ListGraphType<StockType>>("stock")
                 .Argument<StringGraphType>( "exchangeurl" )
                 .Argument<StringGraphType>("isin" )
@@ -41,6 +41,7 @@ namespace ElisBackend.Presenters.GraphQLSchema {
 
     public class StockType : ObjectGraphType<IStock> {
         public StockType() {
+            Description = "Basic stock information";
             Field( f => f.Name).Description("The name of the stock");
             Field(f => f.Isin).Description("The ISIN code for the stock");
             Field(f => f.ExchangeUrl).Description("The exchange for the stock");
