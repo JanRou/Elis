@@ -4,6 +4,7 @@ using ElisBackend.Presenters.GraphQLSchema;
 using GraphQL;
 using GraphQL.Server.Ui.Playground;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Cors.Infrastructure;
 using Microsoft.AspNetCore.Hosting;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -27,19 +28,32 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-// Tillad alle domæner for CORS
-builder.Services.AddCors(o => o.AddPolicy("default", builder =>
-{
-    builder.AllowAnyOrigin()
-           .AllowAnyMethod()
-           .AllowAnyHeader();
-}));
+// Tillad alt for CORS
+
+builder.Services.AddCors(options => {
+    options.AddPolicy(
+        name: "default",
+        builder => {
+            builder.WithOrigins("http://localhost:4200")
+                .AllowAnyMethod()
+                .AllowAnyHeader()
+                .SetIsOriginAllowed(origin => true)  // Vigtig
+                .AllowCredentials();
+        });
+});
 
 var app = builder.Build();
 
+app.UseAuthorization();
+
+app.UseCors("default");
+
 app.UseDeveloperExceptionPage();
+
 app.UseWebSockets();
+
 app.UseGraphQL("/graphql");            // url to host GraphQL endpoint
+
 app.UseGraphQLPlayground(
     "/",                               // url to host Playground at
     new GraphQL.Server.Ui.Playground.PlaygroundOptions {
@@ -54,8 +68,6 @@ if (app.Environment.IsDevelopment()) {
 }
 
 app.UseHttpsRedirection();
-
-app.UseAuthorization();
 
 app.MapControllers();
 
