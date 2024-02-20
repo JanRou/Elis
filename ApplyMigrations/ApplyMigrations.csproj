@@ -8,20 +8,16 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="FluentMigrator" Version="5.1.0" />
-    <PackageReference Include="FluentMigrator.Runner.Postgres" Version="5.1.0" />
+    <Compile Remove="Migrations\**" />
+    <EmbeddedResource Remove="Migrations\**" />
+    <None Remove="Migrations\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Npgsql" Version="8.0.2" />
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.2" />
     <PackageReference Include="Serilog" Version="3.1.1" />
     <PackageReference Include="Serilog.Sinks.File" Version="5.0.0" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Migrations\Functions\" />
-    <Folder Include="Migrations\Views\" />
-    <Folder Include="Migrations\Procedures\" />
-    <Folder Include="Migrations\Types\" />
-    <Folder Include="Migrations\Tables\" />
   </ItemGroup>
 
 </Project>
