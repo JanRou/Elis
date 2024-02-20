@@ -1,10 +1,8 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.28307.136
+# Visual Studio Version 17
+VisualStudioVersion = 17.8.34330.188
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebServiceStockModel", "WebServiceStockModel\WebServiceStockModel.csproj", "{EC07DB82-FB39-4E92-ADDC-90F4662C43A0}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StockModel", "StockModel\StockModel.csproj", "{6EDC73B6-76D3-4539-8C97-A56EF0E4CBD2}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StockModel.Test", "StockModel.Test\StockModel.Test.csproj", "{8DAC241E-FDE7-4498-A007-E70898FA95AB}"
@@ -23,10 +21,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{EC07DB82-FB39-4E92-ADDC-90F4662C43A0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{EC07DB82-FB39-4E92-ADDC-90F4662C43A0}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{EC07DB82-FB39-4E92-ADDC-90F4662C43A0}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{EC07DB82-FB39-4E92-ADDC-90F4662C43A0}.Release|Any CPU.Build.0 = Release|Any CPU
 		{6EDC73B6-76D3-4539-8C97-A56EF0E4CBD2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{6EDC73B6-76D3-4539-8C97-A56EF0E4CBD2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6EDC73B6-76D3-4539-8C97-A56EF0E4CBD2}.Release|Any CPU.ActiveCfg = Release|Any CPU

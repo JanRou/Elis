@@ -73,11 +73,11 @@ namespace DataAccessLayer {
 
         // Data-mart
         public IStock GetStock(string name, string marketName) {
-            var queury = new StringBuilder();
-            queury.Append($"SELECT st.* FROM stock AS st");
-            queury.Append($" JOIN public.market m ON st.marketid = m.id and m.name like '{marketName}'");
-            queury.Append($" WHERE st.name LIKE '{name}'");
-            return GetConnection().QueryFirstOrDefault<Stock>(queury.ToString());
+            var query = new StringBuilder();
+            query.Append($"SELECT st.* FROM stock AS st");
+            query.Append($" JOIN public.market m ON st.marketid = m.id and m.name like '{marketName}'");
+            query.Append($" WHERE st.name LIKE '{name}'");
+            return GetConnection().QueryFirstOrDefault<Stock>(query.ToString());
         }
 
         public IMarket GetMarket(string name) {
