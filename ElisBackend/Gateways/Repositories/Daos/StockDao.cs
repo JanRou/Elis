@@ -6,6 +6,8 @@
             Isin = isin;
             ExchangeUrl = exchangeUrl;
         }
+
+        public int Id { get; set; } // TODO private set ??
         public string Name { get; set; }
         public string Isin { get; set; }
         public string ExchangeUrl { get; set; }

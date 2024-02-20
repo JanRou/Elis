@@ -1,5 +1,9 @@
 ﻿using ElisBackend.Application.UseCases;
+using ElisBackend.Gateways.Dal;
+using ElisBackend.Gateways.Repositories.Daos;
 using ElisBackend.Gateways.Repositories.Stock;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,13 +11,18 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace ElisBackendTest {
-    public class StockRepositoryTest {
+    public class StockRepositoryTest : IDisposable {
+        public StockRepositoryTest() { Setup(); }
+
+        public void Dispose() { Teardown(); }
+
+        public ElisContext Db { get; set; }
+
         [Fact]
-        //[Theory]
         public async Task GetTest() {
             // Arrange
             var filter = new StockFilter { Name = "Novo" };
-            var dut = new StockRepository();
+            var dut = new StockRepository(Db);
 
             // Act
             var result = await dut.Get(filter);
@@ -25,6 +34,23 @@ namespace ElisBackendTest {
             Assert.Equal(2, stocks.Count);
         }
 
+        [Fact]
+        public async Task AddAndDeleteTest() {
+            // Arrange
+            var stock = new StockDao("Dummy A/S", "DK0099999999", "https://www.nasdaqomxnordic.com/");
+            var dut = new StockRepository(Db);
+            // Act
+            var addResult = await dut.Add(stock);
+
+            // Assert
+            Assert.NotNull(addResult);
+            Assert.True(addResult.Id != 0);
+
+            // Act 
+            var deleteResult = await dut.Delete(stock.Id);
+            Assert.True(deleteResult);
+        }
+
         //[Fact]
         ////[Theory]
         //public async Task Test() {
@@ -34,7 +60,23 @@ namespace ElisBackendTest {
 
         //    // Assert
 
-        //}
+        //}       
+
+        private static readonly object _lock = new();
+        public void Setup() {
+            lock (_lock) {
+                if (Db == null) {
+                    Db = new ElisContext(
+                            new DbContextOptionsBuilder<ElisContext>()
+                                .UseNpgsql("Host=localhost;Port=5432;Username=postgres;Password=31ishoj14!;Database=Elis")
+                                .Options);
+                }
+            }
+        }
+
+        public void Teardown() {
+
+        }
 
     }
 }

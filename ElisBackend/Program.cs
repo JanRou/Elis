@@ -1,4 +1,5 @@
 using ElisBackend.Application.UseCases;
+using ElisBackend.Gateways.Dal;
 using ElisBackend.Gateways.Repositories.Stock;
 using ElisBackend.Presenters.GraphQLSchema;
 using GraphQL;
@@ -6,6 +7,9 @@ using GraphQL.Server.Ui.Playground;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Cors.Infrastructure;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using System.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -27,6 +31,10 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+// ElisDb med EntityFramework Core med PostgreSQL
+builder.Services.AddDbContext<ElisContext>(options => 
+    options.UseNpgsql(builder.Configuration.GetConnectionString("ElisDb")));
 
 // Tillad alt for CORS
 
