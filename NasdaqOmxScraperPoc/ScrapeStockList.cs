@@ -20,6 +20,7 @@ namespace NasdaqOmxScraper {
         public List<(string code, string name)> GetNasdaqOmxStocklist(string marketSelect, List<string> markets, List<string> segments) {
             var result = new List<(string code, string name)>();
             using (IWebDriver driver = new FirefoxDriver()) {
+                // virker ikke pga Cookie consent
                 driver.Navigate().GoToUrl(_url);
                 SetSearchSharesForm(driver, marketSelect, markets, segments);
                 if (driver.FindElement(By.Id("searchSharesListTable")) != null) {

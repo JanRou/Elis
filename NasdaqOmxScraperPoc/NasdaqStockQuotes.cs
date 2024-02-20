@@ -61,6 +61,7 @@ namespace NasdaqOmxScraper {
                 WebRequest request = WebRequest.Create(url);
                 // If required by the server, set the credentials.
                 request.Credentials = CredentialCache.DefaultCredentials;
+                var headers = request.Headers;
                 // Get the response.
                 response = (HttpWebResponse)request.GetResponse();
                 // Get the stream containing content returned by the server.
