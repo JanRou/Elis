@@ -1,0 +1,44 @@
+<mat-toolbar color="primary">
+  <button mat-icon-button aria-label="Menu icon" (click)="toggleMenu()">
+    <mat-icon>menu</mat-icon>
+  </button>
+  <span><h2>{{title}}</h2></span>
+  <span class="toolbar-item-spacer"></span>
+  <button mat-icon-button >
+    <mat-icon>person</mat-icon>
+  </button>
+</mat-toolbar>
+
+<mat-sidenav-container autosize>
+  <mat-sidenav [opened]="true" mode="side">
+    <mat-nav-list >
+      <a mat-list-item routerLink="/dashboard">
+        <span class="entry">
+          <mat-icon>leaderboard</mat-icon>
+          <span *ngIf="!isCollapsed">Dashboard</span>
+        </span>
+      </a>
+      <a mat-list-item routerLink="/portefolio">
+        <span class="entry">
+          <mat-icon>list</mat-icon>
+        <span *ngIf="!isCollapsed">Portefolio</span>
+        </span>
+      </a>
+    </mat-nav-list>
+    <mat-divider></mat-divider>
+    <mat-nav-list>
+      <a mat-list-item routerLink="/settings">
+        <span class="entry">
+        <mat-icon>settings</mat-icon>
+        <span *ngIf="!isCollapsed">Settings</span>
+        </span>
+      </a>
+    </mat-nav-list>
+  </mat-sidenav>
+  <mat-sidenav-content>
+    <router-outlet></router-outlet>
+  </mat-sidenav-content>
+</mat-sidenav-container>
+
+
+
