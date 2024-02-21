@@ -2,6 +2,7 @@
 using ElisBackend.Domain.Abstractions;
 using ElisBackend.Gateways.Dal;
 using ElisBackend.Gateways.Repositories.Daos;
+using System;
 using System.Linq;
 
 namespace ElisBackend.Gateways.Repositories.Stock {
@@ -22,13 +23,21 @@ namespace ElisBackend.Gateways.Repositories.Stock {
 
         public async Task<IEnumerable<StockDao>> Get(StockFilter filter) {
 
+            // TODO kald en stored procedure til at udføre filteret, der bliver alt for 
+            // kompliceret i linq med fare for at ef henter hele tabellen
+            //var query = from photo in context.Set<PersonPhoto>()
+            //           join person in context.Set<Person>()
+            //               on photo.PersonPhotoId equals person.PhotoId
+            //           select new { person, photo };
+
             return db.Stocks.Where<StockDao>(
                     s => (string.IsNullOrEmpty(filter.Name)
                                 || (!string.IsNullOrEmpty(filter.Name) && s.Name.Contains(filter.Name)))
                         && (string.IsNullOrEmpty(filter.Isin)
                                 || (!string.IsNullOrEmpty(filter.Isin) && s.Isin.Contains(filter.Isin)))
-                        && (string.IsNullOrEmpty(filter.ExchangeUrl)
-                                || (string.IsNullOrEmpty(filter.ExchangeUrl) && s.ExchangeUrl.Contains(filter.ExchangeUrl)))
+                        //&& (string.IsNullOrEmpty(filter.ExchangeUrl)
+                        //        || (string.IsNullOrEmpty(filter.ExchangeUrl) 
+                        //                && s.Exchange.ExchangeUrl.Contains(filter.ExchangeUrl)))
                 );
         }
 

@@ -1,15 +1,26 @@
-﻿namespace ElisBackend.Gateways.Repositories.Daos {
+﻿using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace ElisBackend.Gateways.Repositories.Daos {
     public class StockDao {
-        public StockDao(string name, string isin, string exchangeUrl)
+        public StockDao(string name, string isin, int exchangeId, int currencyId)
         {
             Name = name;
             Isin = isin;
-            ExchangeUrl = exchangeUrl;
+            ExchangeId = exchangeId;
+            CurrencyId = currencyId;
         }
 
-        public int Id { get; set; } // TODO private set ??
+        public int Id { get; set; } 
         public string Name { get; set; }
         public string Isin { get; set; }
-        public string ExchangeUrl { get; set; }
+
+        [ForeignKey("Exchange")]
+        public int ExchangeId { get; set; } // => Required foreign key prop
+        public virtual ExchangeDao Exchange { get; set; }
+
+        [ForeignKey("Currency")]
+        public int CurrencyId { get; set; } // => Required foreign key prop
+        public virtual CurrencyDao Currency { get; set; }
     }
 }

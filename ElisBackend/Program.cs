@@ -14,8 +14,8 @@ using System.Configuration;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddSingleton<IStockRepository, StockRepository>();
-builder.Services.AddSingleton<IStockHandling, StockHandling>();
+builder.Services.AddScoped<IStockRepository, StockRepository>();
+builder.Services.AddScoped<IStockHandling, StockHandling>();
 
 // Add mediator and assemblies for mediator
 builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(typeof(Program).Assembly));

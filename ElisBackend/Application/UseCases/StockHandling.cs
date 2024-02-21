@@ -34,7 +34,7 @@ namespace ElisBackend.Application.UseCases {
         }
 
         private IStock Map(StockDao stockDao) {
-            return new Stock(stockDao.Name, stockDao.Isin, stockDao.ExchangeUrl);
+            return new Stock(stockDao.Name, stockDao.Isin, stockDao.Exchange.ExchangeUrl);
         }
 
     }

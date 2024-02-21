@@ -37,7 +37,7 @@ namespace ElisBackendTest {
         [Fact]
         public async Task AddAndDeleteTest() {
             // Arrange
-            var stock = new StockDao("Dummy A/S", "DK0099999999", "https://www.nasdaqomxnordic.com/");
+            var stock = new StockDao("Dummy A/S", "DK0099999999", 1, 1);
             var dut = new StockRepository(Db);
             // Act
             var addResult = await dut.Add(stock);
