@@ -35,6 +35,7 @@ builder.Services.AddSwaggerGen();
 // ElisDb med EntityFramework Core med PostgreSQL
 builder.Services.AddDbContext<ElisContext>(options => 
     options.UseNpgsql(builder.Configuration.GetConnectionString("ElisDb")));
+// TODO .UseSnakeCaseNamingConvention()
 
 // Tillad alt for CORS
 

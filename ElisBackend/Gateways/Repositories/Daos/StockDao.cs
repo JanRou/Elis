@@ -23,4 +23,8 @@ namespace ElisBackend.Gateways.Repositories.Daos {
         public int CurrencyId { get; set; } // => Required foreign key prop
         public virtual CurrencyDao Currency { get; set; }
     }
+
+    public class StockSearchResultDao {
+        public int Id { get; set; }
+    } 
 }

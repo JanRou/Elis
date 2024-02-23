@@ -5,9 +5,12 @@ using ElisBackend.Gateways.Repositories.Stock;
 
 namespace ElisBackend.Application.UseCases {
 
+    // TODO der mangler skip og take til sideinddeling
+    // TODO der mangler sortering
     public class StockFilter {
         public string Name { get; set; }
         public string Isin { get; set; }
+        public string Currency { get; set; }
         public string ExchangeUrl { get; set; }
     }
 

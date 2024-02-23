@@ -2,6 +2,9 @@
 using ElisBackend.Domain.Abstractions;
 using ElisBackend.Gateways.Dal;
 using ElisBackend.Gateways.Repositories.Daos;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Query.SqlExpressions;
+using Npgsql;
 using System;
 using System.Linq;
 
@@ -23,22 +26,34 @@ namespace ElisBackend.Gateways.Repositories.Stock {
 
         public async Task<IEnumerable<StockDao>> Get(StockFilter filter) {
 
-            // TODO kald en stored procedure til at udføre filteret, der bliver alt for 
-            // kompliceret i linq med fare for at ef henter hele tabellen
-            //var query = from photo in context.Set<PersonPhoto>()
-            //           join person in context.Set<Person>()
-            //               on photo.PersonPhotoId equals person.PhotoId
-            //           select new { person, photo };
+            // TODO dan en list af typen object som er typen NpgsqlParameter
+            // fra filter properties og deres værdier
+            // så er det dynamisk
+            var namein = CreateParameter( "namein", filter.Name);
+            var isinin = CreateParameter("isinin", filter.Isin);
+            var currencyin = CreateParameter("currencyin", filter.Currency);
+            var exchangeurlin = CreateParameter("exchangeurlin", filter.ExchangeUrl);
 
-            return db.Stocks.Where<StockDao>(
-                    s => (string.IsNullOrEmpty(filter.Name)
-                                || (!string.IsNullOrEmpty(filter.Name) && s.Name.Contains(filter.Name)))
-                        && (string.IsNullOrEmpty(filter.Isin)
-                                || (!string.IsNullOrEmpty(filter.Isin) && s.Isin.Contains(filter.Isin)))
-                        //&& (string.IsNullOrEmpty(filter.ExchangeUrl)
-                        //        || (string.IsNullOrEmpty(filter.ExchangeUrl) 
-                        //                && s.Exchange.ExchangeUrl.Contains(filter.ExchangeUrl)))
-                );
+            string sql = "select * FROM public.SearchStocks( @namein, @isinin, @currencyin, @exchangeurlin)";
+            List<int> stockIds = null;
+            // TODO introducer Take og Skip for sideinddeling (pagination)
+            try {
+                stockIds = db.Database.SqlQueryRaw<int>(sql, namein, isinin, currencyin, exchangeurlin).ToList();
+            }
+            catch (Exception ex) {
+                // TODO LOG exception
+                throw ex;
+             }
+
+            return db.Stocks
+                .Where<StockDao>( s => stockIds.Contains(s.Id) )
+                .Include( c => c.Currency)
+                .Include( e => e.Exchange);
+
+        }
+
+        private NpgsqlParameter CreateParameter( string parmin, string source) {
+            return new NpgsqlParameter( parmin, !string.IsNullOrEmpty(source) ? source : "");
         }
 
         public async Task<StockDao> Add(StockDao stock) {

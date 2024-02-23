@@ -9,9 +9,11 @@ namespace ElisBackend.Gateways.Dal {
 
         public ElisContext(DbContextOptions<ElisContext> options) : base(options) { }
 
-        public DbSet<StockDao> Stocks { get; set; }
+        public DbSet<StockDao> Stocks { get; set; }        
         public DbSet<ExchangeDao> Exchanges { get; set; }
         public DbSet<CurrencyDao> Currencies { get; set; }
+
+        public DbSet<StockSearchResultDao> StockResults { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder) {
             modelBuilder.Entity<StockDao>()

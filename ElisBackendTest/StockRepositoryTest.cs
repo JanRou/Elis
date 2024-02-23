@@ -21,7 +21,7 @@ namespace ElisBackendTest {
         [Fact]
         public async Task GetTest() {
             // Arrange
-            var filter = new StockFilter { Name = "Novo" };
+            var filter = new StockFilter { Name = "Novo%" };
             var dut = new StockRepository(Db);
 
             // Act

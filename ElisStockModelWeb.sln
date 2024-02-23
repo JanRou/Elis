@@ -7,6 +7,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ElisBackend", "ElisBackend\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ElisBackendTest", "ElisBackendTest\ElisBackendTest.csproj", "{F9F8DC9C-756C-4BE3-AACF-2D37E1B0AB39}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ApplyMigrations", "ApplyMigrations\ApplyMigrations.csproj", "{6474D8F5-8835-42F7-BCB9-0E132F5D89E1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{F9F8DC9C-756C-4BE3-AACF-2D37E1B0AB39}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F9F8DC9C-756C-4BE3-AACF-2D37E1B0AB39}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F9F8DC9C-756C-4BE3-AACF-2D37E1B0AB39}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6474D8F5-8835-42F7-BCB9-0E132F5D89E1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6474D8F5-8835-42F7-BCB9-0E132F5D89E1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6474D8F5-8835-42F7-BCB9-0E132F5D89E1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6474D8F5-8835-42F7-BCB9-0E132F5D89E1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

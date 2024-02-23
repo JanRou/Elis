@@ -8,12 +8,16 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Migrations\**" />
-    <EmbeddedResource Remove="Migrations\**" />
-    <None Remove="Migrations\**" />
+    <None Remove="Migrations\Functions\Plpgsql\CreateSearchStocks.plpgsql" />
   </ItemGroup>
 
   <ItemGroup>
+    <EmbeddedResource Include="Migrations\Functions\Plpgsql\CreateSearchStocks.plpgsql" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="FluentMigrator" Version="5.1.0" />
+    <PackageReference Include="FluentMigrator.Runner.Postgres" Version="5.1.0" />
     <PackageReference Include="Npgsql" Version="8.0.2" />
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.2" />
     <PackageReference Include="Serilog" Version="3.1.1" />
