@@ -56,6 +56,14 @@ namespace ElisBackend.Gateways.Repositories.Stock {
             return new NpgsqlParameter( parmin, !string.IsNullOrEmpty(source) ? source : "");
         }
 
+        private NpgsqlParameter CreateParameter(StockFilter filter) {
+
+            
+
+        }
+
+
+
         public async Task<StockDao> Add(StockDao stock) {
             db.Add(stock);
             await db.SaveChangesAsync();
