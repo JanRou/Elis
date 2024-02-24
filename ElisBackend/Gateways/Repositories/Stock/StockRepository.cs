@@ -82,6 +82,45 @@ namespace ElisBackend.Gateways.Repositories.Stock {
 
             return result;
         }
+		
+				public string ConstructSqlQueuryfromFilter(InvoiceFilterFrontend filter)
+{
+	decimal eps = 0.0000000001m;
+	Dictionary<System.Type, Func<object, string>> typeFormats = new Dictionary<Type, Func<object, string>>()
+	{
+		{ typeof(int), i => ((int)i)!=0 ? i.ToString() : "" },
+		{ typeof(int?), i => ((int?)i).HasValue && ((int?)i) != 0 ? i?.ToString() : ""},
+		{ typeof(uint), u => ((uint)u)!=0 ? ((uint)u).ToString() : "" },
+		{ typeof(uint?), u => ((uint?)u).HasValue && ((uint?)u)!=0 ? u?.ToString() : "" },
+		{ typeof(decimal), d =>  d.ToString() },
+		{ typeof(decimal?), d => d.ToString() ??  "" },
+		{ typeof(double), d => Double.IsNormal((double) d) ? d.ToString() :  "" },
+		{ typeof(double?), d => ((double?) d).HasValue && Double.IsNormal((double) d) ? d?.ToString() :  "" },
+		{ typeof(string), s => !string.IsNullOrEmpty((string)s) ? "'"+s+"'" : "" },
+	};
+
+	var sb = new StringBuilder("exec GetInvoices ");
+	var props = filter.GetType().GetProperties();
+
+	bool first = true;
+	foreach (PropertyInfo p in props)
+	{
+		string parmstring = typeFormats[p.PropertyType](p.GetValue(filter));
+		if (!string.IsNullOrEmpty(parmstring))
+		{
+			if (!first)
+			{
+				sb.Append(",");
+			}
+			sb.Append("@").Append(p.Name).Append("=");
+			sb.Append(parmstring);
+			first = false;
+		}
+	}
+
+	return sb.ToString();
+}
+
 
     }
 }
