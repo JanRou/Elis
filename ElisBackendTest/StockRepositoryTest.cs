@@ -4,6 +4,7 @@ using ElisBackend.Gateways.Repositories.Daos;
 using ElisBackend.Gateways.Repositories.Stock;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
+using Npgsql;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,6 +18,45 @@ namespace ElisBackendTest {
         public void Dispose() { Teardown(); }
 
         public ElisContext Db { get; set; }
+
+        [Fact]
+        //[Theory]
+        public async Task QueryParametersFromFilterTest() {
+            // Arrange
+            var filter = new StockFilter { Name = "Novo%", Skip = 10 };
+            var dut = new StockRepository(Db);
+
+            // Act
+            var result = dut.QueuryParametersFromFilter(filter);
+
+            // Assert
+            Assert.NotNull(result);
+            Assert.Contains(result, p => string.Compare(p.ParameterName, "namein")==0 && p.Value == "Novo%" );
+            Assert.Contains(result, p => p.ParameterName == "isinin" && p.Value == "");
+            Assert.Contains(result, p => p.ParameterName == "currencyin" && p.Value == "");
+            Assert.Contains(result, p => p.ParameterName == "exchangeurlin" && p.Value == "");
+            Assert.Contains(result, p => p.ParameterName == "skipin" && (int)p.Value == 10);
+        }
+
+        [Fact]
+        //[Theory]
+        public async Task CreateParameterNamesTest() {
+            // Arrange
+            var filter = new StockFilter { Name = "Novo%", Skip = 10 };
+            var dut = new StockRepository(Db);
+
+            // Act
+            var result = dut.CreateParameterNames(dut.QueuryParametersFromFilter(filter));
+
+            // Assert
+            Assert.NotEmpty(result);
+            Assert.Contains("@namein", result);
+            Assert.Contains("isinin", result);
+            Assert.Contains("currencyin", result);
+            Assert.Contains("exchangeurlin", result);
+            Assert.Contains("skipin", result);
+            Assert.Contains("takein", result);
+        }
 
         [Fact]
         public async Task GetTest() {

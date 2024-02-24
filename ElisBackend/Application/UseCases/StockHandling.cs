@@ -12,6 +12,8 @@ namespace ElisBackend.Application.UseCases {
         public string Isin { get; set; }
         public string Currency { get; set; }
         public string ExchangeUrl { get; set; }
+        public int Take { get; set; }
+        public int Skip { get; set; }
     }
 
     public interface IStockHandling {

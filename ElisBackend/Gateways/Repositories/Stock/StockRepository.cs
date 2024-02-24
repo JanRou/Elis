@@ -6,7 +6,10 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query.SqlExpressions;
 using Npgsql;
 using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
+using System.Text;
 
 namespace ElisBackend.Gateways.Repositories.Stock {
 
@@ -25,20 +28,13 @@ namespace ElisBackend.Gateways.Repositories.Stock {
         public ElisContext db { get; }
 
         public async Task<IEnumerable<StockDao>> Get(StockFilter filter) {
-
-            // TODO dan en list af typen object som er typen NpgsqlParameter
-            // fra filter properties og deres værdier
-            // så er det dynamisk
-            var namein = CreateParameter( "namein", filter.Name);
-            var isinin = CreateParameter("isinin", filter.Isin);
-            var currencyin = CreateParameter("currencyin", filter.Currency);
-            var exchangeurlin = CreateParameter("exchangeurlin", filter.ExchangeUrl);
-
-            string sql = "select * FROM public.SearchStocks( @namein, @isinin, @currencyin, @exchangeurlin)";
+           
             List<int> stockIds = null;
             // TODO introducer Take og Skip for sideinddeling (pagination)
+            List<NpgsqlParameter> parms = QueuryParametersFromFilter(filter);
+            string sql = "select * FROM public.SearchStocks(" + CreateParameterNames(parms) + ")";
             try {
-                stockIds = db.Database.SqlQueryRaw<int>(sql, namein, isinin, currencyin, exchangeurlin).ToList();
+                stockIds = db.Database.SqlQueryRaw<int>(sql, parms.ToArray()).ToList();
             }
             catch (Exception ex) {
                 // TODO LOG exception
@@ -52,17 +48,21 @@ namespace ElisBackend.Gateways.Repositories.Stock {
 
         }
 
-        private NpgsqlParameter CreateParameter( string parmin, string source) {
-            return new NpgsqlParameter( parmin, !string.IsNullOrEmpty(source) ? source : "");
+        public string CreateParameterNames(List<NpgsqlParameter> parms) {
+            var sb = new StringBuilder();
+            bool first = true;
+            foreach (NpgsqlParameter param in parms) { 
+                if (first) {
+                    sb.Append("@");
+                    first = false;
+                }
+                else {
+                    sb.Append(",@");
+                }
+                sb.Append(param.ParameterName);
+            }
+            return sb.ToString();
         }
-
-        private NpgsqlParameter CreateParameter(StockFilter filter) {
-
-            
-
-        }
-
-
 
         public async Task<StockDao> Add(StockDao stock) {
             db.Add(stock);
@@ -82,45 +82,49 @@ namespace ElisBackend.Gateways.Repositories.Stock {
 
             return result;
         }
-		
-				public string ConstructSqlQueuryfromFilter(InvoiceFilterFrontend filter)
-{
-	decimal eps = 0.0000000001m;
-	Dictionary<System.Type, Func<object, string>> typeFormats = new Dictionary<Type, Func<object, string>>()
-	{
-		{ typeof(int), i => ((int)i)!=0 ? i.ToString() : "" },
-		{ typeof(int?), i => ((int?)i).HasValue && ((int?)i) != 0 ? i?.ToString() : ""},
-		{ typeof(uint), u => ((uint)u)!=0 ? ((uint)u).ToString() : "" },
-		{ typeof(uint?), u => ((uint?)u).HasValue && ((uint?)u)!=0 ? u?.ToString() : "" },
-		{ typeof(decimal), d =>  d.ToString() },
-		{ typeof(decimal?), d => d.ToString() ??  "" },
-		{ typeof(double), d => Double.IsNormal((double) d) ? d.ToString() :  "" },
-		{ typeof(double?), d => ((double?) d).HasValue && Double.IsNormal((double) d) ? d?.ToString() :  "" },
-		{ typeof(string), s => !string.IsNullOrEmpty((string)s) ? "'"+s+"'" : "" },
-	};
 
-	var sb = new StringBuilder("exec GetInvoices ");
-	var props = filter.GetType().GetProperties();
+        /// <summary>
+        /// Creates a list of SQL parameters for EF Core SqlQueryRaw call of SQL stored procedure or function.
+        /// The names are lower letters and by default not prepended anything and ending with "in".
+        /// Set prepend and ending according to the named arguments in the stored procedure og function.
+        /// A parameter's value is always set, so string is empty string "".
+        /// Take and skip is set to 0, when not present in the filter. The SQL search procedure or function
+        /// has to take all for Take set to 0
+        /// </summary>
+        /// <param name="filter">The filter with properties to use as parameters.</param>
+        /// <param name="prepend">Text string to prepend each parameter name.</param>
+        /// <param name="ending">Text string to end each parameter name.</param>
+        /// <returns>The list of SQL parameters representing the filter.</returns>
+        public List<NpgsqlParameter> QueuryParametersFromFilter(StockFilter filter, string prepend="", string ending="in") {
+            
 
-	bool first = true;
-	foreach (PropertyInfo p in props)
-	{
-		string parmstring = typeFormats[p.PropertyType](p.GetValue(filter));
-		if (!string.IsNullOrEmpty(parmstring))
-		{
-			if (!first)
-			{
-				sb.Append(",");
-			}
-			sb.Append("@").Append(p.Name).Append("=");
-			sb.Append(parmstring);
-			first = false;
-		}
-	}
+            var props = filter.GetType().GetProperties();
 
-	return sb.ToString();
-}
+            var result = new List<NpgsqlParameter>();
 
+            foreach (PropertyInfo p in props) {
+
+                result.Add(new NpgsqlParameter(
+                        prepend + p.Name.ToLower() + ending
+                    , SetNullValue( p.PropertyType, p.GetValue(filter)))
+                );
+            }
+
+            return result;
+        }
+
+        // TODO lav om til pattern - switch
+        public object SetNullValue(Type t, object? obj) {
+            if (t == typeof(int)) {
+                return obj;
+            }
+            if (t == typeof(string)) {
+                if (obj==null) {
+                    return "";
+                }
+            }
+            return obj;
+        }
 
     }
 }

@@ -1,0 +1,39 @@
+DROP FUNCTION IF EXISTS public.searchstocks(character varying, character varying, character varying, character varying);
+
+CREATE OR REPLACE FUNCTION public.SearchStocks(
+	  nameIn character varying
+    , isinIn character varying
+	, currencyIn character varying
+	, exchangeUrlIn character varying	
+	, takeIn integer
+	, skipIn integer
+)
+returns table (
+		id int
+	) 
+AS $$
+-- declare
+-- variable declaration
+begin 
+    RETURN QUERY
+		SELECT x."Id"
+		FROM (
+			SELECT 
+				st."Id",
+				ROW_NUMBER() OVER( ORDER BY st."Name") AS rn
+			FROM public."Stocks" st
+			JOIN public."Exchanges" ex ON ex."Id" = st."ExchangeId"
+			JOIN public."Currencies" cu ON cu."Id" = st."CurrencyId"
+			WHERE
+					( (nameIn ='' IS NOT FALSE) OR (st."Name" like nameIn) )
+				AND ( (isinIn ='' IS NOT FALSE) OR (st."Isin" like isinIn) )
+				AND ( (exchangeUrlIn ='' IS NOT FALSE) OR (ex."ExchangeUrl" like exchangeUrlIn) )
+				AND ( (currencyIn ='' IS NOT FALSE) OR (cu."Short" like currencyIn) )		
+		) x
+	 WHERE skipin < rn AND ( (takein=0) OR (rn <= skipin + takein) );
+     RETURN;
+END 
+$$ language plpgsql;
+
+ALTER FUNCTION public.SearchStocks(name character varying, isin character varying, currencyIn character varying, exchangeUrl character varying, takeIn integer, skipIn integer)
+    OWNER TO postgres;

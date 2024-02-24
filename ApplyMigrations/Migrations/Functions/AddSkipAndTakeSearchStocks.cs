@@ -1,10 +1,10 @@
 ﻿using FluentMigrator;
 
 namespace ApplyMigrations.Migrations.Procedures {
-    [Migration(20240223181800, "CreateSearchStocks.plpgsql")]
-    public class CreateSearchStocks : Migration {
+    [Migration(20240224142500, "AddSkipAndTakeSearchStocks.plpgsql")]
+    public class AddSkipAndTakeSearchStocks : Migration {
         public override void Up() {
-            Execute.EmbeddedScript("CreateSearchStocks.plpgsql");
+            Execute.EmbeddedScript("AddSkipAndTakeSearchStocks.plpgsql");
         }
         public override void Down() {
             // Bruges aldrig
