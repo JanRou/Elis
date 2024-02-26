@@ -5,6 +5,7 @@
         string Name { get; }
         string Isin { get; }
         string ExchangeUrl { get; }
+        string Currency { get; }
     }
 
 }

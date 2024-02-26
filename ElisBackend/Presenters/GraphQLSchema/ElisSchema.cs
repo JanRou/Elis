@@ -25,11 +25,13 @@ namespace ElisBackend.Presenters.GraphQLSchema {
                 .Argument<StringGraphType>( "exchangeurl" )
                 .Argument<StringGraphType>("isin" )
                 .Argument<StringGraphType>( "name" )
+                .Argument<StringGraphType>("currency")
                 .ResolveAsync( async context => {
                     var filter = new StockFilter() {
                         ExchangeUrl = context.GetArgument(Name = "exchangeurl", defaultValue: ""),
                         Isin = context.GetArgument(Name = "isin", defaultValue: ""),
                         Name = context.GetArgument(Name = "name", defaultValue: ""),
+                        Currency = context.GetArgument(Name = "currency", defaultValue: ""),
                     };
                     var mediator = context.RequestServices.GetService<IMediator>();
                     return await mediator.Send(new GetStocks(filter));
@@ -45,6 +47,7 @@ namespace ElisBackend.Presenters.GraphQLSchema {
             Field( f => f.Name).Description("The name of the stock");
             Field(f => f.Isin).Description("The ISIN code for the stock");
             Field(f => f.ExchangeUrl).Description("The exchange for the stock");
+            Field(f => f.Currency).Description("The exchange for the stock");
             // TODO 
             //Field<ListGraphType<StockPriceSeriesType>>("priceseries")
             //    .Argument<NonNullGraphType<StringGraphType>>("periodeStart")
