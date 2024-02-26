@@ -31,6 +31,7 @@ namespace ElisBackend.Gateways.Dal {
                 .HasName("CurrencyId_PK");
             ;
 
+            modelBuilder.Entity<StockSearchResultDao>().ToTable(nameof(StockResults), t => t.ExcludeFromMigrations());
         }
     }
 }

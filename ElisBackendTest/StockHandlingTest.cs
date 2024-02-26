@@ -3,7 +3,7 @@ using ElisBackend.Gateways.Repositories.Stock;
 using Moq;
 
 namespace ElisBackendTest {
-    
+
     public class StockHandlingTest {
     
 

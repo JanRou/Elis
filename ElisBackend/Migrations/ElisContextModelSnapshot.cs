@@ -40,7 +40,7 @@ namespace ElisBackend.Migrations
                     b.HasKey("Id")
                         .HasName("CurrencyId_PK");
 
-                    b.ToTable("Currencies");
+                    b.ToTable("Currencies", (string)null);
                 });
 
             modelBuilder.Entity("ElisBackend.Gateways.Repositories.Daos.ExchangeDao", b =>
@@ -66,7 +66,7 @@ namespace ElisBackend.Migrations
                     b.HasKey("Id")
                         .HasName("ExchangeId_PK");
 
-                    b.ToTable("Exchanges");
+                    b.ToTable("Exchanges", (string)null);
                 });
 
             modelBuilder.Entity("ElisBackend.Gateways.Repositories.Daos.StockDao", b =>
@@ -98,7 +98,7 @@ namespace ElisBackend.Migrations
 
                     b.HasIndex("ExchangeId");
 
-                    b.ToTable("Stocks");
+                    b.ToTable("Stocks", (string)null);
                 });
 
             modelBuilder.Entity("ElisBackend.Gateways.Repositories.Daos.StockDao", b =>
