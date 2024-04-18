@@ -40,15 +40,18 @@ namespace ElisBackendTest {
             // Arrange
             var stock = new StockDao("Dummy A/S", "DK0099999999", 1, 1);
             var dut = new StockRepository(Db);
-            // Act
+
+            // Act add
             var addResult = await dut.Add(stock);
 
-            // Assert
+            // Assert add
             Assert.NotNull(addResult);
             Assert.True(addResult.Id != 0);
 
-            // Act 
+            // Act delete
             var deleteResult = await dut.Delete(stock.Id);
+
+            // Assert delete
             Assert.True(deleteResult);
         }
 

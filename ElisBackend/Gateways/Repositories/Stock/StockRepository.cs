@@ -46,7 +46,6 @@ namespace ElisBackend.Gateways.Repositories.Stock {
                 .Where<StockDao>( s => stockIds.Contains(s.Id) )
                 .Include( c => c.Currency)
                 .Include( e => e.Exchange);
-
         }
 
         public async Task<StockDao> Add(StockDao stock) {

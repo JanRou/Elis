@@ -1,11 +1,12 @@
 using ElisBackend.Application.UseCases;
+using ElisBackend.Gateways.Repositories.Daos;
 using ElisBackend.Gateways.Repositories.Stock;
 using Moq;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ElisBackendTest {
 
     public class StockHandlingTest {
-    
 
         //[Fact]
         ////[Theory]

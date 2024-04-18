@@ -2,25 +2,18 @@
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ElisBackend.Gateways.Repositories.Daos {
-    public class StockDao {
-        public StockDao(string name, string isin, int exchangeId, int currencyId)
-        {
-            Name = name;
-            Isin = isin;
-            ExchangeId = exchangeId;
-            CurrencyId = currencyId;
-        }
+    public class StockDao(string name, string isin, int exchangeId, int currencyId) {
 
-        public int Id { get; set; } 
-        public string Name { get; set; }
-        public string Isin { get; set; }
+        public int Id { get; set; }
+        public string Name { get; set; } = name;
+        public string Isin { get; set; } = isin;
 
         [ForeignKey("Exchange")]
-        public int ExchangeId { get; set; } // => Required foreign key prop
+        public int ExchangeId { get; set; } = exchangeId;
         public virtual ExchangeDao Exchange { get; set; }
 
         [ForeignKey("Currency")]
-        public int CurrencyId { get; set; } // => Required foreign key prop
+        public int CurrencyId { get; set; } = currencyId;
         public virtual CurrencyDao Currency { get; set; }
     }
 
