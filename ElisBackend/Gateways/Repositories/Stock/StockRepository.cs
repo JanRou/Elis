@@ -19,18 +19,15 @@ namespace ElisBackend.Gateways.Repositories.Stock {
         Task<IEnumerable<StockDao>> Get(StockFilter filter);
         Task<StockDao> Add(StockDao stock);
         Task<bool> Delete(int id);
+        
     }
 
-    public class StockRepository : IStockRepository {
+    public class StockRepository(ElisContext elisContext) : IStockRepository {
 
-        public StockRepository(ElisContext elisContext) {
-            db = elisContext;
-        }
-
-        public ElisContext db { get; }
+        public ElisContext db { get; } = elisContext;
 
         public async Task<IEnumerable<StockDao>> Get(StockFilter filter) {
-           
+
             List<int> stockIds = null;
             var parms = new List<NpgsqlParameter>().QueryParametersFromClass<StockFilter>(filter);
             string sql = "select * FROM public.SearchStocks(" + parms.CreateParameterNames() + ")";
@@ -40,12 +37,12 @@ namespace ElisBackend.Gateways.Repositories.Stock {
             catch (Exception ex) {
                 // TODO LOG exception
                 throw ex;
-             }
+            }
 
             return db.Stocks
-                .Where<StockDao>( s => stockIds.Contains(s.Id) )
-                .Include( c => c.Currency)
-                .Include( e => e.Exchange);
+                .Where<StockDao>(s => stockIds.Contains(s.Id))
+                .Include(c => c.Currency)
+                .Include(e => e.Exchange);
         }
 
         public async Task<StockDao> Add(StockDao stock) {
@@ -67,5 +64,9 @@ namespace ElisBackend.Gateways.Repositories.Stock {
             return result;
         }
 
+        //public async Task<IEnumerable<TimeSerieFactDao>> AddStockData(int stockId, ) {
+
+
+        //}
     }
 }

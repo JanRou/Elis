@@ -37,8 +37,10 @@ builder.Services.AddDbContext<ElisContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("ElisDb")));
 // TODO .UseSnakeCaseNamingConvention()
 
-// Tillad alt for CORS
+// Opret ExchangeService og registrer børs api'er 
+// TODO
 
+// Tillad alt for CORS
 builder.Services.AddCors(options => {
     options.AddPolicy(
         name: "default",

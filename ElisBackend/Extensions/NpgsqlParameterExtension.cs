@@ -61,8 +61,8 @@ namespace ElisBackend.Extensions {
         }
 
         public static string CreateParameterNames(this List<NpgsqlParameter> parms) {
-            var sb = new StringBuilder();
             bool first = true;
+            var sb = new StringBuilder();
             foreach (NpgsqlParameter param in parms) {
                 if (first) {
                     sb.Append("@");
@@ -73,6 +73,7 @@ namespace ElisBackend.Extensions {
                 }
                 sb.Append(param.ParameterName);
             }
+
             return sb.ToString();
         }
 

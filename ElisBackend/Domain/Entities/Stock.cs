@@ -1,19 +1,13 @@
 ﻿using ElisBackend.Domain.Abstractions;
+using Microsoft.EntityFrameworkCore.ChangeTracking.Internal;
 
 namespace ElisBackend.Domain.Entities;
 
-public class Stock : IStock
+// Aktie beskrivelse
+public class Stock(string name, string isin, string exchangeUrl, string currency) : IStock
 {
-    public Stock(string name, string isin, string exchangeUrl, string currency)
-    {
-        Name = name;
-        Isin = isin;
-        ExchangeUrl = exchangeUrl;
-        Currency = currency;
-    }
-
-    public string Name { get; private set; }
-    public string Isin { get; private set; }
-    public string ExchangeUrl { get; private set; }
-    public string Currency { get; private set; }
+    public string Name { get; private set; } = name;
+    public string Isin { get; private set; } = isin;
+    public string ExchangeUrl { get; private set; } = exchangeUrl;
+    public string Currency { get; private set; } = currency;
 }

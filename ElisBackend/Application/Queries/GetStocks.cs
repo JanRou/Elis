@@ -4,20 +4,13 @@ using MediatR;
 
 namespace ElisBackend.Application.Queries
 {
-    public class GetStocks : IRequest<IEnumerable<IStock>> {
-        public GetStocks(StockFilter filter) {
-            Filter = filter;
-        }
-        public StockFilter Filter { get; set; }
+    public class GetStocks(StockFilter filter) : IRequest<IEnumerable<IStock>> {
+        public StockFilter Filter { get; set; } = filter;
     }
 
-    public class GetStocksHandler : IRequestHandler<GetStocks, IEnumerable<IStock>> {
+    public class GetStocksHandler(IStockHandling stockhandling) : IRequestHandler<GetStocks, IEnumerable<IStock>> {
 
-        public GetStocksHandler(IStockHandling stockhandling) {
-            StockHandling = stockhandling;
-        }
-
-        public IStockHandling StockHandling { get; }
+        public IStockHandling StockHandling { get; } = stockhandling;
 
         public async Task<IEnumerable<IStock>> Handle( GetStocks request, CancellationToken cancellationToken) {
             return await StockHandling.Get(request.Filter);
