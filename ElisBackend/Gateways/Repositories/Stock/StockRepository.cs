@@ -1,5 +1,4 @@
-﻿using ElisBackend.Application.UseCases;
-using ElisBackend.Domain.Abstractions;
+﻿using ElisBackend.Core.Application.UseCases;
 using ElisBackend.Extensions;
 using ElisBackend.Gateways.Dal;
 using ElisBackend.Gateways.Repositories.Daos;
@@ -13,7 +12,8 @@ using System.Reflection;
 using System.Reflection.Metadata.Ecma335;
 using System.Text;
 
-namespace ElisBackend.Gateways.Repositories.Stock {
+namespace ElisBackend.Gateways.Repositories.Stock
+{
 
     public interface IStockRepository {
         Task<IEnumerable<StockDao>> Get(StockFilter filter);

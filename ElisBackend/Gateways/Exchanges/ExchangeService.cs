@@ -1,9 +1,10 @@
-﻿using ElisBackend.Domain.Abstractions;
-using ElisBackend.Domain.Entities;
+﻿using ElisBackend.Core.Domain.Abstractions;
 using ElisBackend.Gateways.Dtos;
 
-namespace ElisBackend.Gateways.Exchanges {
-    
+namespace ElisBackend.Gateways.Exchanges
+{
+
+    // TODO
     // API til at hente aktiedata fra børserne. Der kan være forskellige underliggende
     // api'er til hver børs, som bliver valgt på grundlag af aktiens ExchangeURL.
     public interface IExchangeApi {
@@ -21,15 +22,15 @@ namespace ElisBackend.Gateways.Exchanges {
         private Dictionary<string, IExchangeApi> _exchanges = new Dictionary<string, IExchangeApi>();
 
         // TODO concurrency?
-        public void Register(string url, IExchangeApi exchangeApi) {
-            _exchanges.Add(url, exchangeApi);
+        public void Register(string name, IExchangeApi exchangeApi) {
+            _exchanges.Add(name, exchangeApi);
         }
-        public void Unregister(string url) {
-            _exchanges.Remove(url);
+        public void Unregister(string name) {
+            _exchanges.Remove(name);
         }
 
-        public async Task<TimeSerieDto> GetStockData(IStock stock) {
-             return await _exchanges[stock.ExchangeUrl].GetStockData(stock.Name, stock.Isin);
+        public async Task<TimeSerieDto> GetStockData(IStock stock) {           
+             return await _exchanges[stock.Exchange.Name].GetStockData(stock.Name, stock.Isin);
         }
     }
 

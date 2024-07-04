@@ -1,7 +1,5 @@
-﻿using ElisBackend.Application.UseCases;
-using Npgsql;
+﻿using Npgsql;
 using System.Reflection;
-using System.Runtime.CompilerServices;
 using System.Text;
 
 namespace ElisBackend.Extensions {

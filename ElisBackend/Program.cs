@@ -1,4 +1,4 @@
-using ElisBackend.Application.UseCases;
+using ElisBackend.Core.Application.UseCases;
 using ElisBackend.Gateways.Dal;
 using ElisBackend.Gateways.Repositories.Stock;
 using ElisBackend.Presenters.GraphQLSchema;
@@ -10,8 +10,12 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using System.Configuration;
+using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// Add AutoMapper to the container
+builder.Services.AddAutoMapper(typeof(Program));
 
 // Add services to the container.
 builder.Services.AddScoped<IStockRepository, StockRepository>();

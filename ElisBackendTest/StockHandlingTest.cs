@@ -1,4 +1,4 @@
-using ElisBackend.Application.UseCases;
+using ElisBackend.Core.Application.UseCases;
 using ElisBackend.Gateways.Repositories.Daos;
 using ElisBackend.Gateways.Repositories.Stock;
 using Moq;
@@ -20,4 +20,5 @@ namespace ElisBackendTest {
         //}
 
     }
+
 }

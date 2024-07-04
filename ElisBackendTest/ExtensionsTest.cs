@@ -1,9 +1,9 @@
-﻿using ElisBackend.Application.UseCases;
+﻿using ElisBackend.Core.Application.UseCases;
 using ElisBackend.Extensions;
-using ElisBackend.Gateways.Repositories.Stock;
 using Npgsql;
 
-namespace ElisBackendTest {
+namespace ElisBackendTest
+{
     public class ExtensionsTest {
 
         [Fact]

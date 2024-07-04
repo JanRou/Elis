@@ -1,9 +1,4 @@
-﻿using ElisBackend.Domain.Entities;
-using ElisBackend.Gateways.Repositories.Daos;
-using System.Xml.Linq;
-using static System.Runtime.InteropServices.JavaScript.JSType;
-
-namespace ElisBackend.Gateways.Dtos {
+﻿namespace ElisBackend.Gateways.Dtos {
  
     public class TimeSerieDataDto {
         public DateTime Date { get; set; }

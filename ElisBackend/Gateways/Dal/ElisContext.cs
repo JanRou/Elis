@@ -1,4 +1,4 @@
-﻿using ElisBackend.Domain.Entities;
+﻿using ElisBackend.Core.Domain.Entities;
 using ElisBackend.Gateways.Repositories.Daos;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -26,9 +26,15 @@ namespace ElisBackend.Gateways.Dal {
             modelBuilder.Entity<ExchangeDao>()
                 .HasKey(x => x.Id)
                 .HasName("ExchangeId_PK");
+            modelBuilder.Entity<ExchangeDao>()
+                .HasAlternateKey(x => x.Name)
+                .HasName("AlternateKey_Name");
             modelBuilder.Entity<CurrencyDao>()
                 .HasKey(x => x.Id)
                 .HasName("CurrencyId_PK");
+            modelBuilder.Entity<CurrencyDao>()
+                .HasAlternateKey(x => x.Code)
+                .HasName("AlternateKey_Short");
             modelBuilder.Entity<TimeZoneDao>()
                 .HasKey(x => x.Id)
                 .HasName("TimeZoneId_PK");

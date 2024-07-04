@@ -1,7 +1,8 @@
-﻿using ElisBackend.Application.UseCases;
+﻿using ElisBackend.Core.Application.UseCases;
 using ElisBackend.Gateways.Dal;
 using ElisBackend.Gateways.Repositories.Daos;
 using ElisBackend.Gateways.Repositories.Stock;
+using ElisBackend.Presenters.Dtos;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Npgsql;
@@ -46,7 +47,30 @@ namespace ElisBackendTest {
 
             // Assert add
             Assert.NotNull(addResult);
-            Assert.True(addResult.Id != 0);
+            Assert.True(addResult.Id > 1);
+
+            // Act delete
+            var deleteResult = await dut.Delete(stock.Id);
+
+            // Assert delete
+            Assert.True(deleteResult);
+        }
+
+        [Fact]
+        public async Task AddWithNamedExchangAndCurrencyAndDeleteTest() {
+            // Arrange
+            var stock = new StockDao("Dummy AB", "DK0099999999", 0, 0);
+            stock.Exchange = new ExchangeDao() { Name = "XCSE" };
+            stock.Currency = new CurrencyDao() { Code = "DKK" };
+
+            var dut = new StockRepository(Db);
+
+            // Act add
+            var addResult = await dut.Add(stock);
+
+            // Assert add
+            Assert.NotNull(addResult);
+            Assert.True(addResult.Id > 1);
 
             // Act delete
             var deleteResult = await dut.Delete(stock.Id);
