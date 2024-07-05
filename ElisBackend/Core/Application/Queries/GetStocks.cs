@@ -4,9 +4,9 @@ using MediatR;
 
 namespace ElisBackend.Core.Application.Queries
 {
-    public class GetStocks(StockFilter filter) : IRequest<IEnumerable<IStock>>
+    public class GetStocks(FilterStock filter) : IRequest<IEnumerable<IStock>>
     {
-        public StockFilter Filter { get; set; } = filter;
+        public FilterStock Filter { get; set; } = filter;
     }
 
     public class GetStocksHandler(IStockHandling stockhandling) : IRequestHandler<GetStocks, IEnumerable<IStock>>

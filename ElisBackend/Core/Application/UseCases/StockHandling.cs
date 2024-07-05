@@ -8,7 +8,7 @@ namespace ElisBackend.Core.Application.UseCases
 
     public interface IStockHandling
     {
-        Task<IEnumerable<IStock>> Get(StockFilter filter);
+        Task<IEnumerable<IStock>> Get(FilterStock filter);
         Task<bool> UpdateStocksData();
         Task<bool> AddStock(IStock stock);
     }
@@ -22,7 +22,7 @@ namespace ElisBackend.Core.Application.UseCases
             this.repository = repository;
         }
 
-        public async Task<IEnumerable<IStock>> Get(StockFilter filter)
+        public async Task<IEnumerable<IStock>> Get(FilterStock filter)
         {
             var result = await repository.Get(filter);
             return Map(result);
@@ -50,13 +50,13 @@ namespace ElisBackend.Core.Application.UseCases
         public async Task<bool> UpdateStocksData()
         {
             // 1. Hent aktier fra DB, som man henter nye data for
-            var stocks = await repository.Get(new StockFilter());
+            //var stocks = await repository.Get(new FilterStock());
 
             // 2. Hent data for hver aktie på listen
-            foreach (var stock in stocks)
-            {
-                // TODO 
-            }
+            //foreach (var stock in stocks)
+            //{
+            //    // TODO 
+            //}
             return true;
         }
 

@@ -1,0 +1,31 @@
+CREATE OR REPLACE FUNCTION public.SearchStocks(
+	  nameIn character varying
+    , isinIn character varying
+	, currencyCodeIn character varying
+	, exchangeNameIn character varying	
+)
+returns table (
+		id int
+	) 
+AS $$
+-- declare
+-- variable declaration
+begin 
+    RETURN QUERY
+		SELECT 
+			st."Id"
+		FROM public."Stocks" st
+		JOIN public."Exchanges" ex ON ex."Id" = st."ExchangeId"
+		JOIN public."Currencies" cu ON cu."Id" = st."CurrencyId"
+		WHERE
+			    ( (nameIn ='' IS NOT FALSE) OR (st."Name" like nameIn) )
+			AND ( (isinIn ='' IS NOT FALSE) OR (st."Isin" like isinIn) )
+			AND ( (exchangeNameIn ='' IS NOT FALSE) OR (ex."Name" like exchangeNameIn) )
+			AND ( (currencyCodeIn ='' IS NOT FALSE) OR (cu."Code" like currencyCodeIn) )
+		;
+     RETURN;
+END 
+$$ language plpgsql;
+
+ALTER FUNCTION public.SearchStocks(name character varying, isin character varying, currencyCode character varying, exchangeName character varying)
+    OWNER TO postgres;

@@ -34,7 +34,7 @@ namespace ElisBackend.Gateways.Dal {
                 .HasName("CurrencyId_PK");
             modelBuilder.Entity<CurrencyDao>()
                 .HasAlternateKey(x => x.Code)
-                .HasName("AlternateKey_Short");
+                .HasName("AlternateKey_Code");
             modelBuilder.Entity<TimeZoneDao>()
                 .HasKey(x => x.Id)
                 .HasName("TimeZoneId_PK");

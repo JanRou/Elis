@@ -17,11 +17,11 @@ namespace ElisBackend.Presenters.GraphQLSchema {
                 .Argument<StringGraphType>("currency")
                 .ResolveAsync( async context => {
                     // TODO puha det er slemt det her, der må ikke være en reference ind mod domain :(
-                    var filter = new StockFilter() { 
+                    var filter = new FilterStock() { 
                         Isin = context.GetArgument(Name = "isin", defaultValue: ""),
                         Name = context.GetArgument(Name = "name", defaultValue: ""),
                         ExchangeName = context.GetArgument(Name = "exchange", defaultValue: ""),
-                        CurrencyShort = context.GetArgument(Name = "currency", defaultValue: ""),
+                        CurrencyCode = context.GetArgument(Name = "currency", defaultValue: ""),
                     };
                     var mediator = context.RequestServices.GetService<IMediator>();
                     return await mediator.Send(new GetStocks(filter));

@@ -10,17 +10,19 @@ namespace ElisBackendTest
         //[Theory]
         public async Task QueryParametersFromClassTest() {
             // Arrange
-            var dut = new StockFilter { Name = "Novo%", Skip = 10 };
+            var dut = new FilterStock { Name = "Novo%", Skip = 10 };
 
             // Act
-            var result = new List<NpgsqlParameter>().QueryParametersFromClass<StockFilter>(dut);
+            var result = new List<NpgsqlParameter>().QueryParametersFromClass<FilterStock>(dut);
 
             // Assert
             Assert.NotNull(result);
             Assert.Contains(result, p => string.Compare(p.ParameterName, "namein") == 0 && p.Value == "Novo%");
             Assert.Contains(result, p => p.ParameterName == "isinin" && p.Value == "");
-            Assert.Contains(result, p => p.ParameterName == "currencyin" && p.Value == "");
-            Assert.Contains(result, p => p.ParameterName == "exchangeurlin" && p.Value == "");
+            Assert.Contains(result, p => p.ParameterName == "currencycodein" && p.Value == "");
+            Assert.Contains(result, p => p.ParameterName == "exchangenamein" && p.Value == "");
+            Assert.Contains(result, p => p.ParameterName == "orderbyin" && p.Value == "");
+            Assert.Contains(result, p => p.ParameterName == "takein" && (int)p.Value == 0);
             Assert.Contains(result, p => p.ParameterName == "skipin" && (int)p.Value == 10);
         }
 
@@ -28,8 +30,8 @@ namespace ElisBackendTest
         //[Theory]
         public async Task CreateParameterNamesDefaultTest() {
             // Arrange
-            var filter = new StockFilter { Name = "Novo%", Skip = 10 };
-            var dut = new List<NpgsqlParameter>().QueryParametersFromClass<StockFilter>(filter);
+            var filter = new FilterStock { Name = "Novo%", Skip = 10 };
+            var dut = new List<NpgsqlParameter>().QueryParametersFromClass<FilterStock>(filter);
 
             // Act
             var result = dut.CreateParameterNames();
@@ -38,8 +40,8 @@ namespace ElisBackendTest
             Assert.NotEmpty(result);
             Assert.Contains("@namein", result);
             Assert.Contains("@isinin", result);
-            Assert.Contains("@currencyin", result);
-            Assert.Contains("@exchangeurlin", result);
+            Assert.Contains("@currencycodein", result);
+            Assert.Contains("@exchangenamein", result);
             Assert.Contains("@skipin", result);
             Assert.Contains("@takein", result);
         }
@@ -48,9 +50,9 @@ namespace ElisBackendTest
         //[Theory]
         public void CreateParameterNamesPreEndTest() {
             // Arrange
-            var filter = new StockFilter { Name = "Novo%", Skip = 10 };
+            var filter = new FilterStock { Name = "Novo%", Skip = 10 };
             var dut = new List<NpgsqlParameter>()
-                .QueryParametersFromClass<StockFilter>(filter, prepend: "pre_", ending: "_end");
+                .QueryParametersFromClass<FilterStock>(filter, prepend: "pre_", ending: "_end");
 
             // Act
             var result = dut.CreateParameterNames();
@@ -59,8 +61,8 @@ namespace ElisBackendTest
             Assert.NotEmpty(result);
             Assert.Contains("@pre_name_end", result);
             Assert.Contains("@pre_isin_end", result);
-            Assert.Contains("@pre_currency_end", result);
-            Assert.Contains("@pre_exchangeurl_end", result);
+            Assert.Contains("@pre_currencycode_end", result);
+            Assert.Contains("@pre_exchangename_end", result);
             Assert.Contains("@pre_skip_end", result);
             Assert.Contains("@pre_take_end", result);
         }

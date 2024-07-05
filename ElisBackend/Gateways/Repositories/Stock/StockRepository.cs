@@ -6,9 +6,11 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query.SqlExpressions;
 using Npgsql;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Reflection.Metadata;
 using System.Reflection.Metadata.Ecma335;
 using System.Text;
 
@@ -16,7 +18,7 @@ namespace ElisBackend.Gateways.Repositories.Stock
 {
 
     public interface IStockRepository {
-        Task<IEnumerable<StockDao>> Get(StockFilter filter);
+        Task<IEnumerable<StockDao>> Get(FilterStock filter);
         Task<StockDao> Add(StockDao stock);
         Task<bool> Delete(int id);
         
@@ -26,11 +28,12 @@ namespace ElisBackend.Gateways.Repositories.Stock
 
         public ElisContext db { get; } = elisContext;
 
-        public async Task<IEnumerable<StockDao>> Get(StockFilter filter) {
+        public async Task<IEnumerable<StockDao>> Get(FilterStock filter) {
 
             List<int> stockIds = null;
-            var parms = new List<NpgsqlParameter>().QueryParametersFromClass<StockFilter>(filter);
+            var parms = new List<NpgsqlParameter>().QueryParametersFromClass<FilterStock>(filter);
             string sql = "select * FROM public.SearchStocks(" + parms.CreateParameterNames() + ")";
+            // SearchStocks returns ids in sorted order
             try {
                 stockIds = db.Database.SqlQueryRaw<int>(sql, parms.ToArray()).ToList();
             }
@@ -39,10 +42,15 @@ namespace ElisBackend.Gateways.Repositories.Stock
                 throw ex;
             }
 
-            return db.Stocks
-                .Where<StockDao>(s => stockIds.Contains(s.Id))
+            var unsorted = db.Stocks
+                .Where<StockDao>(s => stockIds.Contains(s.Id))                
                 .Include(c => c.Currency)
-                .Include(e => e.Exchange);
+                .Include(e => e.Exchange)
+                .ToList();
+
+            // Sort by searchstocks result before returning
+            return unsorted.OrderBy(u => stockIds.FindIndex( i => i == u.Id));
+            
         }
 
         public async Task<StockDao> Add(StockDao stock) {
