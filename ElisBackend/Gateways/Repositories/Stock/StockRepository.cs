@@ -20,7 +20,7 @@ namespace ElisBackend.Gateways.Repositories.Stock
     public interface IStockRepository {
         Task<IEnumerable<StockDao>> Get(FilterStock filter);
         Task<StockDao> Add(StockDao stock);
-        Task<bool> Delete(int id);
+        Task<bool> DeleteStock(int id);
         
     }
 
@@ -60,12 +60,36 @@ namespace ElisBackend.Gateways.Repositories.Stock
             return stock;
         }
 
-        public async Task<bool> Delete(int id) {
+        public async Task<bool> DeleteStock(int id) {
             var stock = db.Stocks.Where<StockDao>(s => s.Id == id).FirstOrDefault();
 
             bool result = stock != null;
             if (result) {
                 db.Remove(stock);
+                await db.SaveChangesAsync();
+            }
+
+            return result;
+        }
+
+        public async Task<bool> DeleteExchange(int id) {
+            var exchange = db.Exchanges.Where<ExchangeDao>(s => s.Id == id).FirstOrDefault();
+
+            bool result = exchange != null;
+            if (result) {
+                db.Remove(exchange);
+                await db.SaveChangesAsync();
+            }
+
+            return result;
+        }
+
+        public async Task<bool> DeleteCurrency(int id) {
+            var currency = db.Currencies.Where<CurrencyDao>(s => s.Id == id).FirstOrDefault();
+
+            bool result = currency != null;
+            if (result) {
+                db.Remove(currency);
                 await db.SaveChangesAsync();
             }
 

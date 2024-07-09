@@ -20,21 +20,24 @@ namespace ElisBackend.Gateways.Dal {
         public DbSet<StockSearchResultDao> StockResults { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder) {
+            modelBuilder.Entity<StockDao>()                
+                .HasKey(x => x.Id)                
+                .HasName("StockId_PK");
             modelBuilder.Entity<StockDao>()
-                .HasKey(x => x.Id)
-                .HasName("StockId_PK");                
+                .HasMany(x => x.TimeSeriesFacts)
+                .WithOne(x => x.Stock);
             modelBuilder.Entity<ExchangeDao>()
                 .HasKey(x => x.Id)
                 .HasName("ExchangeId_PK");
             modelBuilder.Entity<ExchangeDao>()
-                .HasAlternateKey(x => x.Name)
-                .HasName("AlternateKey_Name");
+                .HasMany(x => x.Stocks)
+                .WithOne(x => x.Exchange);
             modelBuilder.Entity<CurrencyDao>()
                 .HasKey(x => x.Id)
                 .HasName("CurrencyId_PK");
             modelBuilder.Entity<CurrencyDao>()
-                .HasAlternateKey(x => x.Code)
-                .HasName("AlternateKey_Code");
+                .HasMany(x => x.Stocks)
+                .WithOne(x => x.Currency);
             modelBuilder.Entity<TimeZoneDao>()
                 .HasKey(x => x.Id)
                 .HasName("TimeZoneId_PK");

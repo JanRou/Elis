@@ -3,6 +3,7 @@ using System;
 using ElisBackend.Gateways.Dal;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace ElisBackend.Migrations
 {
     [DbContext(typeof(ElisContext))]
-    partial class ElisContextModelSnapshot : ModelSnapshot
+    [Migration("20240709153508_StocksRelationshipRefactor")]
+    partial class StocksRelationshipRefactor
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -41,7 +44,7 @@ namespace ElisBackend.Migrations
                     b.HasKey("Id")
                         .HasName("CurrencyId_PK");
 
-                    b.ToTable("Currencies", (string)null);
+                    b.ToTable("Currencies");
                 });
 
             modelBuilder.Entity("ElisBackend.Gateways.Repositories.Daos.DateDao", b =>
@@ -58,7 +61,7 @@ namespace ElisBackend.Migrations
                     b.HasKey("Id")
                         .HasName("DateId_PK");
 
-                    b.ToTable("Dates", (string)null);
+                    b.ToTable("Dates");
                 });
 
             modelBuilder.Entity("ElisBackend.Gateways.Repositories.Daos.ExchangeDao", b =>
@@ -84,7 +87,7 @@ namespace ElisBackend.Migrations
                     b.HasKey("Id")
                         .HasName("ExchangeId_PK");
 
-                    b.ToTable("Exchanges", (string)null);
+                    b.ToTable("Exchanges");
                 });
 
             modelBuilder.Entity("ElisBackend.Gateways.Repositories.Daos.StockDao", b =>
@@ -116,7 +119,7 @@ namespace ElisBackend.Migrations
 
                     b.HasIndex("ExchangeId");
 
-                    b.ToTable("Stocks", (string)null);
+                    b.ToTable("Stocks");
                 });
 
             modelBuilder.Entity("ElisBackend.Gateways.Repositories.Daos.StockSearchResultDao", b =>
@@ -150,7 +153,7 @@ namespace ElisBackend.Migrations
                     b.HasKey("Id")
                         .HasName("TimeSerieId_PK");
 
-                    b.ToTable("TimeSeries", (string)null);
+                    b.ToTable("TimeSeries");
                 });
 
             modelBuilder.Entity("ElisBackend.Gateways.Repositories.Daos.TimeSerieFactDao", b =>
@@ -177,7 +180,7 @@ namespace ElisBackend.Migrations
 
                     b.HasIndex("StockId");
 
-                    b.ToTable("TimeSerieFacts", (string)null);
+                    b.ToTable("TimeSerieFacts");
                 });
 
             modelBuilder.Entity("ElisBackend.Gateways.Repositories.Daos.TimeZoneDao", b =>
@@ -209,7 +212,7 @@ namespace ElisBackend.Migrations
 
                     b.HasIndex("ExchangeId");
 
-                    b.ToTable("TimeZones", (string)null);
+                    b.ToTable("TimeZones");
                 });
 
             modelBuilder.Entity("ElisBackend.Gateways.Repositories.Daos.StockDao", b =>

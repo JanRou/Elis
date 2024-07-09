@@ -10,8 +10,10 @@ namespace ElisBackend
         public MappingProfile()
         {
             CreateMap<CurrencyDao, Currency>()
+                .ReverseMap()
                 ;
             CreateMap<ExchangeDao, Exchange>()
+                .ReverseMap()
                 ;
             CreateMap<StockDao, Stock>()
                 .ReverseMap()

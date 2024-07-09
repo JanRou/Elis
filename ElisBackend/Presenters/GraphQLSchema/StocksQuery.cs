@@ -11,8 +11,8 @@ namespace ElisBackend.Presenters.GraphQLSchema {
         public StocksQuery() {
             Description = "Stock information";
             Field<ListGraphType<StockType>>("stocks")
-                .Argument<StringGraphType>("isin" )
-                .Argument<StringGraphType>( "name" )
+                .Argument<StringGraphType>("isin")
+                .Argument<StringGraphType>("name")
                 .Argument<StringGraphType>("exchange")
                 .Argument<StringGraphType>("currency")
                 .ResolveAsync( async context => {

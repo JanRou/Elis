@@ -62,7 +62,7 @@ namespace ElisBackendTest {
         [Fact]
         public async Task AddAndDeleteTest() {
             // Arrange
-            var stock = new StockDao("Dummy A/S", "DK0099999999", 1, 1);
+            var stock = new StockDao() { Name="Dummy A/S", Isin="DK0099999999", ExchangeId=1, CurrencyId = 1 };
             var dut = new StockRepository(Db);
 
             // Act add
@@ -73,35 +73,38 @@ namespace ElisBackendTest {
             Assert.True(addResult.Id > 1);
 
             // Act delete
-            var deleteResult = await dut.Delete(stock.Id);
+            var deleteResult = await dut.DeleteStock(stock.Id);
 
             // Assert delete
             Assert.True(deleteResult);
         }
 
-        // TODO 
-        //[Fact]
-        //public async Task AddWithNamedExchangAndCurrencyAndDeleteTest() {
-        //    // Arrange
-        //    var stock = new StockDao("Dummy AB", "DK0099999999", 0, 0);
-        //    stock.Exchange = new ExchangeDao() { Name = "XCSE" };
-        //    stock.Currency = new CurrencyDao() { Code = "DKK" };
+        [Fact]
+        public async Task AddStockWithNewExchangAndCurrencyDeleteItAllTest() {
+            // Arrange
+            var stock = new StockDao() { Name="Dummy AB", Isin="DK0099999999" };
+            stock.Exchange = new ExchangeDao() { Name = "Euronext", Country="France"
+                            , Url= "https://www.euronext.com/fr/markets/paris" };
+            stock.Currency = new CurrencyDao() { Name ="Franske franc",  Code = "FFR" };
 
-        //    var dut = new StockRepository(Db);
+            var dut = new StockRepository(Db);
 
-        //    // Act add
-        //    var addResult = await dut.Add(stock);
+            // Act add
+            var addResult = await dut.Add(stock);
 
-        //    // Assert add
-        //    Assert.NotNull(addResult);
-        //    Assert.True(addResult.Id > 1);
+            // Assert add
+            Assert.NotNull(addResult);
+            Assert.True(addResult.Id > 1);
+            Assert.Equal("Dummy AB", stock.Name);
 
-        //    // Act delete
-        //    var deleteResult = await dut.Delete(stock.Id);
+            // Act delete
+            var deleteResult = await dut.DeleteStock(stock.Id);
+            await dut.DeleteExchange(stock.ExchangeId);
+            await dut.DeleteCurrency(stock.CurrencyId);
 
-        //    // Assert delete
-        //    Assert.True(deleteResult);
-        //}
+            // Assert delete
+            Assert.True(deleteResult);
+        }
 
         //[Fact]
         ////[Theory]

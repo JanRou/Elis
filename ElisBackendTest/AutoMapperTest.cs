@@ -1,10 +1,7 @@
-﻿using AutoFixture.Xunit2;
-using AutoMapper;
+﻿using AutoMapper;
 using ElisBackend;
-using ElisBackend.Core.Application.UseCases;
 using ElisBackend.Core.Domain.Entities;
 using ElisBackend.Gateways.Repositories.Daos;
-using ElisBackend.Gateways.Repositories.Stock;
 using Moq;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -29,11 +26,17 @@ namespace ElisBackendTest {
             config.AssertConfigurationIsValid();
             }
         
-        //[Fact]
-        [Theory, AutoData]
-        public void StockDaoToStockTest(StockDao dao) {
+        [Fact]
+        public void StockDaoToStockTest() {
             // Arrange
-
+            var dao = new StockDao() {
+                Name = "Dummy A/S",
+                Isin = "DK0099999999",
+                ExchangeId = 1,
+                CurrencyId = 1
+              , Exchange = new ExchangeDao() { Name="Euronext", Country="France", Url="localhost"}
+              , Currency = new CurrencyDao() { Name="Norskre kroner", Code="NKK"}
+            };
             // Act
             var result = _mapper.Map<Stock>(dao);
 
@@ -42,6 +45,22 @@ namespace ElisBackendTest {
             Assert.Equal(dao.Isin, result.Isin);
             Assert.Equal(dao.Exchange.Name, result.Exchange.Name);
             Assert.Equal(dao.Currency.Code, result.Currency.Code);
+        }
+
+        [Fact]
+        public void StockToStockDaoTest() {
+            // Arrange
+            var stock = new Stock( "Dummy AB", "DK0099999999", new Exchange( "Børs", "DK", "http://localhost") 
+                , new Currency("Norske kroner", "NKK") );
+
+            // Act
+            var result = _mapper.Map<StockDao>(stock);
+
+            // Assert
+            Assert.Equal(stock.Name, result.Name);
+            Assert.Equal(stock.Isin, result.Isin);
+            Assert.Equal(stock.Exchange.Name, result.Exchange.Name);
+            Assert.Equal(stock.Currency.Code, result.Currency.Code);
         }
 
         //[Fact]

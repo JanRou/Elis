@@ -2,22 +2,22 @@
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ElisBackend.Gateways.Repositories.Daos {
-    public class StockDao(string name, string isin, int exchangeId, int currencyId) {
+    public class StockDao {
 
         public int Id { get; set; }
-        public string Name { get; set; } = name;
-        public string Isin { get; set; } = isin;
+        public string Name { get; set; }
+        public string Isin { get; set; }
 
         [ForeignKey("Exchange")]
-        public int ExchangeId { get; set; } = exchangeId;
+        public int ExchangeId { get; set; } = 0;
         public virtual ExchangeDao Exchange { get; set; }
 
         [ForeignKey("Currency")]
-        public int CurrencyId { get; set; } = currencyId;
+        public int CurrencyId { get; set; } = 0;
         public virtual CurrencyDao Currency { get; set; }
-    }
 
-    public class StockSearchResultDao {
-        public int Id { get; set; }
+        // TimeSeriesFacts for this stock for navigation
+        public IEnumerable<TimeSerieFactDao> TimeSeriesFacts { get; set; } = new List<TimeSerieFactDao>();
+
     }
 }

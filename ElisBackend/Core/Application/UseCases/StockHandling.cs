@@ -1,4 +1,5 @@
-﻿using ElisBackend.Core.Domain.Abstractions;
+﻿using AutoMapper;
+using ElisBackend.Core.Domain.Abstractions;
 using ElisBackend.Core.Domain.Entities;
 using ElisBackend.Gateways.Repositories.Daos;
 using ElisBackend.Gateways.Repositories.Stock;
@@ -13,35 +14,17 @@ namespace ElisBackend.Core.Application.UseCases
         Task<bool> AddStock(IStock stock);
     }
 
-    public class StockHandling : IStockHandling
+    public class StockHandling(IStockRepository repository, IMapper mapper) : IStockHandling
     {
-        private readonly IStockRepository repository;
-
-        public StockHandling(IStockRepository repository)
-        {
-            this.repository = repository;
-        }
-
         public async Task<IEnumerable<IStock>> Get(FilterStock filter)
         {
             var result = await repository.Get(filter);
-            return Map(result);
+            return mapper.Map<IEnumerable<Stock>>(result);
         }
 
         public async Task<bool> AddStock(IStock stock)
         {
-            var stockDao = new StockDao(stock.Name, stock.Isin, 0, 0);
-            stockDao.Exchange = new ExchangeDao() { // TODO vil blive erstattet af AutoMapper
-                Name = stock.Exchange.Name
-              , Country = stock.Exchange.Country
-              , Url = stock.Exchange.Url
-            };
-            stockDao.Currency = new CurrencyDao()
-            { // TODO vil blive erstattet af AutoMapper
-                Name = stock.Currency.Name
-              ,
-                Code = stock.Currency.Code
-            };
+            var stockDao = mapper.Map<StockDao>(stock);
             var addedStockDao = await repository.Add(stockDao);
             return addedStockDao.Id > 1;
         }
@@ -59,31 +42,6 @@ namespace ElisBackend.Core.Application.UseCases
             //}
             return true;
         }
-
-        private IEnumerable<IStock> Map(IEnumerable<StockDao> stockDaos)
-        {
-            List<IStock> result = new List<IStock>();
-            foreach (var dao in stockDaos)
-            {
-                result.Add(Map(dao));
-            }
-            return result;
-        }
-
-        //// TODO installer og brug Automapper
-        private IStock Map(StockDao stockDao) {
-            return new Stock(stockDao.Name, stockDao.Isin, null, null); // Map(stockDao.Exchange), Map(stockDao.Currency));
-        }
-
-        //private IExchange Map(ExchangeDao exchangeDao)
-        //{
-        //    return new Exchange(exchangeDao.Name, exchangeDao.Country, exchangeDao.Url);
-        //}
-
-        //private ICurrency Map(CurrencyDao currencyDao)
-        //{
-        //    return new Currency(currencyDao.Name, currencyDao.Code);
-        //}
 
     }
 

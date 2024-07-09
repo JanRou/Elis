@@ -1,17 +1,18 @@
 DO $$
 DECLARE 
 	nameIn varchar(200) := '' ;
-	isinIn varchar(200) := '';
+	isinIn varchar(200) := 'DK%';
 	exchangeNameIn varchar(200) := '';
 	currencyCodeIn varchar(200) := '';
-	orderByColumnIn varchar(200) := '';
-	takeIn integer := 0;
-	skipIn integer := 0;
+	orderByColumnIn varchar(200) := 'Isin';
+	takeIn integer := 3;
+	skipIn integer := 2;
 BEGIN
  	drop table if exists _x;	
 	create temporary table _x as
 	SELECT 
-		st."Id"
+-- 		st."Id"
+	st.*
 	FROM public."Stocks" st
 	JOIN public."Exchanges" ex ON ex."Id" = st."ExchangeId"
 	JOIN public."Currencies" cu ON cu."Id" = st."CurrencyId"
