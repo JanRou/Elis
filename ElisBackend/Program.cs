@@ -9,9 +9,6 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add AutoMapper to the container
-builder.Services.AddAutoMapper(typeof(Program));
-
 // Add services to the container.
 builder.Services.AddScoped<IStockRepository, StockRepository>();
 builder.Services.AddScoped<IStockHandling, StockHandling>();
@@ -19,6 +16,9 @@ builder.Services.AddScoped<IExchangeRepository, ExchangeRepository>();
 builder.Services.AddScoped<IExchangeHandling, ExchangeHandling>();
 builder.Services.AddScoped<ICurrencyRepository, CurrencyRepository>();
 builder.Services.AddScoped<ICurencyHandling, CurrencyHandling>();
+
+// Add AutoMapper to the container
+builder.Services.AddAutoMapper(typeof(Program));
 
 // Add mediator and assemblies for mediator
 builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(typeof(Program).Assembly));
@@ -79,10 +79,10 @@ app.UseGraphQLPlayground(
     });
 
 // Configure the HTTP request pipeline.
-//if (app.Environment.IsDevelopment()) {
-//    app.UseSwagger();
-//    app.UseSwaggerUI();
-//}
+if (app.Environment.IsDevelopment()) {
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
 
 app.UseHttpsRedirection();
 
