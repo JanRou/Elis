@@ -1,4 +1,5 @@
 ﻿using ElisBackend.Core.Application.UseCases;
+using ElisBackend.Core.Domain.Entities.Filters;
 using ElisBackend.Gateways.Dal;
 using ElisBackend.Gateways.Repositories.Daos;
 using ElisBackend.Gateways.Repositories.Stock;
@@ -41,7 +42,7 @@ namespace ElisBackendTest {
         public async Task GetSortedAndPaginatedTest() {
             // Arrange
             int take = 3;
-            var filter = new FilterStock() { Isin = "DK%", OrderBy="Isin", Take = 3, Skip = 2};
+            var filter = new FilterStock() { Isin = "DK%", OrderBy = "Isin", Take = 3, Skip = 2 };
             var dut = new StockRepository(Db);
 
             // Act
@@ -54,15 +55,15 @@ namespace ElisBackendTest {
             Assert.True(stocks.Count == take);
             // Check sorting
             var previous = stocks[0];
-            for (int i=1; i<take; i++) { 
-                Assert.True(string.Compare(previous.Isin, stocks[i].Isin) < 0 );
+            for (int i = 1; i < take; i++) {
+                Assert.True(string.Compare(previous.Isin, stocks[i].Isin) < 0);
             }
         }
 
         [Fact]
         public async Task AddAndDeleteTest() {
             // Arrange
-            var stock = new StockDao() { Name="Dummy A/S", Isin="DK0099999999", ExchangeId=1, CurrencyId = 1 };
+            var stock = new StockDao() { Name = "Dummy A/S", Isin = "DK0099999999", ExchangeId = 1, CurrencyId = 1 };
             var dut = new StockRepository(Db);
 
             // Act add
@@ -82,10 +83,14 @@ namespace ElisBackendTest {
         [Fact]
         public async Task AddStockWithNewExchangAndCurrencyDeleteItAllTest() {
             // Arrange
-            var stock = new StockDao() { Name="Dummy AB", Isin="DK0099999999" };
-            stock.Exchange = new ExchangeDao() { Name = "Euronext", Country="France"
-                            , Url= "https://www.euronext.com/fr/markets/paris" };
-            stock.Currency = new CurrencyDao() { Name ="Franske franc",  Code = "FFR" };
+            var stock = new StockDao() { Name = "Dummy AB", Isin = "DK0099999999" };
+            stock.Exchange = new ExchangeDao() {
+                Name = "Euronext",
+                Country = "France"
+                            ,
+                Url = "https://www.euronext.com/fr/markets/paris"
+            };
+            stock.Currency = new CurrencyDao() { Name = "Franske franc", Code = "FFR" };
 
             var dut = new StockRepository(Db);
 
@@ -134,4 +139,5 @@ namespace ElisBackendTest {
         }
 
     }
+
 }

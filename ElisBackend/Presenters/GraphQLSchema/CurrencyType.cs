@@ -10,5 +10,3 @@ namespace ElisBackend.Presenters.GraphQLSchema
         }
     }
 }
-
-

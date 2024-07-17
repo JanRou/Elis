@@ -7,7 +7,7 @@ namespace ElisBackend.Presenters.GraphQLSchema {
     public class ElisSchema : Schema {
         public ElisSchema() : base() {
             Query = new StocksQuery();
-            Mutation = new StockMutation();
+            //Mutation = new StockMutation();
             //Mutation = resolver.GetRequiredService<StockMutation>();
             //Subscription = resolver.GetRequiredService<StockSubscription>();
         }

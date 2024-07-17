@@ -1,16 +1,11 @@
 using ElisBackend.Core.Application.UseCases;
 using ElisBackend.Gateways.Dal;
+using ElisBackend.Gateways.Repositories.Currency;
+using ElisBackend.Gateways.Repositories.Exchange;
 using ElisBackend.Gateways.Repositories.Stock;
 using ElisBackend.Presenters.GraphQLSchema;
 using GraphQL;
-using GraphQL.Server.Ui.Playground;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Cors.Infrastructure;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using System.Configuration;
-using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,6 +15,10 @@ builder.Services.AddAutoMapper(typeof(Program));
 // Add services to the container.
 builder.Services.AddScoped<IStockRepository, StockRepository>();
 builder.Services.AddScoped<IStockHandling, StockHandling>();
+builder.Services.AddScoped<IExchangeRepository, ExchangeRepository>();
+builder.Services.AddScoped<IExchangeHandling, ExchangeHandling>();
+builder.Services.AddScoped<ICurrencyRepository, CurrencyRepository>();
+builder.Services.AddScoped<ICurencyHandling, CurrencyHandling>();
 
 // Add mediator and assemblies for mediator
 builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(typeof(Program).Assembly));
@@ -32,6 +31,7 @@ builder.Services.AddGraphQL(builder => builder
     );
 
 builder.Services.AddControllers();
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -41,6 +41,8 @@ builder.Services.AddDbContext<ElisContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("ElisDb")));
 // TODO .UseSnakeCaseNamingConvention()
 
+builder.Services.AddHealthChecks().AddDbContextCheck<ElisContext>();
+
 // Opret ExchangeService og registrer børs api'er 
 // TODO
 
@@ -49,7 +51,7 @@ builder.Services.AddCors(options => {
     options.AddPolicy(
         name: "default",
         builder => {
-            builder.WithOrigins("http://localhost:4200")
+            builder.WithOrigins("https://localhost:58879")
                 .AllowAnyMethod()
                 .AllowAnyHeader()
                 .SetIsOriginAllowed(origin => true)  // Vigtig
@@ -77,13 +79,14 @@ app.UseGraphQLPlayground(
     });
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment()) {
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+//if (app.Environment.IsDevelopment()) {
+//    app.UseSwagger();
+//    app.UseSwaggerUI();
+//}
 
 app.UseHttpsRedirection();
 
 app.MapControllers();
+app.MapHealthChecks("/health");
 
 app.Run();

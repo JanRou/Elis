@@ -1,18 +1,10 @@
-﻿using ElisBackend.Core.Application.UseCases;
+﻿using ElisBackend.Core.Domain.Entities;
+using ElisBackend.Core.Domain.Entities.Filters;
 using ElisBackend.Extensions;
 using ElisBackend.Gateways.Dal;
 using ElisBackend.Gateways.Repositories.Daos;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Query.SqlExpressions;
 using Npgsql;
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Reflection.Metadata;
-using System.Reflection.Metadata.Ecma335;
-using System.Text;
 
 namespace ElisBackend.Gateways.Repositories.Stock
 {
@@ -24,9 +16,8 @@ namespace ElisBackend.Gateways.Repositories.Stock
         
     }
 
-    public class StockRepository(ElisContext elisContext) : IStockRepository {
-
-        public ElisContext db { get; } = elisContext;
+    public class StockRepository(ElisContext db) : IStockRepository {
+        // TODO DbContext concurrency
 
         public async Task<IEnumerable<StockDao>> Get(FilterStock filter) {
 

@@ -1,16 +1,16 @@
 ﻿using AutoMapper;
 using ElisBackend.Core.Domain.Abstractions;
 using ElisBackend.Core.Domain.Entities;
+using ElisBackend.Core.Domain.Entities.Filters;
 using ElisBackend.Gateways.Repositories.Daos;
 using ElisBackend.Gateways.Repositories.Stock;
 
-namespace ElisBackend.Core.Application.UseCases
-{
+namespace ElisBackend.Core.Application.UseCases {
 
     public interface IStockHandling
     {
         Task<IEnumerable<IStock>> Get(FilterStock filter);
-        Task<bool> UpdateStocksData();
+        Task<bool> UpdateStocksData(IStock stock);
         Task<bool> AddStock(IStock stock);
     }
 
@@ -30,19 +30,11 @@ namespace ElisBackend.Core.Application.UseCases
         }
 
 
-        public async Task<bool> UpdateStocksData()
+        public async Task<bool> UpdateStocksData(IStock stock)
         {
-            // 1. Hent aktier fra DB, som man henter nye data for
-            //var stocks = await repository.Get(new FilterStock());
-
-            // 2. Hent data for hver aktie på listen
-            //foreach (var stock in stocks)
-            //{
-            //    // TODO 
-            //}
+            // TODO brug repository til at updatere aktien
             return true;
         }
 
     }
-
 }

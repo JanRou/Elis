@@ -1,4 +1,5 @@
-﻿using ElisBackend.Core.Application.UseCases;
+﻿using ElisBackend.Core.Domain.Entities;
+using ElisBackend.Core.Domain.Entities.Filters;
 using ElisBackend.Extensions;
 using Npgsql;
 
