@@ -1,9 +1,28 @@
 Elis GraphQL
 Simpel søgning henter 5 første aktier, skipper ingen og viser aktiens navn, børs og valuta:
-{
-  stocks( take: 5, skip: 0 ) {    
-    name
-    , exchange
-    , currency    
+{ 
+  getstocks {
+    stocks( take: 5, skip: 0 ) {
+      name
+      , exchange
+      , currency
+    }
   }
 }
+{ 
+  getexchanges {
+    exchanges( take: 5, skip: 0 ) {
+      name,
+      country,
+      url
+    }
+  }
+}
+{ 
+  getcurrencies {
+    currencies( take: 5, skip: 0 ) {
+      name, code
+    }
+  }
+}
+
