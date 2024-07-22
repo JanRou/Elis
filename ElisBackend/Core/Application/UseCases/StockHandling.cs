@@ -10,8 +10,8 @@ namespace ElisBackend.Core.Application.UseCases {
     public interface IStockHandling
     {
         Task<IEnumerable<IStock>> Get(FilterStock filter);
-        Task<bool> UpdateStocksData(IStock stock);
-        Task<bool> AddStock(IStock stock);
+        Task<bool> Update(IStock stock);
+        Task<IStock> Add(IStock stock);
     }
 
     public class StockHandling(IStockRepository repository, IMapper mapper) : IStockHandling
@@ -22,15 +22,15 @@ namespace ElisBackend.Core.Application.UseCases {
             return mapper.Map<IEnumerable<Stock>>(result);
         }
 
-        public async Task<bool> AddStock(IStock stock)
+        public async Task<IStock> Add(IStock stock)
         {
             var stockDao = mapper.Map<StockDao>(stock);
             var addedStockDao = await repository.Add(stockDao);
-            return addedStockDao.Id > 1;
+            return mapper.Map<Stock>(addedStockDao);
         }
 
 
-        public async Task<bool> UpdateStocksData(IStock stock)
+        public async Task<bool> Update(IStock stock)
         {
             // TODO brug repository til at updatere aktien
             return true;

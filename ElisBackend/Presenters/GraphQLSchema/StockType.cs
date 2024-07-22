@@ -1,6 +1,9 @@
-﻿using ElisBackend.Core.Application.Queries;
+﻿using ElisBackend.Core.Application.Command;
+using ElisBackend.Core.Application.Queries;
 using ElisBackend.Core.Domain.Abstractions;
+using ElisBackend.Core.Domain.Entities;
 using ElisBackend.Core.Domain.Entities.Filters;
+using ElisBackend.Presenters.Dtos;
 using GraphQL;
 using GraphQL.Types;
 using MediatR;
@@ -33,7 +36,6 @@ namespace ElisBackend.Presenters.GraphQLSchema
                 .Argument<IntGraphType>("take")  // DRY - don't repeat yorself
                 .Argument<IntGraphType>("skip")
                 .ResolveAsync(async context => {
-                    // TODO FilterX er ikke godt at bruge her
                     var filter = new FilterStock() {
                         Isin = context.GetArgument(Name = "isin", defaultValue: ""),
                         Name = context.GetArgument(Name = "name", defaultValue: ""),
@@ -44,11 +46,36 @@ namespace ElisBackend.Presenters.GraphQLSchema
                     };
                     var mediator = context.RequestServices.GetService<IMediator>();
                     return await mediator.Send(new GetStocks(filter));
-                }
-            );
+                });
         }
     }
 
+    public class StockInputType : InputObjectGraphType {
+        public StockInputType()
+        {
+            Name = "StockInput";
+            Field<NonNullGraphType<StringGraphType>>("name");
+            Field<NonNullGraphType<StringGraphType>>("isin");
+            Field<NonNullGraphType<StringGraphType>>("exchangename");
+            Field<NonNullGraphType<StringGraphType>>("currencycode");
+        }
+    }
+
+    public class StockMutationType : ObjectGraphType {
+        public StockMutationType() {
+            Field<StockType>("createstock")
+                .Argument<NonNullGraphType<StockInputType>>("stock")
+                .ResolveAsync( async ctx => {
+                    var stockIn = ctx.GetArgument<StockIn>("stock");
+                    // TODO lav fabrikker i Core.Application til at oprette exchange, currrency og stock.
+                    var exchange = new Exchange(stockIn.ExchangeName, "", ""); // Refer to exchange by name
+                    var currency = new Currency("", stockIn.CurrencyCode);     // Refer to currency by code
+                    var stock = new Stock(stockIn.Name, stockIn.Isin, exchange, currency);
+                    var mediator = ctx.RequestServices.GetService<IMediator>();
+                    return await mediator.Send(new AddStock(stock));
+                });
+        }
+    }
 }
 
 

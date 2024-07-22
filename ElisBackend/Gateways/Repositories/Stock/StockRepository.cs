@@ -1,4 +1,5 @@
-﻿using ElisBackend.Core.Domain.Entities;
+﻿using ElisBackend.Core.Application.Queries;
+using ElisBackend.Core.Domain.Entities;
 using ElisBackend.Core.Domain.Entities.Filters;
 using ElisBackend.Extensions;
 using ElisBackend.Gateways.Dal;
@@ -11,6 +12,12 @@ namespace ElisBackend.Gateways.Repositories.Stock
 
     public interface IStockRepository {
         Task<IEnumerable<StockDao>> Get(FilterStock filter);
+        /// <summary>
+        /// Adds a new stock referring to the exchange by name or id and currency by by code or id.
+        /// Exchange or currency can't be created at the same time as a stock.
+        /// </summary>
+        /// <param name="stock">Stock to add with name and isin code.</param>
+        /// <returns>Stock added with ExchangeId and CurrencyId</returns>
         Task<StockDao> Add(StockDao stock);
         Task<bool> DeleteStock(int id);
         
@@ -35,20 +42,36 @@ namespace ElisBackend.Gateways.Repositories.Stock
 
             var unsorted = db.Stocks
                 .Where<StockDao>(s => stockIds.Contains(s.Id))                
-                .Include(c => c.Currency)
-                .Include(e => e.Exchange)
+                .Include(s => s.Currency)
+                .Include(s => s.Exchange)
                 .ToList();
 
             // Sort by searchstocks result before returning
-            return unsorted.OrderBy(u => stockIds.FindIndex( i => i == u.Id));
-            
+            return unsorted.OrderBy(u => stockIds.FindIndex( i => i == u.Id));            
         }
 
         public async Task<StockDao> Add(StockDao stock) {
+            stock.ExchangeId = GetExchangeId(stock);
+            stock.CurrencyId = GetCurrencyId(stock);
             db.Add(stock);
             await db.SaveChangesAsync();
-
             return stock;
+        }
+
+        private int GetExchangeId(StockDao stock) {
+            return db.Exchanges.Where(e=>
+                ((!(stock.Exchange==null || string.IsNullOrEmpty(stock.Exchange.Name))) && e.Name == stock.Exchange.Name)
+                ||
+                ( (stock.Exchange == null || string.IsNullOrEmpty(stock.Exchange.Name)) && e.Id == stock.ExchangeId)
+                ).First().Id;
+        }
+
+        private int GetCurrencyId(StockDao stock) {
+            return db.Currencies.Where(c =>
+                 ((!(stock.Currency == null || string.IsNullOrEmpty(stock.Currency.Code))) && c.Code == stock.Currency.Code)
+                 ||
+                 ((stock.Currency == null || string.IsNullOrEmpty(stock.Currency.Code)) && c.Id == stock.CurrencyId)
+                 ).First().Id;
         }
 
         public async Task<bool> DeleteStock(int id) {

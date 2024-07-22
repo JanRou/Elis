@@ -21,7 +21,6 @@ namespace ElisBackend.Presenters.GraphQLSchema
                 .Argument<IntGraphType>("take") // DRY - don't repeat yorself
                 .Argument<IntGraphType>("skip")
                 .ResolveAsync(async context => {
-                    // TODO FilterX er ikke godt at bruge her
                     var filter = new FilterCurrency() {
                         Name = context.GetArgument(Name = "name", defaultValue: ""),
                         Code = context.GetArgument(Name = "code", defaultValue: ""),

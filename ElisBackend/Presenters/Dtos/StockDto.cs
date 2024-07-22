@@ -1,4 +1,7 @@
-﻿namespace ElisBackend.Presenters.Dtos {
+﻿using ElisBackend.Core.Domain.Abstractions;
+using ElisBackend.Core.Domain.Entities;
+
+namespace ElisBackend.Presenters.Dtos {
     public class StockDto {
         public string Name { get; set; }
         public string Isin { get; set; }

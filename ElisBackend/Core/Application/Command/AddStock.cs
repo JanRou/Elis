@@ -4,17 +4,17 @@ using MediatR;
 
 namespace ElisBackend.Core.Application.Command
 {
-    public class AddStock() : IRequest<bool> {
+    public class AddStock(IStock stock) : IRequest<IStock> {
+        public IStock Stock { get; set; } = stock;
     }
 
-    public class AddStockDataHandler(IStockHandling stockHandling) : IRequestHandler<AddStock, bool>
+    public class AddStockDataHandler(IStockHandling stockHandling) : IRequestHandler<AddStock, IStock>
     {
         public IStockHandling StockHandling { get; } = stockHandling;
 
-        public async Task<bool> Handle(AddStock request, CancellationToken cancellationToken)
+        public async Task<IStock> Handle(AddStock request, CancellationToken cancellationToken)
         {
-            IStock stock = null; 
-            return await StockHandling.AddStock(stock);
+            return await StockHandling.Add(request.Stock);
         }
     }
 }
