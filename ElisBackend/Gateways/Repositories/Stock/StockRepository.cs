@@ -11,7 +11,13 @@ namespace ElisBackend.Gateways.Repositories.Stock
 {
 
     public interface IStockRepository {
+        /// <summary>
+        /// Gets stocks from the repostitory using a filter. 
+        /// </summary>
+        /// <param name="filter">Filter to select stocks.</param>
+        /// <returns>A list of stocks</returns>
         Task<IEnumerable<StockDao>> Get(FilterStock filter);
+
         /// <summary>
         /// Adds a new stock referring to the exchange by name or id and currency by by code or id.
         /// Exchange or currency can't be created at the same time as a stock.
@@ -19,8 +25,15 @@ namespace ElisBackend.Gateways.Repositories.Stock
         /// <param name="stock">Stock to add with name and isin code.</param>
         /// <returns>Stock added with ExchangeId and CurrencyId</returns>
         Task<StockDao> Add(StockDao stock);
+
         Task<bool> DeleteStock(int id);
-        
+
+        /// <summary>
+        /// Delete a stock identified by it's isin code
+        /// </summary>
+        /// <param name="isin">Code identifying the stock</param>
+        /// <returns>True when deleted otherwise false</returns>
+        Task<bool> DeleteStock(string isin);
     }
 
     public class StockRepository(ElisContext db) : IStockRepository {
@@ -80,6 +93,18 @@ namespace ElisBackend.Gateways.Repositories.Stock
 
         public async Task<bool> DeleteStock(int id) {
             var stock = db.Stocks.Where<StockDao>(s => s.Id == id).FirstOrDefault();
+
+            bool result = stock != null;
+            if (result) {
+                db.Remove(stock);
+                await db.SaveChangesAsync();
+            }
+
+            return result;
+        }
+
+        public async Task<bool> DeleteStock(string isin) {
+            var stock = db.Stocks.Where<StockDao>(s => s.Isin == isin).FirstOrDefault();
 
             bool result = stock != null;
             if (result) {

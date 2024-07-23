@@ -37,7 +37,7 @@ namespace ElisBackendTest {
 
             // Act
             var result = await dut.Add(dao);
-            bool deleteResult = await dut.Delete(result.Id);
+            bool deleteResult = await dut.Delete(result.Code);
 
             // Assert
             Assert.NotNull(result);
@@ -60,7 +60,7 @@ namespace ElisBackendTest {
         }
 
         public void Teardown() {
-
+            Db.Dispose();
         }
 
     }

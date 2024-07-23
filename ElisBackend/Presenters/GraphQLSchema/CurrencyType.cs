@@ -54,6 +54,13 @@ namespace ElisBackend.Presenters.GraphQLSchema
                     var mediator = ctx.RequestServices.GetService<IMediator>();
                     return await mediator.Send(new AddCurrency(currency));
                 });
+            Field<BooleanGraphType>("delete")
+                .Argument<NonNullGraphType<StringGraphType>>("code")
+                .ResolveAsync(async ctx => {
+                    var currencyCode = ctx.GetArgument<string>("code");
+                    var mediator = ctx.RequestServices.GetService<IMediator>();
+                    return await mediator.Send(new DeleteCurrency(currencyCode));
+                });
         }
     }
 }

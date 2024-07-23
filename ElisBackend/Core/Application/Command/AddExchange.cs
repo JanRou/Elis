@@ -13,5 +13,4 @@ namespace ElisBackend.Core.Application.Command {
             return await exchangeHandling.Add(request.Exchange);
         }
     }
-
 }

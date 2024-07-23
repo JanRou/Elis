@@ -10,6 +10,7 @@ namespace ElisBackend.Core.Application.UseCases {
         Task<IEnumerable<ICurrency>> Get(FilterCurrency filter);
         Task<ICurrency> Add(ICurrency currency);
         Task<bool> Delete(int id);
+        Task<bool> Delete(string code);
     }
 
     public class CurrencyHandling(ICurrencyRepository repository, IMapper mapper) : ICurrencyHandling {
@@ -29,5 +30,11 @@ namespace ElisBackend.Core.Application.UseCases {
             // TODO Håndter fejl: er der nogle aktier db, som handles i valutaen, som man vil slette
             return await repository.Delete(id);
         }
+
+        public async Task<bool> Delete(string code) {
+            // TODO Håndter fejl: er der nogle aktier db, som handles i valutaen, som man vil slette
+            return await repository.Delete(code);
+        }
+
     }
 }

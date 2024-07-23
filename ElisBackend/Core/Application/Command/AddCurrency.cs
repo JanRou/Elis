@@ -13,4 +13,5 @@ namespace ElisBackend.Core.Application.Command {
             return await currencyHandling.Add(request.Currency);
         }
     }
+
 }

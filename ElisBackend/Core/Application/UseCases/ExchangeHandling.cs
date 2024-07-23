@@ -11,6 +11,7 @@ namespace ElisBackend.Core.Application.UseCases
         Task<IEnumerable<IExchange>> Get(FilterExchange filter);
         Task<IExchange> Add(IExchange exchange);
         Task<bool> Delete(int id);
+        Task<bool> Delete(string name);
     }
 
     public class ExchangeHandling(IExchangeRepository repository, IMapper mapper) : IExchangeHandling {
@@ -29,6 +30,11 @@ namespace ElisBackend.Core.Application.UseCases
         public async Task<bool> Delete(int id) {
             // TODO Håndter fejl: er der nogle aktier db, som handles på børsen, som man vil slette
             return await repository.Delete(id);
+        }
+        
+        public async Task<bool> Delete(string name) {
+            // TODO Håndter fejl: er der nogle aktier db, som handles på børsen, som man vil slette
+            return await repository.Delete(name);
         }
     }
 }

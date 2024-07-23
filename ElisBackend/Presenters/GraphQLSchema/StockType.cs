@@ -73,6 +73,14 @@ namespace ElisBackend.Presenters.GraphQLSchema
                     var mediator = ctx.RequestServices.GetService<IMediator>();
                     return await mediator.Send(new AddStock(stock));
                 });
+            Field<BooleanGraphType>("delete")
+                .Argument<NonNullGraphType<StringGraphType>>("isin")
+                .ResolveAsync(async ctx => {
+                    var isin = ctx.GetArgument<string>("isin");
+                    var mediator = ctx.RequestServices.GetService<IMediator>();
+                    return await mediator.Send(new DeleteStock(isin));
+                });
+
         }
     }
 }

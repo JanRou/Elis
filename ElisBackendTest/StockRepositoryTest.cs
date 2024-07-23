@@ -76,7 +76,7 @@ namespace ElisBackendTest {
             Assert.True(addResult.Id > 1);
 
             // Act delete
-            var deleteResult = await dut.DeleteStock(stock.Id);
+            var deleteResult = await dut.DeleteStock(stock.Isin);
 
             // Assert delete
             Assert.True(deleteResult);
@@ -106,7 +106,7 @@ namespace ElisBackendTest {
         }
 
         public void Teardown() {
-
+            Db.Dispose();
         }
 
     }

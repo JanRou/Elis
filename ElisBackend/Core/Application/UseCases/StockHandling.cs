@@ -12,28 +12,34 @@ namespace ElisBackend.Core.Application.UseCases {
         Task<IEnumerable<IStock>> Get(FilterStock filter);
         Task<bool> Update(IStock stock);
         Task<IStock> Add(IStock stock);
+        Task<bool> Delete(int id);
+        Task<bool> Delete(string isin);
     }
 
-    public class StockHandling(IStockRepository repository, IMapper mapper) : IStockHandling
-    {
-        public async Task<IEnumerable<IStock>> Get(FilterStock filter)
-        {
+    public class StockHandling(IStockRepository repository, IMapper mapper) : IStockHandling {
+        public async Task<IEnumerable<IStock>> Get(FilterStock filter) {
             var result = await repository.Get(filter);
             return mapper.Map<IEnumerable<Stock>>(result);
         }
 
-        public async Task<IStock> Add(IStock stock)
-        {
+        public async Task<IStock> Add(IStock stock) {
             var stockDao = mapper.Map<StockDao>(stock);
             var addedStockDao = await repository.Add(stockDao);
             return mapper.Map<Stock>(addedStockDao);
         }
 
 
-        public async Task<bool> Update(IStock stock)
-        {
+        public async Task<bool> Update(IStock stock) {
             // TODO brug repository til at updatere aktien
             return true;
+        }
+
+        public async Task<bool> Delete(int id) {
+            return await repository.DeleteStock(id);
+        }
+
+        public async Task<bool> Delete(string isin) {
+            return await repository.DeleteStock(isin);
         }
 
     }

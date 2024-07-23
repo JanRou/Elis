@@ -8,6 +8,7 @@ namespace ElisBackend.Gateways.Repositories.Currency {
         Task<IEnumerable<CurrencyDao>> Get(FilterCurrency filter);
         Task<CurrencyDao> Add(CurrencyDao currency);
         Task<bool> Delete(int id);
+        Task<bool> Delete(string code);
     }
 
     public class CurrencyRepository(ElisContext db) : ICurrencyRepository {
@@ -34,6 +35,18 @@ namespace ElisBackend.Gateways.Repositories.Currency {
 
         public async Task<bool> Delete(int id) {
             var currency = db.Currencies.Where<CurrencyDao>(s => s.Id == id).FirstOrDefault();
+
+            bool result = currency != null;
+            if (result) {
+                db.Remove(currency);
+                await db.SaveChangesAsync();
+            }
+
+            return result;
+        }
+
+        public async Task<bool> Delete(string code) {
+            var currency = db.Currencies.Where<CurrencyDao>(s => s.Code == code).FirstOrDefault();
 
             bool result = currency != null;
             if (result) {
