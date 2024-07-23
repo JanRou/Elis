@@ -1,5 +1,6 @@
 ﻿using ElisBackend.Core.Domain.Entities.Filters;
 using ElisBackend.Gateways.Dal;
+using ElisBackend.Gateways.Repositories.Daos;
 using ElisBackend.Gateways.Repositories.Exchange;
 using Microsoft.EntityFrameworkCore;
 
@@ -25,6 +26,24 @@ namespace ElisBackendTest {
             var exchanges = result.ToList();
             Assert.NotEmpty(exchanges);
             Assert.True(exchanges.Count > 2);
+        }
+
+        [Fact]
+        public async Task AddNDeleteTest() {
+            // Arrange
+            var dao = new ExchangeDao() { Name="Uninque", Country="local", Url="https://localhost"};
+            var dut = new ExchangeRepository(Db);
+
+            // Act
+            var result = await dut.Add(dao);
+            bool deleteResult = await dut.Delete(result.Id);
+
+            // Assert
+            Assert.NotNull(result);
+            Assert.True(result.Id > 0);
+            Assert.Equal(dao.Name, result.Name);
+            Assert.Equal(dao.Url, result.Url);
+            Assert.True(deleteResult);
         }
 
         private static readonly object _lock = new();

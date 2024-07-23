@@ -51,9 +51,10 @@ namespace ElisBackend.Gateways.Repositories.Stock
         }
 
         public async Task<StockDao> Add(StockDao stock) {
+            // TODO try - catch
             stock.ExchangeId = GetExchangeId(stock);
             stock.CurrencyId = GetCurrencyId(stock);
-            // Reset exchange and currency, so EF doesn't create new exchange and currency entries
+            // Reset exchange and currency in stock, so EF doesn't create new exchange and currency entries
             stock.Exchange = null;
             stock.Currency = null;
             db.Add(stock);
@@ -83,30 +84,6 @@ namespace ElisBackend.Gateways.Repositories.Stock
             bool result = stock != null;
             if (result) {
                 db.Remove(stock);
-                await db.SaveChangesAsync();
-            }
-
-            return result;
-        }
-
-        public async Task<bool> DeleteExchange(int id) {
-            var exchange = db.Exchanges.Where<ExchangeDao>(s => s.Id == id).FirstOrDefault();
-
-            bool result = exchange != null;
-            if (result) {
-                db.Remove(exchange);
-                await db.SaveChangesAsync();
-            }
-
-            return result;
-        }
-
-        public async Task<bool> DeleteCurrency(int id) {
-            var currency = db.Currencies.Where<CurrencyDao>(s => s.Id == id).FirstOrDefault();
-
-            bool result = currency != null;
-            if (result) {
-                db.Remove(currency);
                 await db.SaveChangesAsync();
             }
 

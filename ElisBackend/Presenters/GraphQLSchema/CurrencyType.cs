@@ -1,6 +1,9 @@
-﻿using ElisBackend.Core.Application.Queries;
+﻿using ElisBackend.Core.Application.Command;
+using ElisBackend.Core.Application.Queries;
 using ElisBackend.Core.Domain.Abstractions;
+using ElisBackend.Core.Domain.Entities;
 using ElisBackend.Core.Domain.Entities.Filters;
+using ElisBackend.Presenters.Dtos;
 using GraphQL;
 using GraphQL.Types;
 using MediatR;
@@ -31,6 +34,26 @@ namespace ElisBackend.Presenters.GraphQLSchema
                     return await mediator.Send(new GetCurrencies(filter));
                 }
             );
+        }
+    }
+
+    public class CurrencyInputType : InputObjectGraphType {
+        public CurrencyInputType() {
+            Name = "CurrencyInput";
+            Field<NonNullGraphType<StringGraphType>>("name");
+            Field<NonNullGraphType<StringGraphType>>("code");
+        }
+    }
+
+    public class CurrencyMutationType : ObjectGraphType {
+        public CurrencyMutationType() {
+            Field<CurrencyType>("create")
+                .Argument<NonNullGraphType<CurrencyInputType>>("currency")
+                .ResolveAsync(async ctx => {
+                    var currency = ctx.GetArgument<Currency>("currency");
+                    var mediator = ctx.RequestServices.GetService<IMediator>();
+                    return await mediator.Send(new AddCurrency(currency));
+                });
         }
     }
 }

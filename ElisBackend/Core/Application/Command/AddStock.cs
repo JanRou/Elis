@@ -10,11 +10,8 @@ namespace ElisBackend.Core.Application.Command {
 
     public class AddStockDataHandler(IStockHandling stockHandling) : IRequestHandler<AddStock, IStock>
     {
-        public IStockHandling StockHandling { get; } = stockHandling;
-
-        public async Task<IStock> Handle(AddStock request, CancellationToken cancellationToken)
-        {
-            return await StockHandling.Add(request.Stock);
+        public async Task<IStock> Handle(AddStock request, CancellationToken cancellationToken) {
+            return await stockHandling.Add(request.Stock);
         }
     }
 

@@ -28,18 +28,24 @@ Simpel søgning henter 5 første aktier, skipper ingen og viser aktiens navn, b�
 
 mutation {
 	addstock {
- 		createstock(stock:{name:"Test",isin:"123456879",exchangename:"XCSE",currencycode:"DKK" }) {
+ 		create(stock:{name:"Test",isin:"123456879",exchangename:"XCSE",currencycode:"DKK" }) {
   		 name, currency
   	}    
   }
 }
 
-Variabel
-{
-  "stockIn": {
-    "name": "Test",
-    "isin": "123456879",
-    "exchangename": "XCSE",
-    "currencycode": "DKK"
+mutation {
+	addexchange {
+ 		create(exchange:{name:"Test", country:"Land", url:"https://localhost" }) {
+  		 name, country, url
+  	}    
+  }
+}
+
+mutation {
+	addcurrency {
+ 		create(currency:{name:"Test", code:"TST" }) {
+  		 name, code
+  	}    
   }
 }

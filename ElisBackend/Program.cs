@@ -15,7 +15,7 @@ builder.Services.AddScoped<IStockHandling, StockHandling>();
 builder.Services.AddScoped<IExchangeRepository, ExchangeRepository>();
 builder.Services.AddScoped<IExchangeHandling, ExchangeHandling>();
 builder.Services.AddScoped<ICurrencyRepository, CurrencyRepository>();
-builder.Services.AddScoped<ICurencyHandling, CurrencyHandling>();
+builder.Services.AddScoped<ICurrencyHandling, CurrencyHandling>();
 
 // Add AutoMapper to the container
 builder.Services.AddAutoMapper(typeof(Program));

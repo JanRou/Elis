@@ -6,6 +6,8 @@ using Microsoft.EntityFrameworkCore;
 namespace ElisBackend.Gateways.Repositories.Currency {
     public interface ICurrencyRepository {
         Task<IEnumerable<CurrencyDao>> Get(FilterCurrency filter);
+        Task<CurrencyDao> Add(CurrencyDao currency);
+        Task<bool> Delete(int id);
     }
 
     public class CurrencyRepository(ElisContext db) : ICurrencyRepository {
@@ -22,6 +24,24 @@ namespace ElisBackend.Gateways.Repositories.Currency {
                 );
             var sql = query.ToQueryString();
             return query;
+        }
+
+        public async Task<CurrencyDao> Add(CurrencyDao currency) {
+            db.Add(currency);
+            await db.SaveChangesAsync();
+            return currency;
+        }
+
+        public async Task<bool> Delete(int id) {
+            var currency = db.Currencies.Where<CurrencyDao>(s => s.Id == id).FirstOrDefault();
+
+            bool result = currency != null;
+            if (result) {
+                db.Remove(currency);
+                await db.SaveChangesAsync();
+            }
+
+            return result;
         }
     }
 }

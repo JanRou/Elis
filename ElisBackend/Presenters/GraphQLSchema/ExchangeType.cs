@@ -50,12 +50,10 @@ namespace ElisBackend.Presenters.GraphQLSchema {
 
     public class ExchangeMutationType : ObjectGraphType {
         public ExchangeMutationType() {
-            Field<ExchangeType>("createexchange")
+            Field<ExchangeType>("create")
                 .Argument<NonNullGraphType<ExchangeInputType>>("exchange")
                 .ResolveAsync(async ctx => {
-                    var stockIn = ctx.GetArgument<StockIn>("exchange");
-                    // TODO lav fabrikker i Core.Application til at oprette exchange, currrency og stock.
-                    var exchange = new Exchange(stockIn.ExchangeName, "", ""); // Refer to exchange by name
+                    var exchange = ctx.GetArgument<Exchange>("exchange");
                     var mediator = ctx.RequestServices.GetService<IMediator>();
                     return await mediator.Send(new AddExchange(exchange));
                 });

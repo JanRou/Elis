@@ -63,11 +63,10 @@ namespace ElisBackend.Presenters.GraphQLSchema
 
     public class StockMutationType : ObjectGraphType {
         public StockMutationType() {
-            Field<StockType>("createstock")
+            Field<StockType>("create")
                 .Argument<NonNullGraphType<StockInputType>>("stock")
                 .ResolveAsync( async ctx => {
                     var stockIn = ctx.GetArgument<StockIn>("stock");
-                    // TODO lav fabrikker i Core.Application til at oprette exchange, currrency og stock.
                     var exchange = new Exchange(stockIn.ExchangeName, "", ""); // Refer to exchange by name
                     var currency = new Currency("", stockIn.CurrencyCode);     // Refer to currency by code
                     var stock = new Stock(stockIn.Name, stockIn.Isin, exchange, currency);

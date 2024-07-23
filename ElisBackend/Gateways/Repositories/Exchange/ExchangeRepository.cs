@@ -9,6 +9,7 @@ namespace ElisBackend.Gateways.Repositories.Exchange
     {
         Task<IEnumerable<ExchangeDao>> Get(FilterExchange filter);
         Task<ExchangeDao> Add(ExchangeDao exchange);
+        Task<bool> Delete(int id);
     }
 
     public class ExchangeRepository(ElisContext db) : IExchangeRepository
@@ -34,5 +35,16 @@ namespace ElisBackend.Gateways.Repositories.Exchange
             return exchange;
         }
 
+        public async Task<bool> Delete(int id) {
+            var exchange = db.Exchanges.Where<ExchangeDao>(s => s.Id == id).FirstOrDefault();
+
+            bool result = exchange != null;
+            if (result) {
+                db.Remove(exchange);
+                await db.SaveChangesAsync();
+            }
+
+            return result;
+        }
     }
 }

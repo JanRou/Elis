@@ -1,6 +1,8 @@
 ﻿using ElisBackend.Core.Domain.Entities.Filters;
 using ElisBackend.Gateways.Dal;
 using ElisBackend.Gateways.Repositories.Currency;
+using ElisBackend.Gateways.Repositories.Daos;
+using ElisBackend.Gateways.Repositories.Exchange;
 using Microsoft.EntityFrameworkCore;
 
 namespace ElisBackendTest {
@@ -27,6 +29,23 @@ namespace ElisBackendTest {
             Assert.True(currencies.Count > 2);
         }
 
+        [Fact]
+        public async Task AddNDeleteTest() {
+            // Arrange
+            var dao = new CurrencyDao() { Name = "Test", Code = "TST" };
+            var dut = new CurrencyRepository(Db);
+
+            // Act
+            var result = await dut.Add(dao);
+            bool deleteResult = await dut.Delete(result.Id);
+
+            // Assert
+            Assert.NotNull(result);
+            Assert.True(result.Id > 0);
+            Assert.Equal(dao.Name, result.Name);
+            Assert.Equal(dao.Code, result.Code);
+            Assert.True(deleteResult);
+        }
 
         private static readonly object _lock = new();
         public void Setup() {
