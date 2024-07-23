@@ -3,6 +3,7 @@ using System;
 using ElisBackend.Gateways.Dal;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace ElisBackend.Migrations
 {
     [DbContext(typeof(ElisContext))]
-    partial class ElisContextModelSnapshot : ModelSnapshot
+    [Migration("20240723093645_UniqueExchangeNameAndCurrecyCode")]
+    partial class UniqueExchangeNameAndCurrecyCode
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

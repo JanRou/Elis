@@ -30,11 +30,17 @@ namespace ElisBackend.Gateways.Dal {
                 .HasKey(x => x.Id)
                 .HasName("ExchangeId_PK");
             modelBuilder.Entity<ExchangeDao>()
+                .HasIndex(x => x.Name)
+                .IsUnique();
+            modelBuilder.Entity<ExchangeDao>()
                 .HasMany(x => x.Stocks)
                 .WithOne(x => x.Exchange);
             modelBuilder.Entity<CurrencyDao>()
                 .HasKey(x => x.Id)
                 .HasName("CurrencyId_PK");
+            modelBuilder.Entity<CurrencyDao>()
+                .HasIndex(x => x.Name)
+                .IsUnique();
             modelBuilder.Entity<CurrencyDao>()
                 .HasMany(x => x.Stocks)
                 .WithOne(x => x.Currency);

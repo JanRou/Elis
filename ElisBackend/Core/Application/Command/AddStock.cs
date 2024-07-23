@@ -1,9 +1,9 @@
 ﻿using ElisBackend.Core.Application.UseCases;
 using ElisBackend.Core.Domain.Abstractions;
+using ElisBackend.Core.Domain.Entities;
 using MediatR;
 
-namespace ElisBackend.Core.Application.Command
-{
+namespace ElisBackend.Core.Application.Command {
     public class AddStock(IStock stock) : IRequest<IStock> {
         public IStock Stock { get; set; } = stock;
     }
@@ -17,4 +17,5 @@ namespace ElisBackend.Core.Application.Command
             return await StockHandling.Add(request.Stock);
         }
     }
+
 }

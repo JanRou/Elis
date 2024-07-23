@@ -1,6 +1,9 @@
-﻿using ElisBackend.Core.Application.Queries;
+﻿using ElisBackend.Core.Application.Command;
+using ElisBackend.Core.Application.Queries;
 using ElisBackend.Core.Domain.Abstractions;
+using ElisBackend.Core.Domain.Entities;
 using ElisBackend.Core.Domain.Entities.Filters;
+using ElisBackend.Presenters.Dtos;
 using GraphQL;
 using GraphQL.Types;
 using MediatR;
@@ -32,8 +35,30 @@ namespace ElisBackend.Presenters.GraphQLSchema {
                     };
                     var mediator = context.RequestServices.GetService<IMediator>();
                     return await mediator.Send(new GetExchanges(filter));
-                }
-        );
+                });
+        }
+    }
+
+    public class ExchangeInputType : InputObjectGraphType {
+        public ExchangeInputType() {
+            Name = "ExchangeInput";
+            Field<NonNullGraphType<StringGraphType>>("name");
+            Field<NonNullGraphType<StringGraphType>>("country");
+            Field<NonNullGraphType<StringGraphType>>("url");
+        }
+    }
+
+    public class ExchangeMutationType : ObjectGraphType {
+        public ExchangeMutationType() {
+            Field<ExchangeType>("createexchange")
+                .Argument<NonNullGraphType<ExchangeInputType>>("exchange")
+                .ResolveAsync(async ctx => {
+                    var stockIn = ctx.GetArgument<StockIn>("exchange");
+                    // TODO lav fabrikker i Core.Application til at oprette exchange, currrency og stock.
+                    var exchange = new Exchange(stockIn.ExchangeName, "", ""); // Refer to exchange by name
+                    var mediator = ctx.RequestServices.GetService<IMediator>();
+                    return await mediator.Send(new AddExchange(exchange));
+                });
         }
     }
 }

@@ -53,6 +53,9 @@ namespace ElisBackend.Gateways.Repositories.Stock
         public async Task<StockDao> Add(StockDao stock) {
             stock.ExchangeId = GetExchangeId(stock);
             stock.CurrencyId = GetCurrencyId(stock);
+            // Reset exchange and currency, so EF doesn't create new exchange and currency entries
+            stock.Exchange = null;
+            stock.Currency = null;
             db.Add(stock);
             await db.SaveChangesAsync();
             return stock;

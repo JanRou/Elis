@@ -8,6 +8,7 @@ namespace ElisBackend.Gateways.Repositories.Exchange
     public interface IExchangeRepository
     {
         Task<IEnumerable<ExchangeDao>> Get(FilterExchange filter);
+        Task<ExchangeDao> Add(ExchangeDao exchange);
     }
 
     public class ExchangeRepository(ElisContext db) : IExchangeRepository
@@ -16,7 +17,6 @@ namespace ElisBackend.Gateways.Repositories.Exchange
 
         public async Task<IEnumerable<ExchangeDao>> Get(FilterExchange filter)
         {
-            // TODO What is GraphQL doing eager or lazy loading?
             return db.Exchanges
                 .Where(e =>
                        (string.IsNullOrEmpty(filter.Name) || 
@@ -27,5 +27,12 @@ namespace ElisBackend.Gateways.Repositories.Exchange
                         (!string.IsNullOrEmpty(filter.Url) && EF.Functions.ILike(e.Url, filter.Url)))
                 );
         }
+
+        public async Task<ExchangeDao> Add(ExchangeDao exchange) {
+            db.Add(exchange);
+            await db.SaveChangesAsync();
+            return exchange;
+        }
+
     }
 }
