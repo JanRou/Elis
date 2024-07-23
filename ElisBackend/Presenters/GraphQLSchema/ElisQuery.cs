@@ -9,9 +9,9 @@ namespace ElisBackend.Presenters.GraphQLSchema {
     public class ElisQuery : ObjectGraphType {
         public ElisQuery() {
             Description = "Get stock, exchange and currency information";
-            Field<StocksType>("getstocks").Resolve( ctx => new {});
-            Field<ExchangesType>("getexchanges").Resolve(ctx => new { });
-            Field<CurrenciesType>("getcurrencies").Resolve(ctx => new { });
+            Field<StocksType>("stocks").Resolve( ctx => new {});
+            Field<ExchangesType>("exchanges").Resolve(ctx => new { });
+            Field<CurrenciesType>("currencies").Resolve(ctx => new { });
         }
     }
 }

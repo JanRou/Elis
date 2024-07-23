@@ -1,7 +1,7 @@
 Elis GraphQL
-Simpel søgning henter 5 første aktier, skipper ingen og viser aktiens navn, børs og valuta:
+Simpel søgning henter 5 første aktier, skipper ingen og viser aktiens navn, børs og valuta, query:
 { 
-  getstocks {
+  stocks {
     stocks( take: 5, skip: 0 ) {
       name
       , exchange
@@ -9,8 +9,9 @@ Simpel søgning henter 5 første aktier, skipper ingen og viser aktiens navn, b�
     }
   }
 }
+
 { 
-  getexchanges {
+  exchanges {
     exchanges( take: 5, skip: 0 ) {
       name,
       country,
@@ -18,10 +19,19 @@ Simpel søgning henter 5 første aktier, skipper ingen og viser aktiens navn, b�
     }
   }
 }
+
 { 
-  getcurrencies {
+  currencies {
     currencies( take: 5, skip: 0 ) {
       name, code
+    }
+  }
+}
+
+{ 
+  timezones {
+    timezones( take: 5, skip: 0 ) {
+      name
     }
   }
 }

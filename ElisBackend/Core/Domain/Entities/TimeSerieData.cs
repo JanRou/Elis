@@ -2,7 +2,7 @@
 
 public interface ITimeSerieData
 {
-    DateTime Date { get; }
+    DateTime Date { get; } // Date is in UTC
     decimal Price { get; }
     decimal Volume { get; }
 }

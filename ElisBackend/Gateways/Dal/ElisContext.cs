@@ -12,7 +12,6 @@ namespace ElisBackend.Gateways.Dal {
         public DbSet<StockDao> Stocks { get; set; }        
         public DbSet<ExchangeDao> Exchanges { get; set; }
         public DbSet<CurrencyDao> Currencies { get; set; }
-        public DbSet<TimeZoneDao> TimeZones { get; set; }
         public DbSet<DateDao> Dates { get; set; }
         public DbSet<TimeSerieDao> TimeSeries { get; set; }
         public DbSet<TimeSerieFactDao> TimeSerieFacts { get; set; }
@@ -24,7 +23,10 @@ namespace ElisBackend.Gateways.Dal {
                 .HasKey(x => x.Id)                
                 .HasName("StockId_PK");
             modelBuilder.Entity<StockDao>()
-                .HasMany(x => x.TimeSeriesFacts)
+                .HasIndex(x => x.Isin)
+                .IsUnique();
+            modelBuilder.Entity<StockDao>()
+                .HasMany(x => x.TimeSeries)
                 .WithOne(x => x.Stock);
             modelBuilder.Entity<ExchangeDao>()
                 .HasKey(x => x.Id)
@@ -39,22 +41,25 @@ namespace ElisBackend.Gateways.Dal {
                 .HasKey(x => x.Id)
                 .HasName("CurrencyId_PK");
             modelBuilder.Entity<CurrencyDao>()
-                .HasIndex(x => x.Name)
+                .HasIndex(x => x.Code)
                 .IsUnique();
             modelBuilder.Entity<CurrencyDao>()
                 .HasMany(x => x.Stocks)
                 .WithOne(x => x.Currency);
-            modelBuilder.Entity<TimeZoneDao>()
-                .HasKey(x => x.Id)
-                .HasName("TimeZoneId_PK");
             modelBuilder.Entity<DateDao>()
                 .HasKey(x => x.Id)
                 .HasName("DateId_PK");
+            modelBuilder.Entity<DateDao>()
+                .HasMany(x => x.Facts)
+                .WithOne(x => x.Date);
             modelBuilder.Entity<TimeSerieDao>()
                 .HasKey(x => x.Id)
                 .HasName("TimeSerieId_PK");
+            modelBuilder.Entity<TimeSerieDao>()
+                 .HasMany(x => x.Facts)
+                 .WithOne(x => x.TimeSerie);
             modelBuilder.Entity<TimeSerieFactDao>()
-                .HasKey( t => new { t.TimeSerieId, t.StockId, t.DateId })
+                .HasKey( t => new { t.TimeSerieId, t.DateId })
                 .HasName("TimeSerieFact_PK");
 
             modelBuilder.Entity<StockSearchResultDao>().ToTable(nameof(StockResults), t => t.ExcludeFromMigrations());

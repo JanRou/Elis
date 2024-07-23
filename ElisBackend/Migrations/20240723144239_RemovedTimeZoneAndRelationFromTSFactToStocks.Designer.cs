@@ -3,6 +3,7 @@ using System;
 using ElisBackend.Gateways.Dal;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace ElisBackend.Migrations
 {
     [DbContext(typeof(ElisContext))]
-    partial class ElisContextModelSnapshot : ModelSnapshot
+    [Migration("20240723144239_RemovedTimeZoneAndRelationFromTSFactToStocks")]
+    partial class RemovedTimeZoneAndRelationFromTSFactToStocks
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -41,7 +44,7 @@ namespace ElisBackend.Migrations
                     b.HasKey("Id")
                         .HasName("CurrencyId_PK");
 
-                    b.HasIndex("Code")
+                    b.HasIndex("Name")
                         .IsUnique();
 
                     b.ToTable("Currencies");
@@ -156,13 +159,13 @@ namespace ElisBackend.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<int>("StockId")
+                    b.Property<int?>("StockDaoId")
                         .HasColumnType("integer");
 
                     b.HasKey("Id")
                         .HasName("TimeSerieId_PK");
 
-                    b.HasIndex("StockId");
+                    b.HasIndex("StockDaoId");
 
                     b.ToTable("TimeSeries");
                 });
@@ -210,13 +213,9 @@ namespace ElisBackend.Migrations
 
             modelBuilder.Entity("ElisBackend.Gateways.Repositories.Daos.TimeSerieDao", b =>
                 {
-                    b.HasOne("ElisBackend.Gateways.Repositories.Daos.StockDao", "Stock")
+                    b.HasOne("ElisBackend.Gateways.Repositories.Daos.StockDao", null)
                         .WithMany("TimeSeries")
-                        .HasForeignKey("StockId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Stock");
+                        .HasForeignKey("StockDaoId");
                 });
 
             modelBuilder.Entity("ElisBackend.Gateways.Repositories.Daos.TimeSerieFactDao", b =>

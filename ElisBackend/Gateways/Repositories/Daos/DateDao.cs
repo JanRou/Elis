@@ -1,11 +1,12 @@
 ﻿namespace ElisBackend.Gateways.Repositories.Daos {
 
-    public class DateDao(DateTime dateTimeUtc) {
+    public class DateDao {
         public int Id { get; set; }
-        public DateTime DateTimeUtc { get; set; } = dateTimeUtc;
+        // The DateTimeUtc is the day for the closing price and volume
+        public DateTime DateTimeUtc { get; set; }
 
         // Facts for this date for navigation
-        public IEnumerable<TimeSerieFactDao> Facts { get; set; }
+        public IEnumerable<TimeSerieFactDao> Facts { get; set; } = new List<TimeSerieFactDao>();
 
     }
 }
