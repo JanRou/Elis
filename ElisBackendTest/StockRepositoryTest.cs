@@ -3,7 +3,6 @@ using ElisBackend.Core.Domain.Entities.Filters;
 using ElisBackend.Gateways.Dal;
 using ElisBackend.Gateways.Repositories.Daos;
 using ElisBackend.Gateways.Repositories.Stock;
-using ElisBackend.Presenters.Dtos;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Npgsql;

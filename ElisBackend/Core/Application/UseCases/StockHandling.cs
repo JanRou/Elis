@@ -10,7 +10,7 @@ namespace ElisBackend.Core.Application.UseCases {
     public interface IStockHandling
     {
         Task<IEnumerable<IStock>> Get(FilterStock filter);
-        Task<bool> Update(IStock stock);
+        Task<IStock> AddData(IStock stock, TimeSerie timeSerie);
         Task<IStock> Add(IStock stock);
         Task<bool> Delete(int id);
         Task<bool> Delete(string isin);
@@ -29,9 +29,9 @@ namespace ElisBackend.Core.Application.UseCases {
         }
 
 
-        public async Task<bool> Update(IStock stock) {
-            // TODO brug repository til at updatere aktien
-            return true;
+        public async Task<IStock> AddData(IStock stock, TimeSerie timeSerie) {
+            // TODO brug repository til at tilføje tidsserie aktien
+            return stock;
         }
 
         public async Task<bool> Delete(int id) {

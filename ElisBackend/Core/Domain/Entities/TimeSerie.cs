@@ -2,9 +2,9 @@
 
 namespace ElisBackend.Core.Domain.Entities;
 
-public class TimeSerie(string name, int stockId, List<ITimeSerieData> timeSerieData) : ITimeSerie
+public class TimeSerie(string name, string isin, List<TimeSerieData> timeSerieData) : ITimeSerie
 {
     public string Name { get; private set; } = name;
-    public int StockId { get; private set; } = stockId;
-    public List<ITimeSerieData> TimeSerieData { get; private set; } = timeSerieData;
+    public string Isin { get; private set; } = isin;
+    public List<TimeSerieData> TimeSerieData { get; private set; } = timeSerieData;
 }

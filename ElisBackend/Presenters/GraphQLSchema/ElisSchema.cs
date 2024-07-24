@@ -1,5 +1,4 @@
-﻿using ElisBackend.Presenters.Dtos;
-using GraphQL.Types;
+﻿using GraphQL.Types;
 
 namespace ElisBackend.Presenters.GraphQLSchema {
 

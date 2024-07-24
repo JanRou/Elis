@@ -7,6 +7,6 @@ namespace ElisBackend.Core.Domain.Abstractions;
 public interface ITimeSerie
 {
     string Name { get; }
-    int StockId { get; }
-    List<ITimeSerieData> TimeSerieData { get; }
+    string Isin { get; }
+    List<TimeSerieData> TimeSerieData { get; }
 }
