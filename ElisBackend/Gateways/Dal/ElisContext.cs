@@ -58,6 +58,9 @@ namespace ElisBackend.Gateways.Dal {
             modelBuilder.Entity<TimeSerieDao>()
                  .HasMany(x => x.Facts)
                  .WithOne(x => x.TimeSerie);
+            modelBuilder.Entity<TimeSerieDao>()
+                .HasIndex(x => new { x.Name, x.StockId } )
+                .IsUnique();
             modelBuilder.Entity<TimeSerieFactDao>()
                 .HasKey( t => new { t.TimeSerieId, t.DateId })
                 .HasName("TimeSerieFact_PK");

@@ -2,7 +2,7 @@
 
     public class StockDataIn(string isin, string timeseriename)
     {
-        public string Isin { get; private set; } = isin;
-        public string TimeSerieName { get; private set; } = timeseriename;
+        public string Isin { get; set; } = isin;
+        public string TimeSerieName { get; set; } = timeseriename;
     }
 }

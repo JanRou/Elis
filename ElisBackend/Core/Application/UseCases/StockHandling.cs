@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using ElisBackend.Core.Application.Dtos;
 using ElisBackend.Core.Domain.Abstractions;
 using ElisBackend.Core.Domain.Entities;
 using ElisBackend.Core.Domain.Entities.Filters;
@@ -10,10 +11,10 @@ namespace ElisBackend.Core.Application.UseCases {
     public interface IStockHandling
     {
         Task<IEnumerable<IStock>> Get(FilterStock filter);
-        Task<IStock> AddData(IStock stock, TimeSerie timeSerie);
         Task<IStock> Add(IStock stock);
         Task<bool> Delete(int id);
         Task<bool> Delete(string isin);
+        Task<StockDataOut> AddData(TimeSerie timeSerie);
     }
 
     public class StockHandling(IStockRepository repository, IMapper mapper) : IStockHandling {
@@ -28,10 +29,12 @@ namespace ElisBackend.Core.Application.UseCases {
             return mapper.Map<Stock>(addedStockDao);
         }
 
-
-        public async Task<IStock> AddData(IStock stock, TimeSerie timeSerie) {
-            // TODO brug repository til at tilføje tidsserie aktien
-            return stock;
+        // TODO overvej brugen af StockDataOut. Er navnet ok? Det kunne være TimeSerieOut.
+        // Burde StockDataOut være en core entity?
+        public async Task<StockDataOut> AddData(TimeSerie timeSerie) {
+            var timeSerieDao = mapper.Map<TimeSerieDao>(timeSerie);
+            int result = await repository.AddTimeSerie( timeSerie.Isin, timeSerieDao);
+            return new StockDataOut( timeSerie.Isin, timeSerie.Name, result);
         }
 
         public async Task<bool> Delete(int id) {

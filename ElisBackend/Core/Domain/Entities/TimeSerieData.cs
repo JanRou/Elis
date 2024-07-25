@@ -9,7 +9,7 @@ public interface ITimeSerieData
 
 public class TimeSerieData(DateTime date, decimal price, decimal volume) : ITimeSerieData
 {
-    public DateTime Date { get; private set; } = date;
-    public decimal Price { get; private set; } = price;
-    public decimal Volume { get; private set; } = volume;
+    public DateTime Date { get; set; } = date;
+    public decimal Price { get; set; } = price;
+    public decimal Volume { get; set; } = volume;
 }

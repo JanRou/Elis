@@ -66,9 +66,9 @@ namespace ElisBackendTest {
 
         [Fact]
         //[Theory, AutoData]
-        public void TimeSerieDataInToTimeSerieDataTest() {
+        public void TimeSerieDataInToTimeSerieDataArbitraryDateTimeTest() {
             // Arrange
-            var timeSerieDataIn = new TimeSerieDataIn("2024-07-24T14:48:00.000z", 100.0m, 1.0m);
+            var timeSerieDataIn = new TimeSerieDataIn("2024-07-24T14:48:00.000Z", 100.0m, 1.0m);
 
             // Act
             var result = _mapper.Map<TimeSerieData>(timeSerieDataIn);
@@ -78,6 +78,22 @@ namespace ElisBackendTest {
             Assert.Equal( timeSerieDataIn.Price, result.Price);
             Assert.Equal( timeSerieDataIn.Volume, result.Volume);
             Assert.Equal( timeSerieDataIn.Date, resultReverse.Date);
+        }
+
+        [Fact]
+        //[Theory, AutoData]
+        public void TimeSerieDataInToTimeSerieDataDateOnlyTest() {
+            // Arrange
+            var timeSerieDataIn = new TimeSerieDataIn("2024-07-24T00:00:00.000Z", 100.1m, 1.1m);
+
+            // Act
+            var result = _mapper.Map<TimeSerieData>(timeSerieDataIn);
+            var resultReverse = _mapper.Map<TimeSerieDataIn>(result);
+
+            // Assert
+            Assert.Equal(timeSerieDataIn.Price, result.Price);
+            Assert.Equal(timeSerieDataIn.Volume, result.Volume);
+            Assert.Equal(timeSerieDataIn.Date, resultReverse.Date);
         }
 
         //[Fact]

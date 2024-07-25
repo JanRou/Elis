@@ -26,14 +26,21 @@ namespace ElisBackend.Gateways.Repositories.Stock
         /// <returns>Stock added with ExchangeId and CurrencyId</returns>
         Task<StockDao> Add(StockDao stock);
 
-        Task<bool> DeleteStock(int id);
-
         /// <summary>
         /// Delete a stock identified by it's isin code
         /// </summary>
         /// <param name="isin">Code identifying the stock</param>
         /// <returns>True when deleted otherwise false</returns>
         Task<bool> DeleteStock(string isin);
+        Task<bool> DeleteStock(int id);
+
+        /// <summary>
+        /// Add a timeserie data to the stock identified by isin code.
+        /// </summary>
+        /// <param name="isin">Isin code for the stock</param>
+        /// <param name="timeSerie">TimeSerie to add</param>
+        /// <returns>Count of facts added to the time serie</returns>
+        Task<int> AddTimeSerie(string isin, TimeSerieDao timeSerie);
     }
 
     public class StockRepository(ElisContext db) : IStockRepository {
@@ -92,7 +99,7 @@ namespace ElisBackend.Gateways.Repositories.Stock
         }
 
         public async Task<bool> DeleteStock(int id) {
-            var stock = db.Stocks.Where<StockDao>(s => s.Id == id).FirstOrDefault();
+            var stock = db.Stocks.Where<StockDao>(s => s.Id == id).First();
 
             bool result = stock != null;
             if (result) {
@@ -104,7 +111,7 @@ namespace ElisBackend.Gateways.Repositories.Stock
         }
 
         public async Task<bool> DeleteStock(string isin) {
-            var stock = db.Stocks.Where<StockDao>(s => s.Isin == isin).FirstOrDefault();
+            var stock = db.Stocks.Where<StockDao>(s => s.Isin == isin).First();
 
             bool result = stock != null;
             if (result) {
@@ -115,9 +122,11 @@ namespace ElisBackend.Gateways.Repositories.Stock
             return result;
         }
 
-        //public async Task<IEnumerable<TimeSerieFactDao>> AddStockData(int stockId, ) {
+        public async Task<int> AddTimeSerie(string isin, TimeSerieDao timeSerie) {
+            timeSerie.StockId = db.Stocks.Where<StockDao>(s => s.Isin == isin).First().Id;
+            // TODO use Bulk insert or procedure using a temporary table and sql-merge
 
-
-        //}
+            return timeSerie.Facts.Count();
+        }
     }
 }
