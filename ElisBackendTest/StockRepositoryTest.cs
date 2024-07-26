@@ -1,4 +1,5 @@
 ﻿using ElisBackend.Core.Application.UseCases;
+using ElisBackend.Core.Domain.Entities;
 using ElisBackend.Core.Domain.Entities.Filters;
 using ElisBackend.Gateways.Dal;
 using ElisBackend.Gateways.Repositories.Daos;
@@ -79,6 +80,50 @@ namespace ElisBackendTest {
 
             // Assert delete
             Assert.True(deleteResult);
+        }
+
+        [Fact]
+        //[Theory]
+        public async Task DataCompareTest() {
+            // Arrange
+            var existingDateDao = new DateDao() {
+                Id = 1,
+                DateTimeUtc = new DateTime(2024, 07, 26, 00, 00, 00, DateTimeKind.Utc)
+            };
+            var dut = new StockRepository(Db);
+
+            // Act
+            var result = dut.GetDate(existingDateDao.Id);
+
+            // Assert
+            // use same comparison as in repository
+            Assert.True( existingDateDao.DateTimeUtc == result.DateTimeUtc);
+        }
+
+        [Fact]
+        //[Theory]
+        public async Task AddTimeSerieTest() {
+            // Arrange
+            var factDaos= new List<TimeSerieFactDao>() {
+                new TimeSerieFactDao() {
+                    Date = new DateDao() { DateTimeUtc=new DateTime(2024, 07, 24, 00,00,00, DateTimeKind.Utc) }
+                  , Price= 98.0m, Volume = 1.0m }
+              , new TimeSerieFactDao() {
+                    Date = new DateDao() { DateTimeUtc=new DateTime(2024, 07, 23, 00,00,00, DateTimeKind.Utc) }
+                  , Price = 97.0m, Volume = 1.0m }
+            };
+            var timeSerieDao = new TimeSerieDao() {
+                Name = "PricesAndVolumes",
+                Facts = factDaos
+            };
+            string isin = "DK0062498333"; // Novo
+            var dut = new StockRepository(Db);
+
+            // Act
+            var addresult = await dut.AddOrUpdateTimeSerieAddFacts(isin, timeSerieDao);
+
+            // Assert
+            Assert.True(addresult > 0);
         }
 
         //[Fact]

@@ -43,13 +43,27 @@ namespace ElisBackend
             CreateMap<TimeSerieDataIn, TimeSerieData>()
                 .ReverseMap()
                 ;
+            CreateMap<DateTime, DateDao>()
+                .ForMember(d => d.Id, o => o.Ignore())
+                .ForMember( d=>d.DateTimeUtc, o => o.MapFrom( s => s.Date))
+                .ForMember(d => d.Facts, o => o.Ignore())
+                .ReverseMap()
+                .ForMember(d => d.Date, o => o.MapFrom(s => s.DateTimeUtc))
+                ;
             CreateMap<TimeSerieData, TimeSerieFactDao>()
+                .ForMember( d => d.TimeSerieId, o => o.Ignore())
+                .ForMember(d => d.TimeSerie, o => o.Ignore())
+                .ForMember(d => d.DateId, o => o.Ignore())
                 .ReverseMap()
                 ;
             CreateMap<TimeSerie, TimeSerieDao>()
                 .ForMember( d => d.Facts, o => o.MapFrom( s => s.TimeSerieData))
+                .ForMember(d => d.Id, o => o.Ignore())
+                .ForMember(d => d.StockId, o => o.Ignore())
+                .ForMember(d => d.Stock, o => o.Ignore())
                 .ReverseMap()
                 .ForMember(d => d.TimeSerieData, o => o.MapFrom(s => s.Facts))
+                .ForMember(d => d.Isin, o => o.MapFrom(s => s.Stock.Isin))
                 ;
 
         }

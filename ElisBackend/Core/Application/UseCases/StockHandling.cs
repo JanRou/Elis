@@ -33,7 +33,7 @@ namespace ElisBackend.Core.Application.UseCases {
         // Burde StockDataOut være en core entity?
         public async Task<StockDataOut> AddData(TimeSerie timeSerie) {
             var timeSerieDao = mapper.Map<TimeSerieDao>(timeSerie);
-            int result = await repository.AddTimeSerie( timeSerie.Isin, timeSerieDao);
+            int result = await repository.AddOrUpdateTimeSerieAddFacts( timeSerie.Isin, timeSerieDao);
             return new StockDataOut( timeSerie.Isin, timeSerie.Name, result);
         }
 

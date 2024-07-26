@@ -2,7 +2,7 @@
 
 namespace ElisBackend.Gateways.Repositories.Daos {
     public class TimeSerieDao {
-        public int Id { get; set; }
+        public int Id { get; set; } = 0;
         public string Name { get; set; }
 
         [ForeignKey("Stock")]

@@ -96,6 +96,28 @@ namespace ElisBackendTest {
             Assert.Equal(timeSerieDataIn.Date, resultReverse.Date);
         }
 
+        [Fact]
+        //[Theory, AutoData]
+        public void TimeSerieToTimeSerieDaoTest() {
+            // Arrange
+            var timeSerieData = new List<TimeSerieData>() {
+                new TimeSerieData( new DateTime(2024, 07, 26, 00,00,00, DateTimeKind.Utc), 100.0m, 1.0m)
+              , new TimeSerieData( new DateTime(2024, 07, 25, 00,00,00, DateTimeKind.Utc), 99.0m, 1.0m)
+            };
+            var timeSerie = new TimeSerie( "PricesAndVolumes", "123456", timeSerieData );
+
+            // Act
+            var result = _mapper.Map<TimeSerieDao>(timeSerie);
+
+            // Assert
+            Assert.Equal(timeSerie.Name, result.Name );
+            Assert.NotNull(result.Facts);
+            var facts = result.Facts.ToList();
+            Assert.Equal(2, facts.Count);
+            Assert.Equal(100.0m, facts[0].Price);
+            Assert.Equal(1.0m, facts[0].Volume);
+        }
+
         //[Fact]
         ////[Theory, AutoData]
         //public void Test() {

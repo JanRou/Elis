@@ -6,6 +6,7 @@ using ElisBackend.Gateways.Dal;
 using ElisBackend.Gateways.Repositories.Daos;
 using Microsoft.EntityFrameworkCore;
 using Npgsql;
+using System.Linq;
 
 namespace ElisBackend.Gateways.Repositories.Stock
 {
@@ -40,7 +41,7 @@ namespace ElisBackend.Gateways.Repositories.Stock
         /// <param name="isin">Isin code for the stock</param>
         /// <param name="timeSerie">TimeSerie to add</param>
         /// <returns>Count of facts added to the time serie</returns>
-        Task<int> AddTimeSerie(string isin, TimeSerieDao timeSerie);
+        Task<int> AddOrUpdateTimeSerieAddFacts(string isin, TimeSerieDao timeSerie);
     }
 
     public class StockRepository(ElisContext db) : IStockRepository {
@@ -71,7 +72,9 @@ namespace ElisBackend.Gateways.Repositories.Stock
         }
 
         public async Task<StockDao> Add(StockDao stock) {
-            // TODO try - catch
+            // TODO Dette bør gøres i en procedure, fordi man kan bruge SQL-merge konstruktionen.
+            // I SQL-merge kan man indsætte manglende exchange og valuta. Eller man
+            // kan opdatere aktie oplysninger.
             stock.ExchangeId = GetExchangeId(stock);
             stock.CurrencyId = GetCurrencyId(stock);
             // Reset exchange and currency in stock, so EF doesn't create new exchange and currency entries
@@ -122,11 +125,52 @@ namespace ElisBackend.Gateways.Repositories.Stock
             return result;
         }
 
-        public async Task<int> AddTimeSerie(string isin, TimeSerieDao timeSerie) {
+        public async Task<int> AddOrUpdateTimeSerieAddFacts(string isin, TimeSerieDao timeSerie) {
+            // TODO Dette bør gøres i en procedure, fordi man kan bruge SQL-merge konstruktionen.
+            // I SQL-merge kan man indsætte manglende datoer, manglende tidsserie og fakta. Eller man
+            // kan opdatere pris og volume på eksisterende tidsserie-fakta.
             timeSerie.StockId = db.Stocks.Where<StockDao>(s => s.Isin == isin).First().Id;
-            // TODO use Bulk insert or procedure using a temporary table and sql-merge
+            int timeSerieId = GetOrAddTimeSerieId(timeSerie);
+            foreach (var fact in timeSerie.Facts) {
+                fact.TimeSerieId = timeSerieId;
+                fact.DateId = GetOrAddDateId(fact);
+                db.Add(fact);
+            }
 
-            return timeSerie.Facts.Count();
+            return await db.SaveChangesAsync();
+        }
+
+        // public for unit test
+        public int GetOrAddDateId(TimeSerieFactDao fact) {
+            if (db.Dates.Any(d => d.DateTimeUtc == fact.Date.DateTimeUtc)) {
+                fact.DateId = db.Dates.Where(d => d.DateTimeUtc == fact.Date.DateTimeUtc).First().Id;
+                // Reset Date to prevent EF to add existing dates
+                fact.Date = null;
+            }
+            // TODO det gør EF helt af sig selv
+            //else {
+            //    // Date is missing
+            //    db.Add(fact.Date);                
+            //}
+            return fact.Date.Id;
+        }
+
+        // public for unit test
+        public int GetOrAddTimeSerieId(TimeSerieDao timeSerie) {
+            if (db.TimeSeries.Any(t => t.StockId == timeSerie.StockId && t.Name == timeSerie.Name)) {
+                // TimeSerie exist, get id
+                timeSerie.Id = db.TimeSeries.Where<TimeSerieDao>(t =>
+                            t.StockId == timeSerie.StockId && t.Name == timeSerie.Name).First().Id;
+            }
+            else {
+                // TimeSerie doesn't exist, add it
+                db.Add(timeSerie);
+            }
+            return timeSerie.Id;
+        }
+
+        public DateDao GetDate(int id) {
+            return db.Dates.Where<DateDao>(d => d.Id == id).First();
         }
     }
 }
