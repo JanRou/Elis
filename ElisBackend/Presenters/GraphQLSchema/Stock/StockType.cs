@@ -10,10 +10,8 @@ using MediatR;
 
 namespace ElisBackend.Presenters.GraphQLSchema.Stock
 {
-    public class StockType : ObjectGraphType<IStock>
-    {
-        public StockType()
-        {
+    public class StockType : ObjectGraphType<IStock> {
+        public StockType() {
             Description = "Basic stock information";
             Field(s => s.Name).Description("The name of the stock");
             Field(s => s.Isin).Description("The ISIN code for the stock");
@@ -28,10 +26,17 @@ namespace ElisBackend.Presenters.GraphQLSchema.Stock
         }
     }
 
-    public class StocksType : ObjectGraphType
-    {
-        public StocksType()
-        {
+    public class StockDataResultType : ObjectGraphType<StockDataOut> {
+        public StockDataResultType() {
+            Description = "Result of adding timeserie data to stock";
+            Field(s => s.Isin).Description("The ISIN code for the stock");
+            Field(s => s.TimeSerieName).Description("Name of timeserie added or updated with data");
+            Field(s => s.CountTimeSerieFacts).Description("Number of data facts added to timeserie");
+        }
+    }
+
+    public class StocksType : ObjectGraphType {
+        public StocksType() {
             Field<ListGraphType<StockType>>("stocks")
                 .Argument<StringGraphType>("isin")
                 .Argument<StringGraphType>("name")
@@ -56,10 +61,8 @@ namespace ElisBackend.Presenters.GraphQLSchema.Stock
         }
     }
 
-    public class StockInputType : InputObjectGraphType<StockIn>
-    {
-        public StockInputType()
-        {
+    public class StockInputType : InputObjectGraphType<StockIn> {
+        public StockInputType() {
             Name = "StockInput";
             Field<NonNullGraphType<StringGraphType>>("name");
             Field<NonNullGraphType<StringGraphType>>("isin");
@@ -68,10 +71,8 @@ namespace ElisBackend.Presenters.GraphQLSchema.Stock
         }
     }
 
-    public class TimeSerieDataInput : InputObjectGraphType<TimeSerieDataIn>
-    {
-        public TimeSerieDataInput()
-        {
+    public class TimeSerieDataInput : InputObjectGraphType<TimeSerieDataIn> {
+        public TimeSerieDataInput() {
             Name = "TimeSerieDataInput";
             Field<NonNullGraphType<StringGraphType>>("date")
                 .Description("Date in UTC ISO 8601 format: '2024-07-24T00:00:00.000Z'");
@@ -79,20 +80,16 @@ namespace ElisBackend.Presenters.GraphQLSchema.Stock
             Field<NonNullGraphType<DecimalGraphType>>("volume").Description("Volume as decimal");
         }
     }
-    public class StockDataInputType : InputObjectGraphType<StockDataIn>
-    {
-        public StockDataInputType()
-        {
+    public class StockDataInputType : InputObjectGraphType<StockDataIn> {
+        public StockDataInputType() {
             Name = "StockDataInput";
             Field<NonNullGraphType<StringGraphType>>("isin").Description("Stock identification");
             Field<NonNullGraphType<StringGraphType>>("timeseriename").Description("Name of the timeseries usually 'PricesAndVolumes'");
         }
     }
 
-    public class StockMutationType : ObjectGraphType
-    {
-        public StockMutationType()
-        {
+    public class StockMutationType : ObjectGraphType {
+        public StockMutationType() {
             Field<StockType>("create")
                 .Argument<NonNullGraphType<StockInputType>>("stock")
                 .ResolveAsync(async ctx =>
@@ -109,7 +106,7 @@ namespace ElisBackend.Presenters.GraphQLSchema.Stock
                     var mediator = ctx.RequestServices.GetService<IMediator>();
                     return await mediator.Send(new DeleteStock(isin));
                 });
-            Field<StockType>("adddata")
+            Field<StockDataResultType>("adddata")
                 .Argument<NonNullGraphType<StockDataInputType>>("StockDataInput")
                 .Argument<NonNullGraphType<ListGraphType<TimeSerieDataInput>>>("TimeSerieDataInput")
                 .ResolveAsync(async ctx => {
