@@ -102,15 +102,15 @@ namespace ElisBackendTest {
 
         [Fact]
         //[Theory]
-        public async Task AddTimeSerieTest() {
+        public async Task AddOrUpdateTimeSerieAddFactsTest() {
             // Arrange
             var factDaos= new List<TimeSerieFactDao>() {
                 new TimeSerieFactDao() {
-                    Date = new DateDao() { DateTimeUtc=new DateTime(2024, 07, 24, 00,00,00, DateTimeKind.Utc) }
-                  , Price= 98.0m, Volume = 1.0m }
+                    Date = new DateDao() { DateTimeUtc=new DateTime(1980, 11, 18, 00,00,00, DateTimeKind.Utc) }
+                  , Price= 19801118.0m, Volume = 1.0m }
               , new TimeSerieFactDao() {
-                    Date = new DateDao() { DateTimeUtc=new DateTime(2024, 07, 23, 00,00,00, DateTimeKind.Utc) }
-                  , Price = 97.0m, Volume = 1.0m }
+                    Date = new DateDao() { DateTimeUtc=new DateTime(1980, 11, 17, 00,00,00, DateTimeKind.Utc) }
+                  , Price = 19801117.0m, Volume = 1.0m }
             };
             var timeSerieDao = new TimeSerieDao() {
                 Name = "PricesAndVolumes",
@@ -121,9 +121,11 @@ namespace ElisBackendTest {
 
             // Act
             var addresult = await dut.AddOrUpdateTimeSerieAddFacts(isin, timeSerieDao);
+            var deleteResult = await dut.DeleteFacts(isin, timeSerieDao);
 
             // Assert
             Assert.True(addresult > 0);
+            Assert.True(deleteResult);
         }
 
         //[Fact]

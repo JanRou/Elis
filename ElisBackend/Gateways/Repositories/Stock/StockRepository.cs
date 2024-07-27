@@ -1,4 +1,5 @@
 ﻿using ElisBackend.Core.Application.Queries;
+using ElisBackend.Core.Domain.Abstractions;
 using ElisBackend.Core.Domain.Entities;
 using ElisBackend.Core.Domain.Entities.Filters;
 using ElisBackend.Extensions;
@@ -40,7 +41,7 @@ namespace ElisBackend.Gateways.Repositories.Stock
         /// </summary>
         /// <param name="isin">Isin code for the stock</param>
         /// <param name="timeSerie">TimeSerie to add</param>
-        /// <returns>Count of facts added to the time serie</returns>
+        /// <returns>List of fact ids added</returns>
         Task<int> AddOrUpdateTimeSerieAddFacts(string isin, TimeSerieDao timeSerie);
     }
 
@@ -126,51 +127,92 @@ namespace ElisBackend.Gateways.Repositories.Stock
         }
 
         public async Task<int> AddOrUpdateTimeSerieAddFacts(string isin, TimeSerieDao timeSerie) {
-            // TODO Dette bør gøres i en procedure, fordi man kan bruge SQL-merge konstruktionen.
+            // TODO Dette bør gøres i en procedure, fordi man kan bruge SQL-merge og
+            // en tabel til at overføre hele tidsserien i et kald til databasen.
             // I SQL-merge kan man indsætte manglende datoer, manglende tidsserie og fakta. Eller man
-            // kan opdatere pris og volume på eksisterende tidsserie-fakta.
+            // kan opdatere pris og volume på eksisterende tidsserie og datoer.
+            var result = new List<int>();
             timeSerie.StockId = db.Stocks.Where<StockDao>(s => s.Isin == isin).First().Id;
             int timeSerieId = GetOrAddTimeSerieId(timeSerie);
+            int count = 0;
             foreach (var fact in timeSerie.Facts) {
                 fact.TimeSerieId = timeSerieId;
-                fact.DateId = GetOrAddDateId(fact);
+                SetDateId(fact);
                 db.Add(fact);
+                count++;
             }
+            await db.SaveChangesAsync();
 
-            return await db.SaveChangesAsync();
+            return count;
         }
 
-        // public for unit test
-        public int GetOrAddDateId(TimeSerieFactDao fact) {
-            if (db.Dates.Any(d => d.DateTimeUtc == fact.Date.DateTimeUtc)) {
-                fact.DateId = db.Dates.Where(d => d.DateTimeUtc == fact.Date.DateTimeUtc).First().Id;
-                // Reset Date to prevent EF to add existing dates
+        private int GetDateId(DateTime date) {
+            int result = 0;
+            if (db.Dates.Any(d => d.DateTimeUtc == date)) {
+                 result = db.Dates.Where(d => d.DateTimeUtc == date).First().Id;
+            }
+
+            return result;
+        }
+
+        private void SetDateId(TimeSerieFactDao fact) {
+            int dateId = GetDateId(fact.Date.DateTimeUtc);
+            if (dateId != 0) {
+                fact.DateId = dateId;
+                // Reset Date to prevent EF to add duplets of dates
                 fact.Date = null;
             }
-            // TODO det gør EF helt af sig selv
-            //else {
-            //    // Date is missing
-            //    db.Add(fact.Date);                
-            //}
-            return fact.Date.Id;
         }
 
-        // public for unit test
-        public int GetOrAddTimeSerieId(TimeSerieDao timeSerie) {
+        private int GetTimeSerieId(TimeSerieDao timeSerie) {
+            int result = 0;
             if (db.TimeSeries.Any(t => t.StockId == timeSerie.StockId && t.Name == timeSerie.Name)) {
                 // TimeSerie exist, get id
-                timeSerie.Id = db.TimeSeries.Where<TimeSerieDao>(t =>
-                            t.StockId == timeSerie.StockId && t.Name == timeSerie.Name).First().Id;
+                result = db.TimeSeries.Where<TimeSerieDao>(t => 
+                        t.StockId == timeSerie.StockId && t.Name == timeSerie.Name).First().Id;                
             }
-            else {
-                // TimeSerie doesn't exist, add it
-                db.Add(timeSerie);
-            }
-            return timeSerie.Id;
+            return result;
         }
 
+        private int GetOrAddTimeSerieId(TimeSerieDao timeSerie) {
+            int result = GetTimeSerieId(timeSerie);
+            if (result == 0) { 
+                // TimeSerie doesn't exist, add it
+                db.Add(timeSerie);
+                result =timeSerie.Id;  
+            }
+            return result;
+        }
+
+        // For unit test
         public DateDao GetDate(int id) {
             return db.Dates.Where<DateDao>(d => d.Id == id).First();
+        }
+
+        // To clean up after unit tests
+        public async Task<bool> DeleteFacts(string isin, TimeSerieDao timeSerie) {
+            bool result = false;
+            timeSerie.StockId = db.Stocks.Where<StockDao>(s => s.Isin == isin).First().Id;
+            int timeSerieId = GetTimeSerieId(timeSerie);
+            result = timeSerieId != 0;
+            if (result) {
+                foreach (var fact in timeSerie.Facts) {
+                    int dateId = GetDateId(fact.Date.DateTimeUtc);
+                    result = dateId != 0;
+                    if (!result) {
+                        break;
+                    }
+                    var factToRemove = db.TimeSerieFacts.Where<TimeSerieFactDao>( f => 
+                                                    f.TimeSerieId==timeSerieId && f.DateId==dateId).First();
+                    db.Remove(factToRemove);
+                }
+            }
+
+            if (result) {
+                await db.SaveChangesAsync();
+            }
+
+            return result;
         }
     }
 }
