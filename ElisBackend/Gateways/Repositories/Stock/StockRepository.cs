@@ -131,19 +131,19 @@ namespace ElisBackend.Gateways.Repositories.Stock
             // en tabel til at overføre hele tidsserien i et kald til databasen.
             // I SQL-merge kan man indsætte manglende datoer, manglende tidsserie og fakta. Eller man
             // kan opdatere pris og volume på eksisterende tidsserie og datoer.
-            var result = new List<int>();
             timeSerie.StockId = db.Stocks.Where<StockDao>(s => s.Isin == isin).First().Id;
             int timeSerieId = GetOrAddTimeSerieId(timeSerie);
-            int count = 0;
+            int result = 0;
+            // TODO Linq?
             foreach (var fact in timeSerie.Facts) {
                 fact.TimeSerieId = timeSerieId;
                 SetDateId(fact);
                 db.Add(fact);
-                count++;
+                result++;
             }
             await db.SaveChangesAsync();
 
-            return count;
+            return result;
         }
 
         private int GetDateId(DateTime date) {

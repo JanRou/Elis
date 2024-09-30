@@ -51,7 +51,7 @@ namespace ElisBackendTest {
         [Fact]
         public void StockToStockDaoTest() {
             // Arrange
-            var stock = new Stock( "Dummy AB", "DK0099999999", new Exchange( "Børs", "DK", "http://localhost") 
+            var stock = new Stock( "Dummy AB", "DK0099999999", "CSE123456", new Exchange( "Børs", "DK", "http://localhost") 
                 , new Currency("Norske kroner", "NKK") );
 
             // Act

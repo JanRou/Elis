@@ -49,7 +49,7 @@ namespace ElisBackendTest {
                                 , Exchange = new ExchangeDao() { Id=1, Name = "Exchange", Country="Danmark", Url= "http:localhost" }
                                 , Currency = new CurrencyDao() { Id=1, Name = "Danske kroner", Code="DKK"}
                             };
-            var stock = new Stock( "Test", "123456789"
+            var stock = new Stock( "Test", "123456789", "CSE123456"
                 , new Exchange( "Exchange", null, null)
                 , new Currency( null, "DKK") );
             repositoryMock.Setup(r => r.Add(It.IsAny<StockDao>())).ReturnsAsync(dao);

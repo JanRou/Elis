@@ -15,6 +15,7 @@ namespace ElisBackend.Presenters.GraphQLSchema.Stock
             Description = "Basic stock information";
             Field(s => s.Name).Description("The name of the stock");
             Field(s => s.Isin).Description("The ISIN code for the stock");
+            Field(s => s.InstrumentCode).Description("The instrument code for the stock");
             Field("exchange", s => s.Exchange.Name).Description("The exchange name for the stock");
             Field("currency", s => s.Currency.Code).Description("The currency code for the stock");
             // TODO time series of price and volume
@@ -42,7 +43,7 @@ namespace ElisBackend.Presenters.GraphQLSchema.Stock
                 .Argument<StringGraphType>("name")
                 .Argument<StringGraphType>("exchange")
                 .Argument<StringGraphType>("currency")
-                .Argument<IntGraphType>("take")  // DRY - don't repeat yorself
+                .Argument<IntGraphType>("take")
                 .Argument<IntGraphType>("skip")
                 .ResolveAsync(async context =>
                 {
@@ -66,6 +67,7 @@ namespace ElisBackend.Presenters.GraphQLSchema.Stock
             Name = "StockInput";
             Field<NonNullGraphType<StringGraphType>>("name");
             Field<NonNullGraphType<StringGraphType>>("isin");
+            Field<NonNullGraphType<StringGraphType>>("instrumentcode");
             Field<NonNullGraphType<StringGraphType>>("exchangename");
             Field<NonNullGraphType<StringGraphType>>("currencycode");
         }

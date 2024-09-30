@@ -39,14 +39,10 @@ builder.Services.AddSwaggerGen();
 // ElisDb med EntityFramework Core med PostgreSQL
 builder.Services.AddDbContext<ElisContext>(options => 
     options.UseNpgsql(builder.Configuration.GetConnectionString("ElisDb")));
-// TODO .UseSnakeCaseNamingConvention()
 
 builder.Services.AddHealthChecks().AddDbContextCheck<ElisContext>();
 
-// Opret ExchangeService og registrer børs api'er 
-// TODO
-
-// Tillad alt for CORS
+// TODO Restrict how ever for now allow every call regarding CORS
 builder.Services.AddCors(options => {
     options.AddPolicy(
         name: "default",

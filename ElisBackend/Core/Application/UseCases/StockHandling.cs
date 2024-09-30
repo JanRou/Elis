@@ -44,6 +44,5 @@ namespace ElisBackend.Core.Application.UseCases {
         public async Task<bool> Delete(string isin) {
             return await repository.DeleteStock(isin);
         }
-
     }
 }

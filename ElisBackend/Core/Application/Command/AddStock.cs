@@ -15,7 +15,7 @@ namespace ElisBackend.Core.Application.Command
         public async Task<IStock> Handle(AddStock request, CancellationToken cancellationToken) {
             var exchange = new Exchange(request.StockIn.ExchangeName, "", ""); // Refer to exchange by name
             var currency = new Currency("", request.StockIn.CurrencyCode);     // Refer to currency by code
-            var stock = new Stock(request.StockIn.Name, request.StockIn.Isin, exchange, currency);
+            var stock = new Stock(request.StockIn.Name, request.StockIn.Isin, request.StockIn.InstrumentCode, exchange, currency);
             return await stockHandling.Add(stock);
         }
     }
