@@ -1,5 +1,6 @@
 using AutoMapper;
 using ElisBackend;
+using ElisBackend.Core.Application.Dtos;
 using ElisBackend.Core.Application.UseCases;
 using ElisBackend.Core.Domain.Entities;
 using ElisBackend.Core.Domain.Entities.Filters;
@@ -35,6 +36,7 @@ namespace ElisBackendTest {
             var result = await dut.Get(filter);
 
             // Assert
+            repositoryMock.Verify();
             Assert.NotNull(result);
             Assert.NotEmpty(result);
             var resultList = result.ToList();
@@ -60,6 +62,7 @@ namespace ElisBackendTest {
             var result = await dut.Add(stock);
 
             // Assert
+            repositoryMock.Verify();
             Assert.NotNull(result);
             Assert.Equal("Test", result.Name);
             Assert.Equal("123456789", result.Isin);
@@ -67,17 +70,35 @@ namespace ElisBackendTest {
             Assert.Equal("DKK", result.Currency.Code);
         }
 
-        //[Fact]
-        ////[Theory]
-        //public void Test() {
-        //    // Arrange
+        [Fact]
+        //[Theory]
+        public async Task AddDataOkTest() {
+            // Arrange
+            int expectedCount = 1;
+            string timeSerieName = "PriceAndVolume";
+            string isin = "123456";
 
-        //    // Act
+            var repositoryMock = new Mock<IStockRepository>();
+            repositoryMock.Setup(r => r.AddOrUpdateTimeSerieAddFacts(It.IsAny<string>(), It.IsAny<TimeSerieDao>()))
+                .ReturnsAsync(expectedCount);
+            var timeSerieData = new List<TimeSerieData>() {
+                new TimeSerieData( DateTime.UtcNow, 100.0m, 1000.0m),
+            };
+            var timeSerie = new TimeSerie( timeSerieName, isin, timeSerieData);
 
-        //    // Assert
+            var dut = new StockHandling(repositoryMock.Object, _mapper);
 
-        //}
+            // Act
+            StockDataOut result = await dut.AddData(timeSerie);
 
+            // Assert
+            repositoryMock.Verify();
+            Assert.NotNull(result);
+            Assert.Equal(timeSerieName, result.TimeSerieName);
+            Assert.Equal(isin, result.Isin);
+            Assert.Equal(expectedCount, result.CountTimeSerieFacts);
+            Assert.Contains("Ok", result.Status);
+        }
     }
 
 }

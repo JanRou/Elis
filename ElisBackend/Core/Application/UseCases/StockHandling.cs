@@ -29,12 +29,44 @@ namespace ElisBackend.Core.Application.UseCases {
             return mapper.Map<Stock>(addedStockDao);
         }
 
-        // TODO overvej brugen af StockDataOut. Er navnet ok? Det kunne være TimeSerieOut.
-        // Burde StockDataOut være en core entity?
         public async Task<StockDataOut> AddData(TimeSerie timeSerie) {
-            var timeSerieDao = mapper.Map<TimeSerieDao>(timeSerie);
-            int result = await repository.AddOrUpdateTimeSerieAddFacts( timeSerie.Isin, timeSerieDao);
-            return new StockDataOut( timeSerie.Isin, timeSerie.Name, result);
+            ( bool isOk, string status) = Validate(timeSerie);
+            int result = 0;
+            if (isOk) {
+                var timeSerieDao = mapper.Map<TimeSerieDao>(timeSerie);
+                result = await repository.AddOrUpdateTimeSerieAddFacts(timeSerie.Isin, timeSerieDao);
+            }
+
+            return new StockDataOut( timeSerie.Isin, timeSerie.Name, result, status);
+        }
+
+        // TODO could validate all, now it stops at first error
+        private (bool,string) Validate(TimeSerie timeSerie) {            
+            (bool isOk ,string status) result = ValidateData((timeSerie));
+            result = result.isOk ? ValidateDates(timeSerie) : result;
+
+            return result;
+        }
+
+        private (bool,string) ValidateDates(TimeSerie timeSerie) {
+            (bool isOk, string status) = (true, "Ok");
+            for (int i = 0; isOk && i + 1 < timeSerie.TimeSerieData.Count; i++) {
+                // check that the i'the date is before the next date
+                isOk = timeSerie.TimeSerieData[i].Date.CompareTo(timeSerie.TimeSerieData[i + 1].Date) < 0;
+            }
+            if (!isOk) {
+                status = "Error, dates are no consecutive with latest first";
+            }
+            return (isOk, status);
+        }
+
+        private (bool,string) ValidateData(TimeSerie timeSerie) {
+            (bool isOk, string status) = (true, "Ok");
+            isOk = !(string.IsNullOrEmpty(timeSerie.Isin) || string.IsNullOrEmpty(timeSerie.Name));
+            if (!isOk) {
+                status = "Error, Isin or Name are missing.";
+            }
+            return ( isOk, status);
         }
 
         public async Task<bool> Delete(int id) {

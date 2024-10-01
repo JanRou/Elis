@@ -8,6 +8,7 @@ using ElisBackend.Gateways.Repositories.Daos;
 using Microsoft.EntityFrameworkCore;
 using Npgsql;
 using System.Linq;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace ElisBackend.Gateways.Repositories.Stock
 {
@@ -41,7 +42,7 @@ namespace ElisBackend.Gateways.Repositories.Stock
         /// </summary>
         /// <param name="isin">Isin code for the stock</param>
         /// <param name="timeSerie">TimeSerie to add</param>
-        /// <returns>List of fact ids added</returns>
+        /// <returns>Count of facts added</returns>
         Task<int> AddOrUpdateTimeSerieAddFacts(string isin, TimeSerieDao timeSerie);
     }
 
@@ -125,22 +126,39 @@ namespace ElisBackend.Gateways.Repositories.Stock
 
             return result;
         }
-
+        
         public async Task<int> AddOrUpdateTimeSerieAddFacts(string isin, TimeSerieDao timeSerie) {
-            // TODO Dette bør gøres i en procedure, fordi man kan bruge SQL-merge og
-            // en tabel til at overføre hele tidsserien i et kald til databasen.
-            // I SQL-merge kan man indsætte manglende datoer, manglende tidsserie og fakta. Eller man
-            // kan opdatere pris og volume på eksisterende tidsserie og datoer.
             timeSerie.StockId = db.Stocks.Where<StockDao>(s => s.Isin == isin).First().Id;
             int timeSerieId = GetOrAddTimeSerieId(timeSerie);
+            
             int result = 0;
-            // TODO Linq?
+
             foreach (var fact in timeSerie.Facts) {
-                fact.TimeSerieId = timeSerieId;
-                SetDateId(fact);
-                db.Add(fact);
-                result++;
+                
+                fact.DateId = GetDateId(fact.Date.DateTimeUtc);
+                fact.Date.Id = fact.DateId;
+                if (fact.DateId != 0) {
+                    HER TIL  Den anden dato fejler da den er attached det er det første bare ikke
+                    db.Dates.Attach(fact.Date); // Prevent creating a new date entry
+                }
+
+                // Get existing fact at existing date, otherwise no existing fact thus null
+                var existingFact = fact.DateId != 0 ? db.TimeSerieFacts.Find( timeSerieId, fact.DateId) : null;
+
+                if (existingFact != null) {
+                    // Update existing with new price and volue for the date
+                    existingFact.Price = fact.Price;
+                    existingFact.Volume = fact.Volume;
+                    db.Update(existingFact);
+                }
+                else {
+                    // Add new fact and may be new date when DateId is null and Date is not null
+                    fact.TimeSerieId = timeSerieId;
+                    db.Add(fact);
+                    result++;
+                }
             }
+
             await db.SaveChangesAsync();
 
             return result;
@@ -149,19 +167,11 @@ namespace ElisBackend.Gateways.Repositories.Stock
         private int GetDateId(DateTime date) {
             int result = 0;
             if (db.Dates.Any(d => d.DateTimeUtc == date)) {
-                 result = db.Dates.Where(d => d.DateTimeUtc == date).First().Id;
+                var existingDate = db.Dates.Where(d => d.DateTimeUtc == date).First();
+                result = existingDate.Id;
             }
 
             return result;
-        }
-
-        private void SetDateId(TimeSerieFactDao fact) {
-            int dateId = GetDateId(fact.Date.DateTimeUtc);
-            if (dateId != 0) {
-                fact.DateId = dateId;
-                // Reset Date to prevent EF to add duplets of dates
-                fact.Date = null;
-            }
         }
 
         private int GetTimeSerieId(TimeSerieDao timeSerie) {
@@ -178,9 +188,10 @@ namespace ElisBackend.Gateways.Repositories.Stock
             int result = GetTimeSerieId(timeSerie);
             if (result == 0) { 
                 // TimeSerie doesn't exist, add it
-                db.Add(timeSerie);
-                result =timeSerie.Id;  
+                db.Add(timeSerie); 
+                result =timeSerie.Id;
             }
+
             return result;
         }
 
@@ -189,7 +200,7 @@ namespace ElisBackend.Gateways.Repositories.Stock
             return db.Dates.Where<DateDao>(d => d.Id == id).First();
         }
 
-        // To clean up after unit tests
+        // Used to clean up after unit tests
         public async Task<bool> DeleteFacts(string isin, TimeSerieDao timeSerie) {
             bool result = false;
             timeSerie.StockId = db.Stocks.Where<StockDao>(s => s.Isin == isin).First().Id;
@@ -207,12 +218,21 @@ namespace ElisBackend.Gateways.Repositories.Stock
                     db.Remove(factToRemove);
                 }
             }
-
             if (result) {
                 await db.SaveChangesAsync();
             }
 
             return result;
+        }
+
+        // TODO Dette er noget hø, hvis man vil have meget meget lange aktie-data
+        public async Task<bool> DeleteDatesBefore1981() {
+            var datesToRemove = db.Dates.Where<DateDao>(d => d.DateTimeUtc < new DateTime(1981, 1, 1));
+            foreach (var dateToRemove in datesToRemove) {
+                db.Remove<DateDao>(dateToRemove);
+            }
+            var result = await db.SaveChangesAsync();
+            return result != 0;
         }
     }
 }

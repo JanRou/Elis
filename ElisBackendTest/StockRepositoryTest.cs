@@ -3,6 +3,7 @@ using ElisBackend.Gateways.Dal;
 using ElisBackend.Gateways.Repositories.Daos;
 using ElisBackend.Gateways.Repositories.Stock;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using Npgsql.Replication.PgOutput.Messages;
 using System.ComponentModel;
 
@@ -65,7 +66,7 @@ namespace ElisBackendTest {
                   , Price = 19801117.0m, Volume = 1.0m }
             };
             var timeSerieDao = new TimeSerieDao() {
-                Name = "PricesAndVolumes",
+                Name = "PriceAndVolume",
                 Facts = factDaos
             };
             var dut = new StockRepository(Db);
@@ -78,13 +79,16 @@ namespace ElisBackendTest {
             // Act
             var addresult = await dut.AddOrUpdateTimeSerieAddFacts(isin, timeSerieDao);
             var deleteResult = await dut.DeleteFacts(isin, timeSerieDao);
+
             // Clean up
             var deleteStock = await dut.DeleteStock(stock.Isin);
+            var deleteDates = await dut.DeleteDatesBefore1981();
 
             // Assert
             Assert.True(addresult > 0);
             Assert.True(deleteResult);
             Assert.True(deleteStock);
+            Assert.True(deleteDates);
         }
 
         [Fact]
@@ -217,7 +221,9 @@ namespace ElisBackendTest {
                     Db = new ElisContext(
                             new DbContextOptionsBuilder<ElisContext>()
                                 .UseNpgsql("Host=localhost;Port=5432;Username=postgres;Password=31ishoj14!;Database=Elis")
-                                .Options);
+                                .LogTo( Console.WriteLine, LogLevel.Information)
+                                .Options
+                                );
                 }
             }
         }
