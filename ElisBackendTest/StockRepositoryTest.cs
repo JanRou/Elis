@@ -38,10 +38,11 @@ namespace ElisBackendTest {
         [Fact]
         //[Theory]
         public async Task DataCompareTest() {
+            // Tø-hø test ...
             // Arrange
             var existingDateDao = new DateDao() {
-                Id = 1,
-                DateTimeUtc = new DateTime(2024, 07, 26, 00, 00, 00, DateTimeKind.Utc)
+                Id = 586,
+                DateTimeUtc = new DateTime(1980, 11, 17, 00, 00, 00, DateTimeKind.Utc)
             };
             var dut = new StockRepository(Db);
 
@@ -55,40 +56,88 @@ namespace ElisBackendTest {
 
         [Fact]
         //[Theory]
-        public async Task AddOrUpdateTimeSerieAddFactsTest() {
+        public async Task CrudTimeSerieFactsTest() {
+            // The test performs a CRUD with two sets of timeserie facts for the same timeserie. The first
+            // fact set is added, then the second fact set is updating the first. Finally is the facts
+            // deleted. In between is the facts retrieved.
+            // The sets of timeserie facts are set up in two timeseries, with the same name thus
+            // it become the same timeserie for the stock, Novo. The second set of facts has same dates
+            // as the first, so the second update the facts of the first set. The volume is updated.
+            // Precondition Nove is in the database.
+
             // Arrange
-            var factDaos= new List<TimeSerieFactDao>() {
-                new TimeSerieFactDao() {
-                    Date = new DateDao() { DateTimeUtc=new DateTime(1980, 11, 18, 00,00,00, DateTimeKind.Utc) }
-                  , Price= 19801118.0m, Volume = 1.0m }
-              , new TimeSerieFactDao() {
+            string isin = "DK0062498333"; // Novo
+            string timeSerieName = "PriceAndVolume";
+            decimal price1 = 19801117.0m;
+            decimal price2 = 19801117.0m;
+            decimal volume1 = 1.0m;
+            decimal volume2 = 2.0m;
+            DateTime start = new DateTime(1980, 11, 10, 00, 00, 00, DateTimeKind.Utc);
+            DateTime end = new DateTime(1980, 11, 30, 00, 00, 00, DateTimeKind.Utc);
+            var factDaos1 = new List<TimeSerieFactDao>() {
+
+                 new TimeSerieFactDao() {
                     Date = new DateDao() { DateTimeUtc=new DateTime(1980, 11, 17, 00,00,00, DateTimeKind.Utc) }
-                  , Price = 19801117.0m, Volume = 1.0m }
+                  , Price = price1, Volume = volume1 }
+               , new TimeSerieFactDao() {
+                    Date = new DateDao() { DateTimeUtc=new DateTime(1980, 11, 18, 00,00,00, DateTimeKind.Utc) }
+                  , Price= price1, Volume = volume1 }
             };
-            var timeSerieDao = new TimeSerieDao() {
-                Name = "PriceAndVolume",
-                Facts = factDaos
+            var factDaos2 = new List<TimeSerieFactDao>() {
+
+                 new TimeSerieFactDao() {
+                    Date = new DateDao() { DateTimeUtc=new DateTime(1980, 11, 17, 00,00,00, DateTimeKind.Utc) }
+                  , Price = price2, Volume = volume2 }
+               , new TimeSerieFactDao() {
+                    Date = new DateDao() { DateTimeUtc=new DateTime(1980, 11, 18, 00,00,00, DateTimeKind.Utc) }
+                  , Price= price2, Volume = volume2 }
             };
+            var timeSerieDao1 = new TimeSerieDao() {
+                Name = timeSerieName,
+                Facts = factDaos1
+            };
+            var timeSerieDao2 = new TimeSerieDao() {
+                Name = timeSerieName,
+                Facts = factDaos2
+            };
+
             var dut = new StockRepository(Db);
 
-            // Create and add stock to db
-            string isin = "DK0062333333"; 
-            var stock = CreateStock(isin:isin);
-            var addedStock = await dut.Add(stock);
-
             // Act
-            var addresult = await dut.AddOrUpdateTimeSerieAddFacts(isin, timeSerieDao);
-            var deleteResult = await dut.DeleteFacts(isin, timeSerieDao);
+            var addresult1 = await dut.AddOrUpdateTimeSerieAddFacts(isin, timeSerieDao1);
+            var getresult1 = await dut.GetTimeSerieFacts(isin, timeSerieName, start, end);
+            
+            // Reset db context. EF Core circus ...
+            Db = null;
+            Setup();
+            dut = new StockRepository(Db);
 
-            // Clean up
-            var deleteStock = await dut.DeleteStock(stock.Isin);
-            var deleteDates = await dut.DeleteDatesBefore1981();
+            var addresult2 = await dut.AddOrUpdateTimeSerieAddFacts(isin, timeSerieDao2);
+            var getresult2 = await dut.GetTimeSerieFacts(isin, timeSerieName, start, end);
 
             // Assert
-            Assert.True(addresult > 0);
-            Assert.True(deleteResult);
-            Assert.True(deleteStock);
-            Assert.True(deleteDates);
+            Assert.True(addresult1 > 0);
+            Assert.NotNull(getresult1);
+            var listgetresult1 = getresult1.ToList();
+            Assert.Equal( 2, listgetresult1.Count);
+            Assert.Equal(price1, listgetresult1[0].Price);
+            Assert.Equal(price1, listgetresult1[1].Price);
+            Assert.Equal(volume1, listgetresult1[0].Volume);
+            Assert.Equal(volume1, listgetresult1[1].Volume);                        
+
+            Assert.True(addresult2 > 0);
+            Assert.NotNull(getresult2);
+            var listgetresult2 = getresult2.ToList();
+            Assert.Equal(2, listgetresult2.Count);
+            Assert.Equal(price2, listgetresult2[0].Price);
+            Assert.Equal(price2, listgetresult2[1].Price);
+            Assert.Equal(volume2, listgetresult2[0].Volume);
+            Assert.Equal(volume2, listgetresult2[1].Volume);
+
+            // Clean up
+            var deleteResult1 = await dut.DeleteFacts(timeSerieDao1);
+
+            Assert.True(deleteResult1);
         }
 
         [Fact]
@@ -107,10 +156,14 @@ namespace ElisBackendTest {
             var name2 = "Rockwool";
             var isin2 = "DK0062444444";
             var instrumentCode2 = "CSE54321";
-            int count2 = 3;
+            int count2 = 3;            
             var isins2 = await AddStocksToSearchForInDb(dut, name2, isin2, instrumentCode2, count2);
-
             var filter = new FilterStock { Name = name1 + "%" };
+
+            // Reset db context after configuration of the database. EF Core circus ...
+            Db = null;
+            Setup();
+            dut = new StockRepository(Db);
 
             // Act
             var result = await dut.Get(filter);
@@ -217,14 +270,12 @@ namespace ElisBackendTest {
         private static readonly object _lock = new();
         public void Setup() {
             lock (_lock) {
-                if (Db == null) {
-                    Db = new ElisContext(
-                            new DbContextOptionsBuilder<ElisContext>()
-                                .UseNpgsql("Host=localhost;Port=5432;Username=postgres;Password=31ishoj14!;Database=Elis")
-                                .LogTo( Console.WriteLine, LogLevel.Information)
-                                .Options
-                                );
-                }
+                Db = new ElisContext(
+                        new DbContextOptionsBuilder<ElisContext>()
+                            .UseNpgsql("Host=localhost;Port=5432;Username=postgres;Password=31ishoj14!;Database=Elis")
+                            .LogTo(Console.WriteLine, LogLevel.Information)
+                            .Options
+                            );
             }
         }
 

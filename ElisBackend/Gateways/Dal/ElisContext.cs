@@ -26,47 +26,57 @@ namespace ElisBackend.Gateways.Dal {
                 .HasIndex(x => x.Isin)
                 .IsUnique();
             modelBuilder.Entity<StockDao>()
-                .HasMany(x => x.TimeSeries)
-                .WithOne(x => x.Stock);
+                .HasMany(s => s.TimeSeries)
+                .WithOne(t => t.Stock)
+                .HasForeignKey(t => t.StockId)
+                .IsRequired();
             modelBuilder.Entity<ExchangeDao>()
-                .HasKey(x => x.Id)
+                .HasKey(e => e.Id)
                 .HasName("ExchangeId_PK");
             modelBuilder.Entity<ExchangeDao>()
-                .HasIndex(x => x.Name)
+                .HasIndex(e => e.Name)
                 .IsUnique();
             modelBuilder.Entity<ExchangeDao>()
-                .HasMany(x => x.Stocks)
-                .WithOne(x => x.Exchange);
+                .HasMany(e => e.Stocks)
+                .WithOne(s => s.Exchange)
+                .HasForeignKey(s => s.ExchangeId)
+                .IsRequired();
             modelBuilder.Entity<CurrencyDao>()
-                .HasKey(x => x.Id)
+                .HasKey(c => c.Id)
                 .HasName("CurrencyId_PK");
             modelBuilder.Entity<CurrencyDao>()
-                .HasIndex(x => x.Code)
+                .HasIndex(c => c.Code)
                 .IsUnique();
             modelBuilder.Entity<CurrencyDao>()
-                .HasMany(x => x.Stocks)
-                .WithOne(x => x.Currency);
+                .HasMany(c => c.Stocks)
+                .WithOne(s => s.Currency)
+                .HasForeignKey(s => s.CurrencyId)
+                .IsRequired();
             modelBuilder.Entity<DateDao>()
-                .HasKey(x => x.Id)
+                .HasKey(d => d.Id)
                 .HasName("DateId_PK");
+            modelBuilder.Entity<DateDao>()
+                .HasIndex(d => d.DateTimeUtc)
+                .IsUnique();
             modelBuilder.Entity<DateDao>()
                 .HasMany(d => d.Facts)
                 .WithOne(f => f.Date)
-                .HasForeignKey(f => f.DateId)
+                .HasForeignKey(  f => f.DateId)
                 .IsRequired();
             modelBuilder.Entity<TimeSerieDao>()
-                .HasKey(x => x.Id)
+                .HasKey(t => t.Id)
                 .HasName("TimeSerieId_PK");
             modelBuilder.Entity<TimeSerieDao>()
                  .HasMany(t => t.Facts)
                  .WithOne(f => f.TimeSerie)
                  .HasForeignKey(f => f.TimeSerieId)
-                 .IsRequired();
+                 .IsRequired();            
             modelBuilder.Entity<TimeSerieDao>()
                 .HasIndex(x => new { x.Name, x.StockId } )
                 .IsUnique();
+
             modelBuilder.Entity<TimeSerieFactDao>()
-                .HasKey( t => new { t.TimeSerieId, t.DateId })
+                .HasKey(f => new { f.TimeSerieId, f.DateId })
                 .HasName("TimeSerieFact_PK");
 
             modelBuilder.Entity<StockSearchResultDao>().ToTable(nameof(StockResults), t => t.ExcludeFromMigrations());

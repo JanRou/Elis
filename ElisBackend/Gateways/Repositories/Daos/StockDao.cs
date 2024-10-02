@@ -9,13 +9,13 @@ namespace ElisBackend.Gateways.Repositories.Daos {
         public string Isin { get; set; }
         public string InstrumentCode { get; set; }
 
-        [ForeignKey("Exchange")]
-        public int ExchangeId { get; set; } = 0;
+        [ForeignKey("ExchangeId")]
         public virtual ExchangeDao Exchange { get; set; }
+        public int ExchangeId { get; set; } = 0;
 
-        [ForeignKey("Currency")]
-        public int CurrencyId { get; set; } = 0;
+        [ForeignKey("CurrencyId")]
         public virtual CurrencyDao Currency { get; set; }
+        public int CurrencyId { get; set; } = 0;
 
         // TimeSeries for this stock for navigation
         public IEnumerable<TimeSerieDao> TimeSeries { get; set; } = new List<TimeSerieDao>();

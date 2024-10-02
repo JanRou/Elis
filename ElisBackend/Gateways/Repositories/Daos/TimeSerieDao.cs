@@ -9,9 +9,9 @@ namespace ElisBackend.Gateways.Repositories.Daos {
         // Name is part of index with stockId
         public string Name { get; set; }
 
-        [ForeignKey("Stock")]
-        public int StockId { get; set; } = 0;
+        [ForeignKey("StockId")]
         public virtual StockDao Stock { get; set; }
+        public int StockId { get; set; } = 0;
 
         // Facts for this timeseries for navigation
         public IEnumerable<TimeSerieFactDao> Facts { get; set; } = new List<TimeSerieFactDao>();
