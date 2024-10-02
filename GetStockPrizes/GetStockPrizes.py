@@ -76,11 +76,13 @@ def buildCqlQueryString(isin='', exchange=''):
     stringBuilder.append("take: 0, skip: 0 ) {name, isin, instrumentCode}}}")
     return ''.join(stringBuilder)
 
-async def getStocks(transport, isin='', exchange=''):
+async def getStocks(isin='', exchange=''):
     # Create a GraphQL client using the defined transport
     # TODO authentication
+    transport = createCqlTransport()    
     async with Client(
         transport=transport,
+        execute_timeout=300.0,
         fetch_schema_from_transport=True
     ) as session:
         # Provide a GraphQL query       
@@ -89,12 +91,13 @@ async def getStocks(transport, isin='', exchange=''):
         gqlResponse = await session.execute(query)
         return gqlResponse['stocks']['stocks']
 
-async def setStockData(transport, stockDataMutation):
+async def setStockData(stockDataMutation):
     # Create a GraphQL client using the defined transport
     # TODO authentication
+    transport = createCqlTransport()
     async with Client(
         transport=transport,
-        fetch_schema_from_transport=True
+        execute_timeout=300.0
     ) as session:
         # Provide a GraphQL mutation   
         mutation = gql(stockDataMutation)
@@ -156,23 +159,25 @@ async def main():
     # For debug
     # jsonResp = json.loads("""{"@status": "1", "@ts": "1727529812289", "data": [{"instData": {"@id": "SSE130710", "@nm": "ACARIX", "@fnm": "Acarix", "@isin": "SE0009268717", "@tp": "S", "@chp": "0.0", "@ycp": "0.307"}, "chartData": {"cp": [[1722470400000, 0.49], [1722556800000, 0.449], [1722816000000, 0.42], [1722902400000, 0.424], [1722988800000, 0.4385], [1723075200000, 0.439], [1723161600000, 0.406], [1723420800000, 0.405], [1723507200000, 0.3925], [1723593600000, 0.36], [1723680000000, 0.36], [1723766400000, 0.3665], [1724025600000, 0.325], [1724112000000, 0.3445], [1724198400000, 0.33], [1724284800000, 0.3195], [1724371200000, 0.308], [1724630400000, 0.274], [1724716800000, 0.2765], [1724803200000, 0.289], [1724889600000, 0.282], [1724976000000, 0.28], [1725235200000, 0.356], [1725321600000, 0.3215], [1725408000000, 0.316], [1725494400000, 0.3105], [1725580800000, 0.339], [1725840000000, 0.347], [1725926400000, 0.339], [1726012800000, 0.304], [1726099200000, 0.3215], [1726185600000, 0.314], [1726444800000, 0.314], [1726531200000, 0.3255], [1726617600000, 0.335], [1726704000000, 0.3335], [1726790400000, 0.33], [1727049600000, 0.304], [1727136000000, 0.2965], [1727222400000, 0.301], [1727308800000, 0.307], [1727395200000, 0.307]]}}]}""")
 
+    print('')
+
     # 1. Get stock instrument code from backend
-    transport = createCqlTransport()
-    stocks = await getStocks(transport, exchange='XCSE') # get all nasdag nordic
+    stocks = await getStocks(exchange='XCSE') # get all nasdag nordic
 
     nasdaqDateFormat = '%Y%m%d'
-    fraDato = datetime.datetime.strptime( '20240801', nasdaqDateFormat)
+    fraDato = datetime.datetime.strptime( '20190801', nasdaqDateFormat)
     fra = getExchangeDay(fraDato).strftime(nasdaqDateFormat)
     til = getExchangeDay(datetime.date.today()).strftime(nasdaqDateFormat)
 
     for stock in stocks:
         # 2. Get timeseries from Nasdaq Nordic as json response
+        print('Henter fra Nasdaq: ' + stock['name'] + ', ' + stock['isin'])
         resp = getStockPrizesFromNasdaqNordic( stock['instrumentCode'], stock['isin'], stock['name'], fra, til)
         # 3. Store timeseries for stock in backend as GraphQL mutation
         stockDataMutation = createStockDataMutationFromNasdaqNordicResponse(stock['isin'], 'DateAndPrize', resp)
-        result = await setStockData(transport, stockDataMutation)
+        result = await setStockData(stockDataMutation)
         # TODO Response from nasdag may be so slow that http transport times out for backend
-        print(result)
+        print('Gemt i db: ' + result)
 
 
 asyncio.run(main())

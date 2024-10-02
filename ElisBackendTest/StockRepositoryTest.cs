@@ -37,12 +37,15 @@ namespace ElisBackendTest {
 
         [Fact]
         //[Theory]
-        public async Task DataCompareTest() {
-            // Tø-hø test ...
+        public void DateCompareTest() {
+            // Tø-hø test ... 
+            // Id: 592
+            // DateTimeUtc: 2019-08-01 02:00:00+02
+
             // Arrange
             var existingDateDao = new DateDao() {
-                Id = 586,
-                DateTimeUtc = new DateTime(1980, 11, 17, 00, 00, 00, DateTimeKind.Utc)
+                Id = 592,
+                DateTimeUtc = new DateTime(2019, 08, 01, 00, 00, 00, DateTimeKind.Utc)
             };
             var dut = new StockRepository(Db);
 
@@ -139,6 +142,87 @@ namespace ElisBackendTest {
 
             Assert.True(deleteResult1);
         }
+
+        [Fact]
+        //[Theory]
+        public async Task AddTimeSerieFactsForTwoStocksAndSameDatesTest() {
+
+            HER TIL
+            // Arrange
+            string isin = "DK0062498333"; // Novo
+            string timeSerieName = "PriceAndVolume";
+            decimal price1 = 19801117.0m;
+            decimal price2 = 19801117.0m;
+            decimal volume1 = 1.0m;
+            decimal volume2 = 2.0m;
+            DateTime start = new DateTime(1980, 11, 10, 00, 00, 00, DateTimeKind.Utc);
+            DateTime end = new DateTime(1980, 11, 30, 00, 00, 00, DateTimeKind.Utc);
+            var factDaos1 = new List<TimeSerieFactDao>() {
+
+                 new TimeSerieFactDao() {
+                    Date = new DateDao() { DateTimeUtc=new DateTime(1980, 11, 17, 00,00,00, DateTimeKind.Utc) }
+                  , Price = price1, Volume = volume1 }
+               , new TimeSerieFactDao() {
+                    Date = new DateDao() { DateTimeUtc=new DateTime(1980, 11, 18, 00,00,00, DateTimeKind.Utc) }
+                  , Price= price1, Volume = volume1 }
+            };
+            var factDaos2 = new List<TimeSerieFactDao>() {
+
+                 new TimeSerieFactDao() {
+                    Date = new DateDao() { DateTimeUtc=new DateTime(1980, 11, 17, 00,00,00, DateTimeKind.Utc) }
+                  , Price = price2, Volume = volume2 }
+               , new TimeSerieFactDao() {
+                    Date = new DateDao() { DateTimeUtc=new DateTime(1980, 11, 18, 00,00,00, DateTimeKind.Utc) }
+                  , Price= price2, Volume = volume2 }
+            };
+            var timeSerieDao1 = new TimeSerieDao() {
+                Name = timeSerieName,
+                Facts = factDaos1
+            };
+            var timeSerieDao2 = new TimeSerieDao() {
+                Name = timeSerieName,
+                Facts = factDaos2
+            };
+
+            var dut = new StockRepository(Db);
+
+            // Act
+            var addresult1 = await dut.AddOrUpdateTimeSerieAddFacts(isin, timeSerieDao1);
+            var getresult1 = await dut.GetTimeSerieFacts(isin, timeSerieName, start, end);
+
+            // Reset db context. EF Core circus ...
+            Db = null;
+            Setup();
+            dut = new StockRepository(Db);
+
+            var addresult2 = await dut.AddOrUpdateTimeSerieAddFacts(isin, timeSerieDao2);
+            var getresult2 = await dut.GetTimeSerieFacts(isin, timeSerieName, start, end);
+
+            // Assert
+            Assert.True(addresult1 > 0);
+            Assert.NotNull(getresult1);
+            var listgetresult1 = getresult1.ToList();
+            Assert.Equal(2, listgetresult1.Count);
+            Assert.Equal(price1, listgetresult1[0].Price);
+            Assert.Equal(price1, listgetresult1[1].Price);
+            Assert.Equal(volume1, listgetresult1[0].Volume);
+            Assert.Equal(volume1, listgetresult1[1].Volume);
+
+            Assert.True(addresult2 > 0);
+            Assert.NotNull(getresult2);
+            var listgetresult2 = getresult2.ToList();
+            Assert.Equal(2, listgetresult2.Count);
+            Assert.Equal(price2, listgetresult2[0].Price);
+            Assert.Equal(price2, listgetresult2[1].Price);
+            Assert.Equal(volume2, listgetresult2[0].Volume);
+            Assert.Equal(volume2, listgetresult2[1].Volume);
+
+            // Clean up
+            var deleteResult1 = await dut.DeleteFacts(timeSerieDao1);
+
+            Assert.True(deleteResult1);
+        }
+
 
         [Fact]
         public async Task GetTest() {
