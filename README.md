@@ -21,12 +21,15 @@ The questions for EF are:
 *  What about bulk insert?
 *  How is it to program unit test with EF and the database?
   
-Status is that I've programmed:
+**Status**
+I've programmed:
   * The backend with CQL that exposes query and mutation of stocks, exchanges, currencies and only add timeseries of day prizes.
   * A python script that gets timeseries of day prizes from Nasdag Nordic and stores the timeseries using CQL,
   * EF handling of stocks, currencies, exchanges and timeseries,
   * A simple Angular project that can show the stocks,
   * An advanced filter search for the stock queury with a PLSQL function called from EF.
+
+I've launched the application in debug in vs2022 and the python script in debug in vsc. It works!
 
 Experience so far is that:
    * GraphQL (GQL) - CQL works very good as a presenter in the architecture,
