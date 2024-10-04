@@ -39,14 +39,14 @@ namespace ElisBackend.Core.Application.UseCases {
 
             if (existingTimeSeriesId > 0) {
                 // Set timeSeriesId on all facts
-                timeSeriesDao.Facts = timeSeriesDao.Facts.Where(t => t.TimeSerieId == 0)
+                var facts = timeSeriesDao.Facts.Where(t => t.TimeSerieId == 0)
                     .Select(t => new TimeSeriesFactDao() {
                           Date = t.Date
                         , TimeSerieId = existingTimeSeriesId
                         , Price = t.Price
                         , Volume = t.Volume
                     });
-                result = await timeSeriesRepository.AddOrUpdateTimeSeriesFacts(timeSeries.Isin, timeSeriesDao.Facts);
+                result = await timeSeriesRepository.AddOrUpdateTimeSeriesFacts(timeSeries.Isin, facts);
             }
 
             return new StockDataOut( timeSeries.Isin, timeSeries.Name, result, status);

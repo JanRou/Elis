@@ -3,6 +3,7 @@ using ElisBackend.Gateways.Dal;
 using ElisBackend.Gateways.Repositories.Currency;
 using ElisBackend.Gateways.Repositories.Exchange;
 using ElisBackend.Gateways.Repositories.Stock;
+using ElisBackend.Gateways.Repositories.TimeSeries;
 using ElisBackend.Presenters.GraphQLSchema;
 using GraphQL;
 using Microsoft.EntityFrameworkCore;
@@ -11,6 +12,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddScoped<IStockRepository, StockRepository>();
+builder.Services.AddScoped<ITimeSeriesRepository, TimeSeriesRepository>();
 builder.Services.AddScoped<IStockHandling, StockHandling>();
 builder.Services.AddScoped<IExchangeRepository, ExchangeRepository>();
 builder.Services.AddScoped<IExchangeHandling, ExchangeHandling>();

@@ -165,16 +165,17 @@ async def main():
     stocks = await getStocks(exchange='XCSE') # get all nasdag nordic
 
     nasdaqDateFormat = '%Y%m%d'
-    fraDato = datetime.datetime.strptime( '20190801', nasdaqDateFormat)
-    fra = getExchangeDay(fraDato).strftime(nasdaqDateFormat)
-    til = getExchangeDay(datetime.date.today()).strftime(nasdaqDateFormat)
+    fraDato = datetime.datetime.strptime( '20180101', nasdaqDateFormat)
+    start = getExchangeDay(fraDato).strftime(nasdaqDateFormat)
+    end = getExchangeDay(datetime.date.today()).strftime(nasdaqDateFormat)
 
     for stock in stocks:
         # 2. Get timeseries from Nasdaq Nordic as json response
         print('Henter fra Nasdaq: ' + stock['name'] + ', ' + stock['isin'])
-        resp = getStockPrizesFromNasdaqNordic( stock['instrumentCode'], stock['isin'], stock['name'], fra, til)
+        resp = getStockPrizesFromNasdaqNordic( stock['instrumentCode'], stock['isin'], stock['name'], start, end)
         # 3. Store timeseries for stock in backend as GraphQL mutation
         stockDataMutation = createStockDataMutationFromNasdaqNordicResponse(stock['isin'], 'DateAndPrize', resp)
+        print(stockDataMutation)
         result = await setStockData(stockDataMutation)
         # TODO Response from nasdag may be so slow that http transport times out for backend
         print('Gemt i db: ' + result)

@@ -78,30 +78,34 @@ namespace ElisBackend.Gateways.Repositories.TimeSeries {
 
         public async Task<int> AddOrUpdateTimeSeriesFacts(string isin, IEnumerable<TimeSeriesFactDao> timeSeriesFacts) {
             int result = 0;
-            foreach (var fact in timeSeriesFacts) {
-                var existingDate = GetDate(fact.Date.DateTimeUtc);
-                if (existingDate != null) {
-                    fact.Date = null;
-                    fact.DateId = existingDate.Id;
-                    db.Dates.Attach(existingDate);
+            try {
+                foreach (var fact in timeSeriesFacts) {
+                    var existingDate = await GetDate(fact.Date.DateTimeUtc);
+                    if (existingDate != null) {
+                        fact.Date = null;
+                        fact.DateId = existingDate.Id;
+                        db.Dates.Attach(existingDate);
+                    }
+                    // Get existing fact at existing date, otherwise no existing fact thus null
+                    var existingFact = fact.DateId != 0 ? db.TimeSerieFacts.Find(fact.TimeSerieId, fact.DateId) : null;
+                    if (existingFact != null) {
+                        // Update existing with new price and volue for the date
+                        existingFact.Price = fact.Price;
+                        existingFact.Volume = fact.Volume;
+                        db.Update(existingFact);
+                    }
+                    else {
+                        db.Add(fact);  // Note: EF adds related Date entry that doesn't exist
+                    }
+                    result++;
                 }
-                // Get existing fact at existing date, otherwise no existing fact thus null
-                var existingFact = fact.DateId != 0 ? db.TimeSerieFacts.Find(fact.TimeSerieId, fact.DateId) : null;
-                if (existingFact != null) {
-                    // Update existing with new price and volue for the date
-                    existingFact.Price = fact.Price;
-                    existingFact.Volume = fact.Volume;
-                    db.Update(existingFact);
-                }
-                else {
-                    db.Add(fact);  // Note: EF adds related Date entry that doesn't exist
-                }
-                result++;
-                // TODO try-catch
+
+                await db.SaveChangesAsync();
             }
-
-            await db.SaveChangesAsync();
-
+            catch (Exception ex) {
+                // TODO use Serilog to log
+                Console.WriteLine(ex.Message);
+            }
             return result;
         }
 
@@ -124,8 +128,8 @@ namespace ElisBackend.Gateways.Repositories.TimeSeries {
             return result;
         }
 
-        private DateDao GetDate(DateTime date) {
-            return db.Dates.Single(d => d.DateTimeUtc == date);
+        private async Task<DateDao?> GetDate(DateTime date) {
+            return await db.Dates.SingleOrDefaultAsync(d => d.DateTimeUtc == date);
         }
 
         private int GetDateId(DateTime date) {
