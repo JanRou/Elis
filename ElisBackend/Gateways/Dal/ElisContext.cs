@@ -13,8 +13,8 @@ namespace ElisBackend.Gateways.Dal {
         public DbSet<ExchangeDao> Exchanges { get; set; }
         public DbSet<CurrencyDao> Currencies { get; set; }
         public DbSet<DateDao> Dates { get; set; }
-        public DbSet<TimeSerieDao> TimeSeries { get; set; }
-        public DbSet<TimeSerieFactDao> TimeSerieFacts { get; set; }
+        public DbSet<TimeSeriesDao> TimeSeries { get; set; }
+        public DbSet<TimeSeriesFactDao> TimeSerieFacts { get; set; }
 
         public DbSet<StockSearchResultDao> StockResults { get; set; }
 
@@ -63,19 +63,19 @@ namespace ElisBackend.Gateways.Dal {
                 .WithOne(f => f.Date)
                 .HasForeignKey(  f => f.DateId)
                 .IsRequired();
-            modelBuilder.Entity<TimeSerieDao>()
+            modelBuilder.Entity<TimeSeriesDao>()
                 .HasKey(t => t.Id)
                 .HasName("TimeSerieId_PK");
-            modelBuilder.Entity<TimeSerieDao>()
+            modelBuilder.Entity<TimeSeriesDao>()
                  .HasMany(t => t.Facts)
                  .WithOne(f => f.TimeSerie)
                  .HasForeignKey(f => f.TimeSerieId)
                  .IsRequired();            
-            modelBuilder.Entity<TimeSerieDao>()
+            modelBuilder.Entity<TimeSeriesDao>()
                 .HasIndex(x => new { x.Name, x.StockId } )
                 .IsUnique();
 
-            modelBuilder.Entity<TimeSerieFactDao>()
+            modelBuilder.Entity<TimeSeriesFactDao>()
                 .HasKey(f => new { f.TimeSerieId, f.DateId })
                 .HasName("TimeSerieFact_PK");
 

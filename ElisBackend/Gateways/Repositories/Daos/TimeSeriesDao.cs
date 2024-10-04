@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ElisBackend.Gateways.Repositories.Daos {
-    public class TimeSerieDao {
+    public class TimeSeriesDao {
 
         // Primary key
         public int Id { get; set; } = 0;
@@ -14,6 +14,6 @@ namespace ElisBackend.Gateways.Repositories.Daos {
         public int StockId { get; set; } = 0;
 
         // Facts for this timeseries for navigation
-        public IEnumerable<TimeSerieFactDao> Facts { get; set; } = new List<TimeSerieFactDao>();
+        public IEnumerable<TimeSeriesFactDao> Facts { get; set; } = new List<TimeSeriesFactDao>();
     }
 }

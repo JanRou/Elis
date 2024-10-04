@@ -18,7 +18,7 @@ namespace ElisBackend.Core.Application.Command
         , IMapper mapper) : IRequestHandler<AddStockData, StockDataOut> {
         public async Task<StockDataOut> Handle(AddStockData request, CancellationToken cancellationToken) {
             var timeSerieData = mapper.Map<List<TimeSerieData>>(request.TimeSerieDataIn);
-            var timeserie = new TimeSerie(request.StockData.TimeSerieName
+            var timeserie = new TimeSeries(request.StockData.TimeSerieName
                                                 , request.StockData.Isin, timeSerieData);
             return await stockHandling.AddData(timeserie);
         }

@@ -2,9 +2,9 @@
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ElisBackend.Gateways.Repositories.Daos {
-    public class TimeSerieFactDao {
+    public class TimeSeriesFactDao {
         [ForeignKey("TimeSerieId")]
-        public virtual TimeSerieDao TimeSerie { get; set; }
+        public virtual TimeSeriesDao TimeSerie { get; set; }
         [Required]
         public int TimeSerieId { get; set; } = 0;
 

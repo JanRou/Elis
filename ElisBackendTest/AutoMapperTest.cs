@@ -104,10 +104,10 @@ namespace ElisBackendTest {
                 new TimeSerieData( new DateTime(2024, 07, 26, 00,00,00, DateTimeKind.Utc), 100.0m, 1.0m)
               , new TimeSerieData( new DateTime(2024, 07, 25, 00,00,00, DateTimeKind.Utc), 99.0m, 1.0m)
             };
-            var timeSerie = new TimeSerie( "PricesAndVolumes", "123456", timeSerieData );
+            var timeSerie = new TimeSeries( "PricesAndVolumes", "123456", timeSerieData );
 
             // Act
-            var result = _mapper.Map<TimeSerieDao>(timeSerie);
+            var result = _mapper.Map<TimeSeriesDao>(timeSerie);
 
             // Assert
             Assert.Equal(timeSerie.Name, result.Name );

@@ -18,7 +18,7 @@ namespace ElisBackend.Gateways.Repositories.Daos {
         public int CurrencyId { get; set; } = 0;
 
         // TimeSeries for this stock for navigation
-        public IEnumerable<TimeSerieDao> TimeSeries { get; set; } = new List<TimeSerieDao>();
+        public IEnumerable<TimeSeriesDao> TimeSeries { get; set; } = new List<TimeSeriesDao>();
 
     }
 }

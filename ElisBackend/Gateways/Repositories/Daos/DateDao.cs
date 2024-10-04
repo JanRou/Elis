@@ -6,7 +6,7 @@
         public DateTime DateTimeUtc { get; set; }
 
         // Facts for this date for navigation
-        public IEnumerable<TimeSerieFactDao> Facts { get; set; } = new List<TimeSerieFactDao>();
+        public IEnumerable<TimeSeriesFactDao> Facts { get; set; } = new List<TimeSeriesFactDao>();
 
     }
 }

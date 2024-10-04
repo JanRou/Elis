@@ -44,7 +44,7 @@ namespace ElisBackend.Migrations
                     b.HasIndex("Code")
                         .IsUnique();
 
-                    b.ToTable("Currencies");
+                    b.ToTable("Currencies", (string)null);
                 });
 
             modelBuilder.Entity("ElisBackend.Gateways.Repositories.Daos.DateDao", b =>
@@ -64,7 +64,7 @@ namespace ElisBackend.Migrations
                     b.HasIndex("DateTimeUtc")
                         .IsUnique();
 
-                    b.ToTable("Dates");
+                    b.ToTable("Dates", (string)null);
                 });
 
             modelBuilder.Entity("ElisBackend.Gateways.Repositories.Daos.ExchangeDao", b =>
@@ -93,7 +93,7 @@ namespace ElisBackend.Migrations
                     b.HasIndex("Name")
                         .IsUnique();
 
-                    b.ToTable("Exchanges");
+                    b.ToTable("Exchanges", (string)null);
                 });
 
             modelBuilder.Entity("ElisBackend.Gateways.Repositories.Daos.StockDao", b =>
@@ -132,7 +132,7 @@ namespace ElisBackend.Migrations
                     b.HasIndex("Isin")
                         .IsUnique();
 
-                    b.ToTable("Stocks");
+                    b.ToTable("Stocks", (string)null);
                 });
 
             modelBuilder.Entity("ElisBackend.Gateways.Repositories.Daos.StockSearchResultDao", b =>
@@ -174,7 +174,7 @@ namespace ElisBackend.Migrations
                     b.HasIndex("Name", "StockId")
                         .IsUnique();
 
-                    b.ToTable("TimeSeries");
+                    b.ToTable("TimeSeries", (string)null);
                 });
 
             modelBuilder.Entity("ElisBackend.Gateways.Repositories.Daos.TimeSerieFactDao", b =>
@@ -196,7 +196,7 @@ namespace ElisBackend.Migrations
 
                     b.HasIndex("DateId");
 
-                    b.ToTable("TimeSerieFacts");
+                    b.ToTable("TimeSerieFacts", (string)null);
                 });
 
             modelBuilder.Entity("ElisBackend.Gateways.Repositories.Daos.StockDao", b =>
