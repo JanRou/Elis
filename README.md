@@ -22,6 +22,7 @@ The questions for EF are:
 * How is it to program unit test with EF and the database?
 
 **Status**
+
 I've programmed:
 * The backend with CQL that exposes query and mutation of stocks, exchanges, currencies and only add timeseries of day prizes.
 * A python script that gets timeseries of day prizes from Nasdag Nordic and stores the timeseries using CQL,
