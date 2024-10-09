@@ -53,6 +53,7 @@ EF gives me some issues:
 4) EF version 8 don't have any bulk insertion.
 
 **How to set up the programming environment**
+
 You have to have:
 * Cloned my Elis repository.
 * An IDE like Visual Studio Code, VSC, to code the frontend. You may choose to use VSC for the backend as well. I use Visual Studio, VS, for the backend.
