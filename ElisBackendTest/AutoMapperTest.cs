@@ -117,16 +117,5 @@ namespace ElisBackendTest {
             Assert.Equal(100.0m, facts[0].Price);
             Assert.Equal(1.0m, facts[0].Volume);
         }
-
-        //[Fact]
-        ////[Theory, AutoData]
-        //public void Test() {
-        //    // Arrange
-
-        //    // Act
-
-        //    // Assert
-
-        //}        
     }
 }

@@ -7,7 +7,7 @@ namespace ApplyMigrations.Migrations.Procedures {
             Execute.EmbeddedScript("AddSortingPaginationsSearchStocks.plpgsql");
         }
         public override void Down() {
-            // Bruges aldrig
+            // Never used
             throw new NotImplementedException();
         }
     }

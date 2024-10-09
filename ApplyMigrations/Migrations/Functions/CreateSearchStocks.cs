@@ -7,7 +7,7 @@ namespace ApplyMigrations.Migrations.Procedures {
             Execute.EmbeddedScript("CreateSearchStocks.plpgsql");
         }
         public override void Down() {
-            // Bruges aldrig
+            // Never used
             throw new NotImplementedException();
         }
     }

@@ -129,18 +129,5 @@ namespace ElisBackendTest
                 && string.IsNullOrEmpty((string)p.Value) && string.Compare((string)p.Value, "") == 0 );
 
         }
-
-
-        //[Fact]
-        ////[Theory]
-        //public void Test() {
-        //    // Arrange
-
-        //    // Act
-
-        //    // Assert
-
-        //}
-
     }
 }

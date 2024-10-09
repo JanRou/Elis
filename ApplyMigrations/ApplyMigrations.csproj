@@ -12,6 +12,7 @@
     <None Remove="Migrations\Functions\Plpgsql\AddSortingPaginationsSearchStocks.plpgsql" />
     <None Remove="Migrations\Functions\Plpgsql\CorrectSkipAndTakeSearchStocks.plpgsql" />
     <None Remove="Migrations\Functions\Plpgsql\CreateSearchStocks.plpgsql" />
+    <None Remove="Migrations\Functions\Plpgsql\PopulateTablesWithData.plpgsql" />
     <None Remove="Migrations\Functions\Plpgsql\UpdateSearchStocks.plpgsql" />
   </ItemGroup>
 
@@ -19,6 +20,7 @@
     <EmbeddedResource Include="Migrations\Functions\Plpgsql\CorrectSkipAndTakeSearchStocks.plpgsql" />
     <EmbeddedResource Include="Migrations\Functions\Plpgsql\AddSkipAndTakeSearchStocks.plpgsql" />
     <EmbeddedResource Include="Migrations\Functions\Plpgsql\AddSortingPaginationsSearchStocks.plpgsql" />
+    <EmbeddedResource Include="Migrations\Functions\Plpgsql\PopulateTablesWithData.plpgsql" />
     <EmbeddedResource Include="Migrations\Functions\Plpgsql\UpdateSearchStocks.plpgsql" />
     <EmbeddedResource Include="Migrations\Functions\Plpgsql\CreateSearchStocks.plpgsql" />
   </ItemGroup>

@@ -1,19 +1,19 @@
 -- Create exchanges
 DELETE FROM public."Exchanges";
 ALTER TABLE public."Exchanges" ALTER COLUMN "Id" RESTART WITH 1;
-INSERT INTO public."Exchanges"( "Name", "Country","Url") VALUES('XCSE', 'Danmark','https://www.nasdaqomxnordic.com/' );
+INSERT INTO public."Exchanges"( "Name", "Country","Url") VALUES('XCSE', 'Denmark','https://www.nasdaqomxnordic.com/' );
 INSERT INTO public."Exchanges"( "Name", "Country","Url") VALUES('XHEL', 'Finland', 'https://www.nasdaqomxnordic.com/' );
-INSERT INTO public."Exchanges"( "Name", "Country","Url") VALUES('XSTO', 'Sverige', 'https://www.nasdaqomxnordic.com/' );
-INSERT INTO public."Exchanges"( "Name", "Country","Url") VALUES('XETR', 'Tyskland', 'https://www.xetra.com/');
+INSERT INTO public."Exchanges"( "Name", "Country","Url") VALUES('XSTO', 'Sweden', 'https://www.nasdaqomxnordic.com/' );
+INSERT INTO public."Exchanges"( "Name", "Country","Url") VALUES('XETR', 'Germany', 'https://www.xetra.com/');
 SELECT *
 FROM public."Exchanges";
 
 --Create currencies
 DELETE FROM public."Currencies";
 ALTER TABLE public."Currencies" ALTER COLUMN "Id" RESTART WITH 1;
-INSERT INTO public."Currencies"(	"Name", "Code") VALUES ( 'Danske kroner', 'DKK');
-INSERT INTO public."Currencies"(	"Name", "Code") VALUES ( 'Svenske kroner', 'SEK');
-INSERT INTO public."Currencies"(	"Name", "Code") VALUES ( 'Norske kroner', 'NOK');
+INSERT INTO public."Currencies"(	"Name", "Code") VALUES ( 'Danish krone', 'DKK');
+INSERT INTO public."Currencies"(	"Name", "Code") VALUES ( 'Swedish krone', 'SEK');
+INSERT INTO public."Currencies"(	"Name", "Code") VALUES ( 'Norwegian krone', 'NOK');
 INSERT INTO public."Currencies"(	"Name", "Code") VALUES ( 'Euro', 'EUR');
 SELECT *
 FROM public."Currencies";

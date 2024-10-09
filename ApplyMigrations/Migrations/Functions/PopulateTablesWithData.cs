@@ -1,15 +1,14 @@
 ﻿using FluentMigrator;
 
 namespace ApplyMigrations.Migrations.Procedures {
-    [Migration(20240224142500, "AddSkipAndTakeSearchStocks.plpgsql")]
-    public class AddSkipAndTakeSearchStocks : Migration {
+    [Migration(20241009141800, "PopulateTablesWithData.plpgsql")]
+    public class PopulateTablesWithData : Migration {
         public override void Up() {
-            Execute.EmbeddedScript("AddSkipAndTakeSearchStocks.plpgsql");
+            Execute.EmbeddedScript("PopulateTablesWithData.plpgsql");
         }
         public override void Down() {
             // Never used
             throw new NotImplementedException();
         }
     }
-
 }
