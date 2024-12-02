@@ -1,0 +1,20 @@
+schema {
+  query: StockQuery
+}
+
+# Stock information
+type StockQuery {
+  stock(exchangeurl: String, isin: String, name: String): [StockType]
+}
+
+# Basic stock information
+type StockType {
+  # The name of the stock
+  name: String!
+
+  # The ISIN code for the stock
+  isin: String!
+
+  # The exchange for the stock
+  exchangeUrl: String!
+}
