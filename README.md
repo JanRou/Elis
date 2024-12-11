@@ -6,7 +6,7 @@ The purpose of this project is to learn and combine technologies:
 * Swagger - for CQL and a health endpoint,
 * Postgres SQL database - to use a SQL database for free with npgsql as ODBC and EF Core driver,
 * Angular - to learn how to integrate a GQL backend,
-* Python - to learn how a python script can inteface to a GQL backend,
+* Python - to learn how a python script intefaces to a GQL backend,
 * FluentMigrator - to be able to version control the database, when functions or stored procedures are inevitable,
 * Dimensional modelling - to learn and test how EF handle the model,
 * Clean code architecture - to learn it,
