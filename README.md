@@ -72,6 +72,6 @@ The procedure is:
 7. Inspect the database _Elis_ with PgAdmin. You should have and Elis database with tables.
 8. In order to run _ApplyMigrations_ that applies the FluentMigrator migrations you need a connectionstring like _"Host=localhost;Port=5432;Username=postgres;Password=secret;Database=Elis" for the database. You find the connectionstring in the appsettings.json file for Elisbackend. Set the correct password, in case you have changed it in step 3.
 9. Run ApplyMigrations with arguments: _<connectionsstring> up_, where _up_ means migrate up. In VS you can set the arguments under _Properties_ | _Debug_ | _Open debug launch profiles UI_, and run ApplyMigrations in debug mode with VS.  
-11. Inspect in PgAdmin that the stocks table has data.
-12. Build the backend and unit tests projects.
-13. Run unit tests.
+11. Inspect in PgAdmin that _Stocks_, _TimeSeries_ and _TimeSeriesFacts_ tables have data.
+13. Build the backend and unit tests projects.
+14. Run unit tests
