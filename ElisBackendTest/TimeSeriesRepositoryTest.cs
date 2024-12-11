@@ -19,7 +19,7 @@ namespace ElisBackendTest {
         public async Task GetTimeSeriesOkTest() {
             // Arrange
             string isin = "DK0062498333"; // Novo
-            string timeSerieName = "PriceAndVolume";
+            string timeSerieName = "PricesAndVolumes";
 
             var dut = new TimeSeriesRepository(Db);
 
@@ -37,7 +37,7 @@ namespace ElisBackendTest {
         public async Task GetTimeSeriesFailsTest() {
             // Arrange
             string isin = "DK00666666666"; // Doesn't exists
-            string timeSerieName = "PriceAndVolume";
+            string timeSerieName = "PricesAndVolumes";
 
             var dut = new TimeSeriesRepository(Db);
 
@@ -52,7 +52,7 @@ namespace ElisBackendTest {
         public async Task AddTimeSeriesFactsOkTest() {
             // Arrange
             string isin = "DK0062498333"; // Novo
-            string timeSerieName = "PriceAndVolume";
+            string timeSerieName = "PricesAndVolumes";
             decimal price1 = 19801117.0m;
             decimal price2 = 19801118.0m;
             decimal volume1 = 1.0m;
@@ -100,7 +100,7 @@ namespace ElisBackendTest {
         public async Task UpdateTimeSerieFactsOkTest() {
             // Arrange
             string isin = "DK0062498333"; // Novo
-            string timeSerieName = "PriceAndVolume";
+            string timeSerieName = "PricesAndVolumes";
             decimal price1 = 19801117.0m;
             decimal price2 = 19801118.0m;
             decimal volume1 = 1.0m;
@@ -185,7 +185,7 @@ namespace ElisBackendTest {
             // Arrange
             string isin1 = "DK0062498333"; // Novo
             string isin2 = "DK0010219153"; // Rockwoool
-            string timeSerieName = "PriceAndVolume";
+            string timeSerieName = "PricesAndVolumes";
             decimal price1 = 19801117.0m;
             decimal price2 = 19801118.0m;
             decimal volume1 = 1.0m;
@@ -256,6 +256,8 @@ namespace ElisBackendTest {
             Assert.True(deleteResult1);
             Assert.True(deleteResult2);
         }
+
+        // TODO DRY
         private static readonly object _lock = new();
         public void Setup() {
             lock (_lock) {

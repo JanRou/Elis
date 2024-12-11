@@ -46,6 +46,7 @@ namespace ElisBackendTest {
             Assert.True(deleteResult);
         }
 
+        // TODO DRY
         private static readonly object _lock = new();
         public void Setup() {
             lock (_lock) {
