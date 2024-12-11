@@ -65,8 +65,8 @@ You have to have:
 The procedure is:
 1. Get and install IDE, Docker, PgAdmin and text-editor applications missing.
 2. Start up Docker and get the image ubuntu/postgres, https://hub.docker.com/_/postgres/.
-3. Edit the compose.yaml file in ./Elis/Docker to set up the password and persistent folder for database files in the Docket container.
-4. In a terminal like Windows Powershell you spin up the container with the command _docker-compose up -detach_.
+3. Edit the compose.yaml file in ./Elis/Docker to set up the password and persistent folder for database files in the docker container.
+4. In a terminal like Windows Powershell you spin up the container with the command _docker-compose up --detach_.
 5. Start PgAdmin and inspect the database is a live and clean.
 6. Run the EF-Core migrations. In VS you issue the command _Update-Database_ in the _Package Manager Console_.
 7. Inspect the database with PgAdmin. You should have and Elis database with tables.
