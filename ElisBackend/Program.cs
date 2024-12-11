@@ -38,7 +38,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-// ElisDb med EntityFramework Core med PostgreSQL
+// ElisDb PostGres database
 builder.Services.AddDbContext<ElisContext>(options => {
     options.UseNpgsql(builder.Configuration.GetConnectionString("ElisDb"));
     options.LogTo(Console.WriteLine, LogLevel.Information);
