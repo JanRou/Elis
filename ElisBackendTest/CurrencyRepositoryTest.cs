@@ -16,7 +16,7 @@ namespace ElisBackendTest {
         [Fact]
         public async Task GetTest() {
             // Arrange
-            var filter = new FilterCurrency { Code = "%k" }; // get all with kroner
+            var filter = new FilterCurrency { Code = "%k" }; // get all currencies starting with k
             var dut = new CurrencyRepository(Db);
 
             // Act
@@ -40,13 +40,14 @@ namespace ElisBackendTest {
             bool deleteResult = await dut.Delete(result.Code);
 
             // Assert
-            Assert.NotNull(result);
+            Assert.NotNull(result); 
             Assert.True(result.Id > 0);
             Assert.Equal(dao.Name, result.Name);
             Assert.Equal(dao.Code, result.Code);
             Assert.True(deleteResult);
         }
 
+        // TODO DRY
         private static readonly object _lock = new();
         public void Setup() {
             lock (_lock) {
