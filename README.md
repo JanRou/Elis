@@ -68,10 +68,10 @@ The procedure is:
 3. Edit the compose.yaml file in ./Elis/Docker to set up the password and persistent folder for database files in the docker container.
 4. In a terminal like Windows Powershell you spin up the container with the command _docker-compose up --detach_.
 5. Start PgAdmin and inspect the database is a live and clean.
-6. Run the EF-Core migrations. In VS you issue the command _Update-Database_ in the _Package Manager Console_.
-7. Inspect the database with PgAdmin. You should have and Elis database with tables.
-8. In order to run _ApplyMigrations_ that applies the FluentMigrator migrations you need a connectionstring like _"Host=localhost;Port=5432;Username=postgres;Password=secret;Database=Elis" to the database, which can be found in the appsettings.json file of the backend. Set the correct password, in case you have changed it.
-9. Run ApplyMigrations with arguments: _<connectionsstring> up_, where _up_ means migrate up. In VS you can set the arguments under _Properties_ | _Debug_ | _Open debug launch profiles UI_, and run ApplyMigrations in debug mode with VS.
-10. Inspect in PgAdmin that the stocks table has data.
-11. Build the backend and unit tests projects.
-12. Run unit tests.
+6. Run the EF-Core migrations. In VS you issue the command _Update-Database_ in the _Package Manager Console_, and while you've selected _ElisBackend_ as the active project including in the field Default project of the console.
+7. Inspect the database _Elis_ with PgAdmin. You should have and Elis database with tables.
+8. In order to run _ApplyMigrations_ that applies the FluentMigrator migrations you need a connectionstring like _"Host=localhost;Port=5432;Username=postgres;Password=secret;Database=Elis" for the database. You find the connectionstring in the appsettings.json file for Elisbackend. Set the correct password, in case you have changed it in step 3.
+9. Run ApplyMigrations with arguments: _<connectionsstring> up_, where _up_ means migrate up. In VS you can set the arguments under _Properties_ | _Debug_ | _Open debug launch profiles UI_, and run ApplyMigrations in debug mode with VS.  
+11. Inspect in PgAdmin that the stocks table has data.
+12. Build the backend and unit tests projects.
+13. Run unit tests.
