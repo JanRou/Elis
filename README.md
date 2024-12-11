@@ -48,10 +48,10 @@ My experience so far is:
 * Docker Postgres database - works fine with a steep learning curve.
 
 EF gives me some issues:
-1) The unit tests with the database becomes long, unmainaintable and complex, because the arrangment often becomes very complex before activation and assertion. The database has to be seeded with data. A particular situation has to bet present. The same EF db context may not be used for the activation. I believe a Docker image could help, because you can seed and prepare the situations in the image.
+1) The unit tests with EF become long, unmainaintable and complex, because the unit test arrangement often becomes very long and cumbersome. The acting is typical short. And the following assertions of results are hard to understand. The database has to be seeded with a lot of data in arrangement section of the test for a particular situation. The same EF db context may not be used in arrangement for the acting, because EF caches the seed. A Docker image helps, because you can seed and prepare all situations in the database, so one can focus on testing.
 2) I'm used to write SQL functions or stored procedures that do the handling of data and relations. With EF you have to program the handling of existing related entries to a new entry for insertion. This implies to set the foreign keys and clear navigational properties in the entity inserted, otherwise related entries are inserted as duplicates.
-3) I've to think carefully which changes go together before calling EF SaveChanges(). With a SQL stored procedure I handed over these decision to the procedure.
-4) EF version 8 don't have any bulk insertion.
+3) I've to think carefully which changes go together before calling EF SaveChanges(). With a SQL stored procedure I handed over these decision to the function or procedure.
+4) EF version 8 don't have any bulk insertion. Functions and store procedure do.
 
 **How to set up the programming environment**
 
