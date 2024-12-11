@@ -75,3 +75,9 @@ The procedure is:
 11. Inspect in PgAdmin that _Stocks_, _TimeSeries_ and _TimeSeriesFacts_ tables have data.
 13. Build the backend and unit tests projects.
 14. Run unit tests
+
+**TODOs**
+* Organize docker different database volumes for unit testing and production,
+* Insert tons of timeseries and facts to measure performance,
+* Investigate CQL filtering and possibilities,
+* Program CQL subscriptions.
