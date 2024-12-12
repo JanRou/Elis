@@ -3,6 +3,7 @@ using AutoMapper.Configuration.Annotations;
 using ElisBackend;
 using ElisBackend.Core.Application.Dtos;
 using ElisBackend.Core.Application.UseCases;
+using ElisBackend.Core.Domain.Abstractions;
 using ElisBackend.Core.Domain.Entities;
 using ElisBackend.Core.Domain.Entities.Filters;
 using ElisBackend.Gateways.Repositories.Daos;
@@ -90,7 +91,7 @@ namespace ElisBackendTest {
             timeSeriesRepositoryMock.Setup(t => t.AddOrUpdateTimeSeriesFacts(
                 isin, It.IsAny<IEnumerable<TimeSeriesFactDao>>())).ReturnsAsync(expectedCount);
 
-            var timeSerieData = new List<TimeSerieData>() { new TimeSerieData( DateTime.UtcNow, 100.0m, 1000.0m),};
+            var timeSerieData = new List<ITimeSeriesData>() { new TimeSeriesData( DateTime.UtcNow, 100.0m, 1000.0m),};
             var timeSerie = new TimeSeries( timeSerieName, isin, timeSerieData);
 
             var dut = new StockHandling(stockRepositoryMock.Object, timeSeriesRepositoryMock.Object, _mapper);

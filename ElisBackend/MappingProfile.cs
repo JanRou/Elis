@@ -40,7 +40,7 @@ namespace ElisBackend
             CreateMap<StockDao, Stock>()
                 .ReverseMap()
                 ;
-            CreateMap<TimeSerieDataIn, TimeSerieData>()
+            CreateMap<TimeSerieDataIn, TimeSeriesData>()
                 .ReverseMap()
                 ;
             CreateMap<DateTime, DateDao>()
@@ -48,21 +48,26 @@ namespace ElisBackend
                 .ForMember( d=>d.DateTimeUtc, o => o.MapFrom( s => s.Date))
                 .ForMember(d => d.Facts, o => o.Ignore())
                 .ReverseMap()
-                .ForMember(d => d.Date, o => o.MapFrom(s => s.DateTimeUtc))
+                .ConstructUsing(s => s.DateTimeUtc )
                 ;
-            CreateMap<TimeSerieData, TimeSeriesFactDao>()
-                .ForMember( d => d.TimeSerieId, o => o.Ignore())
+            CreateMap<TimeSeriesData, TimeSeriesFactDao>()
+                .ForMember(d => d.TimeSerieId, o => o.Ignore())
                 .ForMember(d => d.TimeSerie, o => o.Ignore())
                 .ForMember(d => d.DateId, o => o.Ignore())
                 .ReverseMap()
+                .ForMember(d => d.Date, o => o.MapFrom(s => s.Date.DateTimeUtc))
+                ;
+            CreateMap<TimeSeriesFactDao, ITimeSeriesData>()
+                .ConstructUsing(s => new TimeSeriesData(s.Date.DateTimeUtc, s.Price, s.Volume))
+                .ReverseMap()
                 ;
             CreateMap<TimeSeries, TimeSeriesDao>()
-                .ForMember( d => d.Facts, o => o.MapFrom( s => s.TimeSerieData))
+                .ForMember(d => d.Facts, o => o.MapFrom( s => s.TimeSeriesData))
                 .ForMember(d => d.Id, o => o.Ignore())
                 .ForMember(d => d.StockId, o => o.Ignore())
                 .ForMember(d => d.Stock, o => o.Ignore())
                 .ReverseMap()
-                .ForMember(d => d.TimeSerieData, o => o.MapFrom(s => s.Facts))
+                .ForMember(d => d.TimeSeriesData, o => o.MapFrom(s => s.Facts))
                 .ForMember(d => d.Isin, o => o.MapFrom(s => s.Stock.Isin))
                 ;
 

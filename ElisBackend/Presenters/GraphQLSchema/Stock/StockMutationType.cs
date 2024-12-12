@@ -23,7 +23,7 @@ namespace ElisBackend.Presenters.GraphQLSchema.Stock {
                     var mediator = ctx.RequestServices.GetService<IMediator>();
                     return await mediator.Send(new DeleteStock(isin));
                 });
-            Field<StockDataResultType>("adddata")
+            Field<StockDataAddResultType>("adddata")
                 .Argument<NonNullGraphType<StockDataInputType>>("StockDataInput")
                 .Argument<NonNullGraphType<ListGraphType<TimeSerieDataInput>>>("TimeSerieDataInput")
                 .ResolveAsync(async ctx => {

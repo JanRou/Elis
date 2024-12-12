@@ -8,5 +8,4 @@
         IExchange Exchange { get; }
         ICurrency Currency { get; }
     }
-
 }

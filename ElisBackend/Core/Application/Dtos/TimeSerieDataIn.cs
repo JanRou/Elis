@@ -3,6 +3,6 @@
     {
         public string Date { get; set; } = date;
         public decimal Price { get; set; } = price;
-        public decimal Volume { get; set; } = volume;
+        public decimal? Volume { get; set; } = volume;
     }
 }

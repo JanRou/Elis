@@ -83,9 +83,9 @@ namespace ElisBackend.Core.Application.UseCases {
 
         private (bool,string) ValidateDates(TimeSeries timeSeries) {
             (bool isOk, string status) = (true, "Ok");
-            for (int i = 0; isOk && i + 1 < timeSeries.TimeSerieData.Count; i++) {
+            for (int i = 0; isOk && i + 1 < timeSeries.TimeSeriesData.Count; i++) {
                 // check that the i'the date is before the next date
-                isOk = timeSeries.TimeSerieData[i].Date.CompareTo(timeSeries.TimeSerieData[i + 1].Date) < 0;
+                isOk = timeSeries.TimeSeriesData[i].Date.CompareTo(timeSeries.TimeSeriesData[i + 1].Date) < 0;
             }
             if (!isOk) {
                 status = "Error, dates are no consecutive with latest first";

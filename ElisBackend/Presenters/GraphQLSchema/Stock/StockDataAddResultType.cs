@@ -2,8 +2,8 @@
 using GraphQL.Types;
 
 namespace ElisBackend.Presenters.GraphQLSchema.Stock {
-    public class StockDataResultType : ObjectGraphType<StockDataOut> {
-        public StockDataResultType() {
+    public class StockDataAddResultType : ObjectGraphType<StockDataOut> {
+        public StockDataAddResultType() {
             Description = "Result of adding timeserie data to stock";
             Field(s => s.Isin).Description("The ISIN code for the stock");
             Field(s => s.TimeSerieName).Description("Name of timeserie added or updated with data");
