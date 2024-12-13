@@ -1,10 +1,15 @@
-﻿using ElisBackend.Core.Domain.Abstractions;
+﻿using ElisBackend.Core.Application.Dtos;
+using ElisBackend.Core.Domain.Abstractions;
 using ElisBackend.Core.Domain.Entities;
 using GraphQL.Types;
+using System.Xml.Linq;
 
-namespace ElisBackend.Presenters.GraphQLSchema.Stock {
-    public class StockType : ObjectGraphType<IStock> {
-        public StockType() {
+namespace ElisBackend.Presenters.GraphQLSchema.Stock
+{
+    public class StockType : ObjectGraphType<IStock>
+    {
+        public StockType()
+        {
             Description = "Basic stock information";
             Field(s => s.Name).Description("The name of the stock");
             Field(s => s.Isin).Description("The ISIN code for the stock");

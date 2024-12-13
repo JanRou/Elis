@@ -91,7 +91,7 @@ namespace ElisBackendTest {
             timeSeriesRepositoryMock.Setup(t => t.AddOrUpdateTimeSeriesFacts(
                 isin, It.IsAny<IEnumerable<TimeSeriesFactDao>>())).ReturnsAsync(expectedCount);
 
-            var timeSerieData = new List<ITimeSeriesData>() { new TimeSeriesData( DateTime.UtcNow, 100.0m, 1000.0m),};
+            var timeSerieData = new List<ITimeSeriesFact>() { new TimeSeriesFact( DateTime.UtcNow, 100.0m, 1000.0m),};
             var timeSerie = new TimeSeries( timeSerieName, isin, timeSerieData);
 
             var dut = new StockHandling(stockRepositoryMock.Object, timeSeriesRepositoryMock.Object, _mapper);

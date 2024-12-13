@@ -1,6 +1,6 @@
 ﻿namespace ElisBackend.Core.Domain.Abstractions
 {
-    public interface IStockData
+    public interface IStockTimeSeries
     {
         string Name { get; }
         string Isin { get; }

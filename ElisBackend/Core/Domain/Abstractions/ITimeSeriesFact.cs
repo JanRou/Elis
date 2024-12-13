@@ -1,6 +1,6 @@
 ﻿namespace ElisBackend.Core.Domain.Abstractions;
 
-public interface ITimeSeriesData
+public interface ITimeSeriesFact
 {
     DateTime Date { get; } // Date is in UTC
     decimal Price { get; }

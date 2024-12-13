@@ -72,7 +72,7 @@ namespace ElisBackendTest {
             var timeSerieDataIn = new TimeSerieDataIn("2024-07-24T14:48:00.000Z", 100.0m, 1.0m);
 
             // Act
-            var result = _mapper.Map<TimeSeriesData>(timeSerieDataIn);
+            var result = _mapper.Map<TimeSeriesFact>(timeSerieDataIn);
             var resultReverse = _mapper.Map<TimeSerieDataIn>(result);
 
             // Assert
@@ -88,7 +88,7 @@ namespace ElisBackendTest {
             var timeSerieDataIn = new TimeSerieDataIn("2024-07-24T00:00:00.000Z", 100.1m, 1.1m);
 
             // Act
-            var result = _mapper.Map<TimeSeriesData>(timeSerieDataIn);
+            var result = _mapper.Map<TimeSeriesFact>(timeSerieDataIn);
             var resultReverse = _mapper.Map<TimeSerieDataIn>(result);
 
             // Assert
@@ -101,9 +101,9 @@ namespace ElisBackendTest {
         //[Theory, AutoData]
         public void TimeSeriesToTimeSeriesDaoTest() {
             // Arrange
-            var timeSerieData = new List<ITimeSeriesData>() {
-                new TimeSeriesData( new DateTime(2024, 07, 26, 00,00,00, DateTimeKind.Utc), 100.0m, 1.0m)
-              , new TimeSeriesData( new DateTime(2024, 07, 25, 00,00,00, DateTimeKind.Utc), 99.0m, 1.0m)
+            var timeSerieData = new List<ITimeSeriesFact>() {
+                new TimeSeriesFact( new DateTime(2024, 07, 26, 00,00,00, DateTimeKind.Utc), 100.0m, 1.0m)
+              , new TimeSeriesFact( new DateTime(2024, 07, 25, 00,00,00, DateTimeKind.Utc), 99.0m, 1.0m)
             };
             var timeSerie = new TimeSeries( "PricesAndVolumes", "123456", timeSerieData );
 
@@ -133,7 +133,7 @@ namespace ElisBackendTest {
             };
 
             // Act
-            var result = _mapper.Map<TimeSeriesData>(timeSeriesFact);
+            var result = _mapper.Map<TimeSeriesFact>(timeSeriesFact);
 
             // Assert
             Assert.Equal(timeSeriesFact.Price, result.Price);

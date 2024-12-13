@@ -1,15 +1,19 @@
 ﻿using ElisBackend.Presenters.GraphQLSchema.Stock;
 using GraphQL.Types;
 
-namespace ElisBackend.Presenters.GraphQLSchema {
-    public class ElisSubscriptions : ObjectGraphType {
-        public ElisSubscriptions() {
+namespace ElisBackend.Presenters.GraphQLSchema
+{
+    public class ElisSubscriptions : ObjectGraphType
+    {
+        public ElisSubscriptions()
+        {
             Description = "Subscribe to stock data changes";
             Field<StockSubscriptionType>("stocks").Resolve(ctx => new { });
         }
     }
 
-    public class StockSubscriptionType : ObjectGraphType {
+    public class StockSubscriptionType : ObjectGraphType
+    {
         public StockSubscriptionType()
         {
             //Field<StockDataSubscriptionResultType, Message>("subscribeToDataForStock")
@@ -29,7 +33,8 @@ namespace ElisBackend.Presenters.GraphQLSchema {
 
     }
 
-    public class StockDataSubscriptionResultType : ObjectGraphType {
+    public class StockDataSubscriptionResultType : ObjectGraphType
+    {
         public StockDataSubscriptionResultType()
         {
             Field<StockType>("stock").Resolve(ctx => new { });

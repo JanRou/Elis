@@ -2,7 +2,7 @@
 
 namespace ElisBackend.Core.Domain.Entities;
 
-public class TimeSeriesData(DateTime date, decimal price, decimal volume) : ITimeSeriesData
+public class TimeSeriesFact(DateTime date, decimal price, decimal volume) : ITimeSeriesFact
 {
     public DateTime Date { get; set; } = date;
     public decimal Price { get; set; } = price;

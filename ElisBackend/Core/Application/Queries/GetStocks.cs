@@ -3,7 +3,8 @@ using ElisBackend.Core.Domain.Abstractions;
 using ElisBackend.Core.Domain.Entities.Filters;
 using MediatR;
 
-namespace ElisBackend.Core.Application.Queries {
+namespace ElisBackend.Core.Application.Queries
+{
     public class GetStocks(FilterStock filter) : IRequest<IEnumerable<IStock>>
     {
         public FilterStock Filter { get; set; } = filter;
@@ -18,5 +19,4 @@ namespace ElisBackend.Core.Application.Queries {
             return await StockHandling.Get(request.Filter);
         }
     }
-
 }

@@ -1,4 +1,5 @@
-﻿namespace ElisBackend.Core.Domain.Entities.Filters {
+﻿namespace ElisBackend.Core.Domain.Entities.Filters
+{
     public class FilterStock : FilterBase {
         public string Name { get; set; }
         public string Isin { get; set; }

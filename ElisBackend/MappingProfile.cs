@@ -40,7 +40,7 @@ namespace ElisBackend
             CreateMap<StockDao, Stock>()
                 .ReverseMap()
                 ;
-            CreateMap<TimeSerieDataIn, TimeSeriesData>()
+            CreateMap<TimeSerieDataIn, TimeSeriesFact>()
                 .ReverseMap()
                 ;
             CreateMap<DateTime, DateDao>()
@@ -50,15 +50,15 @@ namespace ElisBackend
                 .ReverseMap()
                 .ConstructUsing(s => s.DateTimeUtc )
                 ;
-            CreateMap<TimeSeriesData, TimeSeriesFactDao>()
+            CreateMap<TimeSeriesFact, TimeSeriesFactDao>()
                 .ForMember(d => d.TimeSerieId, o => o.Ignore())
                 .ForMember(d => d.TimeSerie, o => o.Ignore())
                 .ForMember(d => d.DateId, o => o.Ignore())
                 .ReverseMap()
                 .ForMember(d => d.Date, o => o.MapFrom(s => s.Date.DateTimeUtc))
                 ;
-            CreateMap<TimeSeriesFactDao, ITimeSeriesData>()
-                .ConstructUsing(s => new TimeSeriesData(s.Date.DateTimeUtc, s.Price, s.Volume))
+            CreateMap<TimeSeriesFactDao, ITimeSeriesFact>()
+                .ConstructUsing(s => new TimeSeriesFact(s.Date.DateTimeUtc, s.Price, s.Volume))
                 .ReverseMap()
                 ;
             CreateMap<TimeSeries, TimeSeriesDao>()

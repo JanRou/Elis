@@ -2,11 +2,10 @@
 
 namespace ElisBackend.Core.Domain.Abstractions;
 
-// TimeSeries that can hold a stock's proces, volumes etc.
+// TimeSeries that can hold a stock's price, volume.
 
 public interface ITimeSeries
 {
-    string Name { get; }
-    string Isin { get; }
-    List<ITimeSeriesData> TimeSeriesData { get; }
+    string Name { get; } // Name of the time series like PricesAndVolumes, MACD, ...
+    List<ITimeSeriesFact> TimeSeriesData { get; }
 }

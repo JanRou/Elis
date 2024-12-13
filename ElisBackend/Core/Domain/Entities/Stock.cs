@@ -11,10 +11,3 @@ public class Stock(string name, string isin, string instrumentCode, Exchange exc
     public IExchange Exchange { get; private set; } = exchange;
     public ICurrency Currency { get; private set; } = currency;
 }
-
-public class StockData(string name, string isin, TimeSeries timeSeries) : IStockData
-{
-    public string Name { get; private set; } = name;
-    public string Isin { get; private set; } = isin;
-    public ITimeSeries TimeSeries { get; private set; } = timeSeries;
-}
