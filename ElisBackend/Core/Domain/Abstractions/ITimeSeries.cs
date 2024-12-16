@@ -7,5 +7,6 @@ namespace ElisBackend.Core.Domain.Abstractions;
 public interface ITimeSeries
 {
     string Name { get; } // Name of the time series like PricesAndVolumes, MACD, ...
+    string Isin {  get; } // Id of the stock
     List<ITimeSeriesFact> TimeSeriesData { get; }
 }

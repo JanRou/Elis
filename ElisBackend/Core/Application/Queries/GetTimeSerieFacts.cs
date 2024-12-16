@@ -5,18 +5,18 @@ using MediatR;
 
 namespace ElisBackend.Core.Application.Queries
 {
-    public class GetTimeSerieFacts(FilterTimeSerieFacts filter) : IRequest<IStockTimeSeries>
+    public class GetTimeSerieFacts(FilterTimeSerieFacts filter) : IRequest<ITimeSeries>
     {
         public FilterTimeSerieFacts Filter { get; set; } = filter;
     }
 
-    public class GetStockDataHandler(IStockHandling stockhandling) : IRequestHandler<GetTimeSerieFacts, IStockTimeSeries>
+    public class GetStockDataHandler(ITimeSeriesHandling timeSeriesHandling) : IRequestHandler<GetTimeSerieFacts, ITimeSeries>
     {
-        public IStockHandling StockHandling { get; } = stockhandling;
+        public ITimeSeriesHandling TimeSeriesHandling { get; } = timeSeriesHandling;
 
-        public async Task<IStockTimeSeries> Handle(GetTimeSerieFacts request, CancellationToken cancellationToken)
+        public async Task<ITimeSeries> Handle(GetTimeSerieFacts request, CancellationToken cancellationToken)
         {
-            return await StockHandling.GetTimeSerieFacts(request.Filter);
+            return await TimeSeriesHandling.GetTimeSeries(request.Filter);
         }
     }
 

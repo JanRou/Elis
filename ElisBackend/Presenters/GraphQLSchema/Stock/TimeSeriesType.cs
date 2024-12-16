@@ -3,9 +3,9 @@ using GraphQL.Types;
 
 namespace ElisBackend.Presenters.GraphQLSchema.Stock
 {
-    public class StockTimeSeriesType : ObjectGraphType<IStockTimeSeries>
+    public class TimeSeriesType : ObjectGraphType<ITimeSeries>
     {
-        public StockTimeSeriesType()
+        public TimeSeriesType()
         {
             Description = "Basic stock information";
             Field(s => s.Name).Description("The name of the stock");

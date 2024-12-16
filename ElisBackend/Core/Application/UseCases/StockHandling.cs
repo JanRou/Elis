@@ -47,13 +47,10 @@ namespace ElisBackend.Core.Application.UseCases
                 // Set timeSeriesId on all facts
                 var facts = timeSeriesDao.Facts.Where(t => t.TimeSerieId == 0)
                     .Select(t => new TimeSeriesFactDao() {
-                        Date = t.Date
-                        ,
-                        TimeSerieId = existingTimeSeriesId
-                        ,
-                        Price = t.Price
-                        ,
-                        Volume = t.Volume
+                          Date = t.Date
+                        , TimeSerieId = existingTimeSeriesId
+                        , Price = t.Price
+                        , Volume = t.Volume
                     });
                 result = await timeSeriesRepository.AddOrUpdateTimeSeriesFacts(timeSeries.Isin, facts);
             }

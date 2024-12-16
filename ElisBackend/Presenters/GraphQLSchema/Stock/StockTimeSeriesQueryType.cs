@@ -10,18 +10,17 @@ namespace ElisBackend.Presenters.GraphQLSchema.Stock
     {
         public StockTimeSeriesQueryType()
         {
-            Field<StockTimeSeriesType>("StockTimeSerieFacts")
+            Field<TimeSeriesType>("StockTimeSerieFacts")
                 .Argument<StringGraphType>("isin")
                 .Argument<StringGraphType>("stockname")
                 .Argument<StringGraphType>("timeseriesname")
                 .Argument<NonNullGraphType<StringGraphType>>("from")
                     .Description("Date in UTC ISO 8601 format: '2024-07-24T00:00:00.00000Z'")
                 .Argument<NonNullGraphType<StringGraphType>>("to")
-                    .Description("Date in UTC ISO 8601 format: '2024-07-24T00:00:00.00000Z'")
+                    .Description("Date in UTC ISO 8601 format: '2024-07-30T00:00:00.00000Z'")
                 .ResolveAsync(async context => {
                     var filter = new FilterTimeSerieFacts() {
                         Isin = context.GetArgument(Name = "isin", defaultValue: ""),
-                        Name = context.GetArgument(Name = "stockname", defaultValue: ""),
                         TimeSeriesName = context.GetArgument(Name = "timeseriesname", defaultValue: ""),
                         From = context.GetArgument(Name = "from", defaultValue: ""),
                         To = context.GetArgument(Name = "to", defaultValue: ""),
