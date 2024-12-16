@@ -19,5 +19,4 @@ namespace ElisBackend.Core.Application.Queries
             return await TimeSeriesHandling.GetTimeSeries(request.Filter);
         }
     }
-
 }

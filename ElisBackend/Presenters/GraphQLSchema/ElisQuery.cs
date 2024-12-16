@@ -14,7 +14,7 @@ namespace ElisBackend.Presenters.GraphQLSchema
         public ElisQuery() {
             Description = "Get stock, exchange and currency information";
             Field<StocksType>("stocks").Resolve(ctx => new { });
-            Field<TimeSeriesType>("stocks").Resolve(ctx => new { });
+            Field<StockTimeSeriesQueryType>("timeseries").Resolve(ctx => new { });
             Field<ExchangesType>("exchanges").Resolve(ctx => new { });
             Field<CurrenciesType>("currencies").Resolve(ctx => new { });
         }

@@ -14,6 +14,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddScoped<IStockRepository, StockRepository>();
 builder.Services.AddScoped<ITimeSeriesRepository, TimeSeriesRepository>();
 builder.Services.AddScoped<IStockHandling, StockHandling>();
+builder.Services.AddScoped<ITimeSeriesHandling, TimeSeriesHandling>();
 builder.Services.AddScoped<IExchangeRepository, ExchangeRepository>();
 builder.Services.AddScoped<IExchangeHandling, ExchangeHandling>();
 builder.Services.AddScoped<ICurrencyRepository, CurrencyRepository>();

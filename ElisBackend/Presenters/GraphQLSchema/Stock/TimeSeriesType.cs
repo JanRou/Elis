@@ -7,10 +7,10 @@ namespace ElisBackend.Presenters.GraphQLSchema.Stock
     {
         public TimeSeriesType()
         {
-            Description = "Basic stock information";
-            Field(s => s.Name).Description("The name of the stock");
+            Description = "Time series with facts";
             Field(s => s.Isin).Description("The ISIN code for the stock");
-            Field<ListGraphType<TimeSerieFactsType>>("TimeSerieFacts");
+            Field(s => s.Name).Description("The name of the time series");
+            Field<ListGraphType<TimeSeriesFactsType>>("timeSeriesData").Description("List of facts");
         }
     }
 }

@@ -12,7 +12,6 @@ namespace ElisBackend.Presenters.GraphQLSchema.Stock
         {
             Field<TimeSeriesType>("StockTimeSerieFacts")
                 .Argument<StringGraphType>("isin")
-                .Argument<StringGraphType>("stockname")
                 .Argument<StringGraphType>("timeseriesname")
                 .Argument<NonNullGraphType<StringGraphType>>("from")
                     .Description("Date in UTC ISO 8601 format: '2024-07-24T00:00:00.00000Z'")
