@@ -77,7 +77,7 @@ The procedure is:
 14. Run unit tests
 
 **TODOs**
-* Organize docker different database volumes for unit testing and production,
-* Insert tons of timeseries and facts to measure performance,
+* Program CQL subscriptions for time series,
 * Investigate CQL filtering and possibilities,
-* Program CQL subscriptions.
+* Insert tons of timeseries and facts to measure performance,
+* Organize docker different database volumes for unit testing and production.
