@@ -1,9 +1,8 @@
 ﻿using ElisBackend.Core.Domain.Abstractions;
-using Microsoft.EntityFrameworkCore.ChangeTracking.Internal;
 
 namespace ElisBackend.Core.Domain.Entities;
 
-// Aktie beskrivelse
+// Stock description
 public class Stock(string name, string isin, string instrumentCode, Exchange exchange, Currency currency) : IStock
 {
     public string Name { get; private set; } = name;

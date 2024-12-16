@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using ElisBackend;
 using ElisBackend.Core.Application.Dtos;
+using ElisBackend.Core.Domain.Abstractions;
 using ElisBackend.Core.Domain.Entities;
 using ElisBackend.Gateways.Repositories.Daos;
 using Moq;
@@ -71,7 +72,7 @@ namespace ElisBackendTest {
             var timeSerieDataIn = new TimeSerieDataIn("2024-07-24T14:48:00.000Z", 100.0m, 1.0m);
 
             // Act
-            var result = _mapper.Map<TimeSerieData>(timeSerieDataIn);
+            var result = _mapper.Map<TimeSeriesFact>(timeSerieDataIn);
             var resultReverse = _mapper.Map<TimeSerieDataIn>(result);
 
             // Assert
@@ -87,7 +88,7 @@ namespace ElisBackendTest {
             var timeSerieDataIn = new TimeSerieDataIn("2024-07-24T00:00:00.000Z", 100.1m, 1.1m);
 
             // Act
-            var result = _mapper.Map<TimeSerieData>(timeSerieDataIn);
+            var result = _mapper.Map<TimeSeriesFact>(timeSerieDataIn);
             var resultReverse = _mapper.Map<TimeSerieDataIn>(result);
 
             // Assert
@@ -98,11 +99,11 @@ namespace ElisBackendTest {
 
         [Fact]
         //[Theory, AutoData]
-        public void TimeSerieToTimeSerieDaoTest() {
+        public void TimeSeriesToTimeSeriesDaoTest() {
             // Arrange
-            var timeSerieData = new List<TimeSerieData>() {
-                new TimeSerieData( new DateTime(2024, 07, 26, 00,00,00, DateTimeKind.Utc), 100.0m, 1.0m)
-              , new TimeSerieData( new DateTime(2024, 07, 25, 00,00,00, DateTimeKind.Utc), 99.0m, 1.0m)
+            var timeSerieData = new List<ITimeSeriesFact>() {
+                new TimeSeriesFact( new DateTime(2024, 07, 26, 00,00,00, DateTimeKind.Utc), 100.0m, 1.0m)
+              , new TimeSeriesFact( new DateTime(2024, 07, 25, 00,00,00, DateTimeKind.Utc), 99.0m, 1.0m)
             };
             var timeSerie = new TimeSeries( "PricesAndVolumes", "123456", timeSerieData );
 
@@ -116,6 +117,28 @@ namespace ElisBackendTest {
             Assert.Equal(2, facts.Count);
             Assert.Equal(100.0m, facts[0].Price);
             Assert.Equal(1.0m, facts[0].Volume);
+            Assert.True(timeSerieData[0].Date.CompareTo(facts[0].Date.DateTimeUtc) == 0);
+            Assert.True(timeSerieData[1].Date.CompareTo(facts[1].Date.DateTimeUtc) == 0);
+        }
+
+        [Fact]
+        //[Theory, AutoData]
+        public void TimeSeriesFactDaoToITimeSeriesDataTest()
+        {
+            // Arrange
+            var timeSeriesFact = new TimeSeriesFactDao() {
+                Date = new DateDao() { DateTimeUtc = new DateTime(2024, 07, 26, 00, 00, 00, DateTimeKind.Utc) }
+                , Price = 100.0m
+                , Volume = 1.0m
+            };
+
+            // Act
+            var result = _mapper.Map<TimeSeriesFact>(timeSeriesFact);
+
+            // Assert
+            Assert.Equal(timeSeriesFact.Price, result.Price);
+            Assert.Equal(timeSeriesFact.Volume, result.Volume);
+            Assert.True( timeSeriesFact.Date.DateTimeUtc.CompareTo(result.Date)==0);
         }
     }
 }

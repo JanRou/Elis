@@ -1,4 +1,5 @@
-﻿namespace ElisBackend.Core.Application.Dtos {
+﻿namespace ElisBackend.Core.Application.Dtos
+{
     public class TimeSerieDataIn(string date, decimal price, decimal volume)
     {
         public string Date { get; set; } = date;

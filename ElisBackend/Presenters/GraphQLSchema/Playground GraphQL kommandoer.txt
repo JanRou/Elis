@@ -36,6 +36,20 @@ Simpel søgning henter 5 første aktier, skipper ingen og viser aktiens navn, b�
   }
 }
 
+{
+  timeseries {
+    stockTimeSerieFacts(  isin: "DK0062498333", timeseriesname: "PricesAndVolumes", from: "1980-07-11 02:00:00+00", to: "1980-07-24 02:00:00+00") {
+      isin,
+      name,
+      timeSeriesData {
+        date
+        price
+        volume
+      }
+  	}
+  }
+}
+
 mutation {
 	stock {
  		create(stock:{name:"Test",isin:"123456879",instrumentcode:"CSE123456",exchangename:"XCSE",currencycode:"DKK" }) {

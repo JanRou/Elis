@@ -4,9 +4,12 @@ using GraphQL;
 using GraphQL.Types;
 using MediatR;
 
-namespace ElisBackend.Presenters.GraphQLSchema.Stock {
-    public class StocksType : ObjectGraphType {
-        public StocksType() {
+namespace ElisBackend.Presenters.GraphQLSchema.Stock
+{
+    public class StocksType : ObjectGraphType
+    {
+        public StocksType()
+        {
             Field<ListGraphType<StockType>>("stocks")
                 .Argument<StringGraphType>("isin")
                 .Argument<StringGraphType>("name")
@@ -30,5 +33,4 @@ namespace ElisBackend.Presenters.GraphQLSchema.Stock {
         }
     }
 }
-
 

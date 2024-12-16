@@ -1,8 +1,8 @@
 using AutoMapper;
-using AutoMapper.Configuration.Annotations;
 using ElisBackend;
 using ElisBackend.Core.Application.Dtos;
 using ElisBackend.Core.Application.UseCases;
+using ElisBackend.Core.Domain.Abstractions;
 using ElisBackend.Core.Domain.Entities;
 using ElisBackend.Core.Domain.Entities.Filters;
 using ElisBackend.Gateways.Repositories.Daos;
@@ -10,27 +10,31 @@ using ElisBackend.Gateways.Repositories.Stock;
 using ElisBackend.Gateways.Repositories.TimeSeries;
 using Moq;
 
-namespace ElisBackendTest {
+namespace ElisBackendTest
+{
 
-    public class StockHandlingTest {
+    public class StockHandlingTest
+    {
         public StockHandlingTest()
         {
             Setup();
         }
 
         private IMapper _mapper;
-        private void Setup() {
+        private void Setup()
+        {
 
             _mapper = new MapperConfiguration(c => c.AddProfile<MappingProfile>()).CreateMapper();
         }
 
         [Fact]
-        public async Task GetTest() {
+        public async Task GetTest()
+        {
             // Arrange
             var stockRepositoryMock = new Mock<IStockRepository>();
             var timeSeriesRepositoryMock = new Mock<ITimeSeriesRepository>();
-            var filter = new FilterStock() { Name= "Test" };
-            var daos = new List<StockDao>() { new StockDao() { Id=1, Name="Test", CurrencyId = 1, ExchangeId=1 } };
+            var filter = new FilterStock() { Name = "Test" };
+            var daos = new List<StockDao>() { new StockDao() { Id = 1, Name = "Test", CurrencyId = 1, ExchangeId = 1 } };
             stockRepositoryMock.Setup(r => r.Get(filter)).ReturnsAsync(daos);
 
             var dut = new StockHandling(stockRepositoryMock.Object, timeSeriesRepositoryMock.Object, _mapper);
@@ -47,17 +51,25 @@ namespace ElisBackendTest {
         }
 
         [Fact]
-        public async Task AddTest() {
+        public async Task AddTest()
+        {
             // Arrange
             var stockRepositoryMock = new Mock<IStockRepository>();
             var timeSeriesRepositoryMock = new Mock<ITimeSeriesRepository>();
-            var dao = new StockDao() { Id=1, Name = "Test", Isin = "123456789", CurrencyId = 1, ExchangeId = 1
-                                , Exchange = new ExchangeDao() { Id=1, Name = "Exchange", Country="Danmark", Url= "http:localhost" }
-                                , Currency = new CurrencyDao() { Id=1, Name = "Danske kroner", Code="DKK"}
-                            };
-            var stock = new Stock( "Test", "123456789", "CSE123456"
-                , new Exchange( "Exchange", null, null)
-                , new Currency( null, "DKK") );
+            var dao = new StockDao() {
+                Id = 1,
+                Name = "Test",
+                Isin = "123456789",
+                CurrencyId = 1,
+                ExchangeId = 1
+                                ,
+                Exchange = new ExchangeDao() { Id = 1, Name = "Exchange", Country = "Danmark", Url = "http:localhost" }
+                                ,
+                Currency = new CurrencyDao() { Id = 1, Name = "Danske kroner", Code = "DKK" }
+            };
+            var stock = new Stock("Test", "123456789", "CSE123456"
+                , new Exchange("Exchange", null, null)
+                , new Currency(null, "DKK"));
             stockRepositoryMock.Setup(r => r.Add(It.IsAny<StockDao>())).ReturnsAsync(dao);
 
             var dut = new StockHandling(stockRepositoryMock.Object, timeSeriesRepositoryMock.Object, _mapper);
@@ -76,7 +88,8 @@ namespace ElisBackendTest {
 
         [Fact]
         //[Theory]
-        public async Task AddDataOkTest() {
+        public async Task AddDataOkTest()
+        {
             // Arrange
             int expectedCount = 1;
             string timeSerieName = "PriceAndVolume";
@@ -90,8 +103,8 @@ namespace ElisBackendTest {
             timeSeriesRepositoryMock.Setup(t => t.AddOrUpdateTimeSeriesFacts(
                 isin, It.IsAny<IEnumerable<TimeSeriesFactDao>>())).ReturnsAsync(expectedCount);
 
-            var timeSerieData = new List<TimeSerieData>() { new TimeSerieData( DateTime.UtcNow, 100.0m, 1000.0m),};
-            var timeSerie = new TimeSeries( timeSerieName, isin, timeSerieData);
+            var timeSerieData = new List<ITimeSeriesFact>() { new TimeSeriesFact(DateTime.UtcNow, 100.0m, 1000.0m), };
+            var timeSerie = new TimeSeries(timeSerieName, isin, timeSerieData);
 
             var dut = new StockHandling(stockRepositoryMock.Object, timeSeriesRepositoryMock.Object, _mapper);
 

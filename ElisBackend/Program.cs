@@ -14,6 +14,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddScoped<IStockRepository, StockRepository>();
 builder.Services.AddScoped<ITimeSeriesRepository, TimeSeriesRepository>();
 builder.Services.AddScoped<IStockHandling, StockHandling>();
+builder.Services.AddScoped<ITimeSeriesHandling, TimeSeriesHandling>();
 builder.Services.AddScoped<IExchangeRepository, ExchangeRepository>();
 builder.Services.AddScoped<IExchangeHandling, ExchangeHandling>();
 builder.Services.AddScoped<ICurrencyRepository, CurrencyRepository>();
@@ -38,7 +39,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-// ElisDb med EntityFramework Core med PostgreSQL
+// ElisDb PostGres database
 builder.Services.AddDbContext<ElisContext>(options => {
     options.UseNpgsql(builder.Configuration.GetConnectionString("ElisDb"));
     options.LogTo(Console.WriteLine, LogLevel.Information);
