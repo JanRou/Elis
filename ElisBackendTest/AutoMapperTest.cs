@@ -83,6 +83,25 @@ namespace ElisBackendTest {
 
         [Fact]
         //[Theory, AutoData]
+        public void ListOfTimeSerieDataInToListOfITimeSerieFactTest()
+        {
+            // Arrange
+            var listTimeSerieDataIn = new List<TimeSerieDataIn>() {
+                new TimeSerieDataIn("2024-07-24T14:48:00.000Z", 100.0m, 1.0m)
+            };
+
+            // Act
+            var result = _mapper.Map<List<ITimeSeriesFact>>(listTimeSerieDataIn);
+
+            // Assert
+            Assert.NotNull(result);
+            var resultList = result.ToList();
+            Assert.Equal(listTimeSerieDataIn[0].Price, resultList[0].Price);
+            Assert.Equal(listTimeSerieDataIn[0].Volume, resultList[0].Volume);
+        }
+
+        [Fact]
+        //[Theory, AutoData]
         public void TimeSerieDataInToTimeSerieDataDateOnlyTest() {
             // Arrange
             var timeSerieDataIn = new TimeSerieDataIn("2024-07-24T00:00:00.000Z", 100.1m, 1.1m);

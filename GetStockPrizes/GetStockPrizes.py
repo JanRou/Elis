@@ -11,24 +11,18 @@ import asyncio
 from gql import Client, gql
 from gql.transport.httpx import HTTPXAsyncTransport
 
-def getStockPrizesFromNasdaqNordic(instrument, isin, name, fromDay, toDay):
-    ## konsolidatorUrlKurser='http://www.nasdaqomxnordic.com/aktier/microsite?Instrument=CSE172620&name=Konsolidator&ISIN=DK0061113511'
-    ## GAMLE konsolidatorUrl='http://www.nasdaqomxnordic.com/webproxy/DataFeedProxy.aspx?SubSystem=History&Action=GetChartData&inst.an=id%2Cnm%2Cfnm%2Cisin%2Ctp%2Cchp%2Cycp&FromDate=20200415&ToDate=20210416&json=true&showAdjusted=true&app=%2Faktier%2Fmicrosite-MicrositeChart-history&timezone=CET&DefaultDecimals=false&Instrument=CSE172620'
-    ## NYE konsolidatorUrl='https://www.nasdaqomxnordic.com/webproxy/DataFeedProxy.aspx?SubSystem=History&Action=GetChartData&inst.an=id%2Cnm%2Cfnm%2Cisin%2Ctp%2Cchp%2Cycp&FromDate=1986-01-01&ToDate=2024-06-25&json=true&showAdjusted=true&app=%2Faktier%2Fmicrosite-MicrositeChart-history&timezone=CET&DefaultDecimals=false&Instrument=CSE172620'
-    ## 
-    # https://www.nasdaqomxnordic.com/aktier/microsite?Instrument=CSE172620&name=Konsolidator&ISIN=DK0061113511
-    url  = 'http://www.nasdaqomxnordic.com/aktier/microsite?'
-    url += 'Instrument=' + instrument
-    url += '&name=' + name
-    url += '&ISIN=' + isin
+def getStockPrizesAndVolumesFromNasdaq(instrument, fromDate, toDate):
+    # web API calls to Nasdaq:
+    # https://api.nasdaq.com/api/nordic/instruments/SSE130710/chart?assetClass=SHARES&fromDate=2020-01-13&toDate=2025-01-13&lang=en
+    # https://api.nasdaq.com/api/nordic/instruments/CSE3456/chart?assetClass=SHARES&fromDate=2020-01-13&toDate=2025-01-13&lang=en
 
-    quoteUrl  = 'http://www.nasdaqomxnordic.com/webproxy/DataFeedProxy.aspx?SubSystem=History&Action=GetChartData&inst.an=id%2Cnm%2Cfnm%2Cisin%2Ctp%2Cchp%2Cycp&'
-    quoteUrl += 'FromDate=' + fromDay
-    quoteUrl += '&ToDate=' + toDay
-    quoteUrl += '&json=true&showAdjusted=true&app=%2Faktier%2Fmicrosite-MicrositeChart-history&timezone=CET&DefaultDecimals=false&'
-    quoteUrl += 'Instrument=' + instrument
+    url = 'https://api.nasdaq.com/api/nordic/instruments/'
+    url += instrument 
+    url += '/chart?assetClass=SHARES'
+    url += '&fromDate=' + fromDate
+    url += '&toDate=' + toDate
+    url += '&lang=en'
 
-    result = []
     header = {
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:87.0) Gecko/20100101 Firefox/87.0'
             , 'Accept-Language': 'da,en-US;q=0.7,en;q=0.3'
@@ -40,13 +34,6 @@ def getStockPrizesFromNasdaqNordic(instrument, isin, name, fromDay, toDay):
     session.headers = header;
 
     resp = session.get(url)
-    time.sleep(5)
-
-    session.headers.update({'X-Requested-With': 'XMLHttpRequest'})
-    session.headers.update({'Content-Type':	'application/json; charset=UTF-8'})
-    #print('Get prizes for ' + name)
-    resp= session.get( quoteUrl )
-
     return resp.json()
 
 def getExchangeDay( exchangeDay ):
@@ -104,18 +91,23 @@ async def setStockData(stockDataMutation):
         result = await session.execute(mutation)
         return result['stock']['adddata']['isin']
 
-def convertUnixDateTimeToStringZuluDate(unixdate):
-     elisDateTimeFormat = '%Y-%m-%dT%H:%M:%S.%fZ'
+def convertUnixDateTimeToStringZuluDate(unixdate, elisDateTimeFormat):
      return datetime.datetime.fromtimestamp(int(unixdate/1000)).strftime(elisDateTimeFormat)
 
+def convertNasdaqDateToStringZuluDate(date, elisDateTimeFormat, nasdaqDateFormat):
+     return datetime.datetime.strptime(date,nasdaqDateFormat).strftime(elisDateTimeFormat)
+
 # Generator of date, prize tuple
-def getTimeSeriesFactsFromJsonResponse(jsonResp):    
+def getTimeSeriesFactsFromJsonResponse(jsonResp, elisDateTimeFormat, nasdaqDateFormat):    
     data = jsonResp['data']
-    chartData = data[0]['chartData']
-    for datePrize in chartData['cp']:
-        date = convertUnixDateTimeToStringZuluDate(datePrize[0])
-        prize = str(datePrize[1])
-        yield date, prize
+    chartData = data['chartData']
+    cp = data['CP']
+    for datePrize in cp:
+        z = datePrize['z']
+        dateTime = convertNasdaqDateToStringZuluDate(z['dateTime'], elisDateTimeFormat, nasdaqDateFormat)
+        close = z['close'].replace(',','')
+        volume = z['volume'].replace(',','')
+        yield dateTime, close, volume
 
 def appendStockDataInput(stringBuilder, isin, timeseriename):
     stringBuilder.append("stockDataInput:{isin:")
@@ -124,61 +116,98 @@ def appendStockDataInput(stringBuilder, isin, timeseriename):
     stringBuilder.append("\",")
     stringBuilder.append("timeseriename:\"")
     stringBuilder.append(timeseriename)
-    stringBuilder.append("\"},")
+    stringBuilder.append("\"}")
 
-def appendDatePrize(stringBuilder, datePrize):
+def appendDatePriceVolume(stringBuilder, prizeAndVolume):
     stringBuilder.append("{date:\"")
-    stringBuilder.append(datePrize[0])
+    stringBuilder.append(prizeAndVolume[0])
     stringBuilder.append("\",")
     stringBuilder.append("price:")
-    stringBuilder.append(datePrize[1])
+    stringBuilder.append(prizeAndVolume[1])
     stringBuilder.append(",")
     stringBuilder.append("volume:")
-    stringBuilder.append("0.00}")
+    stringBuilder.append(prizeAndVolume[2])
+    stringBuilder.append("}")
 
-def createStockDataMutationFromNasdaqNordicResponse(isin, timeseriename, resp):
+def createStockDataMutationFromNasdaqNordicResponse(isin, timeseriename, resp, elisDateTimeFormat, nasdaqDateFormat):
     stringBuilder = []
-    stringBuilder.append("mutation{stock{adddata(")
+    stringBuilder.append('mutation{stock{adddata(')
     appendStockDataInput(stringBuilder, isin, timeseriename)
-    stringBuilder.append(",timeSerieDataInput:")
+    stringBuilder.append(',timeSerieDataInput:')
     stringBuilder.append("[")
     first = True
-    for datePrize in getTimeSeriesFactsFromJsonResponse(resp):
+    for prizeAndVolume in getTimeSeriesFactsFromJsonResponse(resp, elisDateTimeFormat, nasdaqDateFormat):
         if not first:
-            stringBuilder.append(",")
-        else:
-            first = False
-        appendDatePrize(stringBuilder, datePrize)
-    stringBuilder.append("]){")
-    stringBuilder.append("isin")
-    stringBuilder.append("}}}")
+            stringBuilder.append(',')
+        first = False
+        appendDatePriceVolume(stringBuilder, prizeAndVolume)
+    stringBuilder.append(']){')
+    stringBuilder.append('isin')
+    stringBuilder.append('}}}')
 
     return ''.join(stringBuilder)
 
-async def main():
-    # For debug
-    # jsonResp = json.loads("""{"@status": "1", "@ts": "1727529812289", "data": [{"instData": {"@id": "SSE130710", "@nm": "ACARIX", "@fnm": "Acarix", "@isin": "SE0009268717", "@tp": "S", "@chp": "0.0", "@ycp": "0.307"}, "chartData": {"cp": [[1722470400000, 0.49], [1722556800000, 0.449], [1722816000000, 0.42], [1722902400000, 0.424], [1722988800000, 0.4385], [1723075200000, 0.439], [1723161600000, 0.406], [1723420800000, 0.405], [1723507200000, 0.3925], [1723593600000, 0.36], [1723680000000, 0.36], [1723766400000, 0.3665], [1724025600000, 0.325], [1724112000000, 0.3445], [1724198400000, 0.33], [1724284800000, 0.3195], [1724371200000, 0.308], [1724630400000, 0.274], [1724716800000, 0.2765], [1724803200000, 0.289], [1724889600000, 0.282], [1724976000000, 0.28], [1725235200000, 0.356], [1725321600000, 0.3215], [1725408000000, 0.316], [1725494400000, 0.3105], [1725580800000, 0.339], [1725840000000, 0.347], [1725926400000, 0.339], [1726012800000, 0.304], [1726099200000, 0.3215], [1726185600000, 0.314], [1726444800000, 0.314], [1726531200000, 0.3255], [1726617600000, 0.335], [1726704000000, 0.3335], [1726790400000, 0.33], [1727049600000, 0.304], [1727136000000, 0.2965], [1727222400000, 0.301], [1727308800000, 0.307], [1727395200000, 0.307]]}}]}""")
-
+async def main(beginDate, elisDateTimeFormat, nasdaqDateFormat):
+    # TODO magic start date
     print('')
 
     # 1. Get stock instrument code from backend
     stocks = await getStocks(exchange='XCSE') # get all nasdag nordic
 
-    nasdaqDateFormat = '%Y%m%d'
-    fraDato = datetime.datetime.strptime( '20180101', nasdaqDateFormat)
-    start = getExchangeDay(fraDato).strftime(nasdaqDateFormat)
-    end = getExchangeDay(datetime.date.today()).strftime(nasdaqDateFormat)
+    fromDate = datetime.datetime.strptime( beginDate, nasdaqDateFormat)
+    startDate = getExchangeDay(fromDate).strftime(nasdaqDateFormat)
+    endDate = getExchangeDay(datetime.date.today()).strftime(nasdaqDateFormat)
 
     for stock in stocks:
         # 2. Get timeseries from Nasdaq Nordic as json response
-        print('Henter fra Nasdaq: ' + stock['name'] + ', ' + stock['isin'])
-        resp = getStockPrizesFromNasdaqNordic( stock['instrumentCode'], stock['isin'], stock['name'], start, end)
+        print('Gets from Nasdaq: ' + stock['name'] + ', ' + stock['isin'])
+        resp = getStockPrizesAndVolumesFromNasdaq( stock['instrumentCode'], startDate, endDate)
         # 3. Store timeseries for stock in backend as GraphQL mutation
-        stockDataMutation = createStockDataMutationFromNasdaqNordicResponse(stock['isin'], 'DateAndPrize', resp)
+        stockDataMutation = createStockDataMutationFromNasdaqNordicResponse(stock['isin'], 'PriceAndVolume', resp, elisDateTimeFormat, nasdaqDateFormat)
         print(stockDataMutation)
         result = await setStockData(stockDataMutation)
         # TODO Response from nasdag may be so slow that http transport times out for backend
-        print('Gemt i db: ' + result)
+        print('Stored ' + result)
 
 
-asyncio.run(main())
+def testcreateStockDataMutationFromNasdaqNordicResponse(elisDateTimeFormat, nasdaqDateFormat):
+    # Test with Acarix isin "SE0009268717", instrumentcode "SSE130710"
+    # Response for web-api call: https://api.nasdaq.com/api/nordic/instruments/SSE130710/chart?assetClass=SHARES&fromDate=2025-01-06&toDate=2025-01-10&lang=en
+    resp = json.loads("""{"data":{"chartData":{"orderbookId":"SSE130710","assetClass":"SHARES","isin":"SE0009268717","symbol":"ACARIX","company":"Acarix","timeAsOf":"2025-01-10","lastSalePrice":"SEK 0.2465","netChange":"-0.002","percentageChange":"-0.80%","deltaIndicator":"up","previousClose":"SEK 0.2485"},"CP":[{"z":{"dateTime":"2025-01-07","value":"0.2425","high":"0.243","low":"0.2375","open":"0.241","close":"0.2425","volume":"2,628,986"},"x":1736208000,"y":0.2425},{"z":{"dateTime":"2025-01-08","value":"0.2435","high":"0.25","low":"0.22","open":"0.25","close":"0.2435","volume":"6,548,534"},"x":1736294400,"y":0.2435},{"z":{"dateTime":"2025-01-09","value":"0.2595","high":"0.2595","low":"0.2405","open":"0.2435","close":"0.2595","volume":"1,543,435"},"x":1736380800,"y":0.2595},{"z":{"dateTime":"2025-01-10","value":"0.252","high":"0.262","low":"0.24","open":"0.26","close":"0.252","volume":"2,996,697"},"x":1736467200,"y":0.252}]},"messages":null,"status":{"timestamp":"2025-01-14T10:53:39+0100","rCode":200,"bCodeMessage":null,"developerMessage":""}}""")
+    stockDataMutation = createStockDataMutationFromNasdaqNordicResponse( 'SE0009268717', 'PriceAndVolume', resp, elisDateTimeFormat, nasdaqDateFormat)
+    print('')
+    print(stockDataMutation)
+    # Result
+    # mutation {
+    #   stock {
+    #     adddata(
+    #       stockDataInput: { isin: "SE0009268717", timeseriename: "PriceAndVolume" }
+    #       timeSerieDataInput: [
+    #         { date: "2025-01-07T00:00:00.000000Z", price: 0.2425, volume: 2628986 }
+    #         { date: "2025-01-08T00:00:00.000000Z", price: 0.2435, volume: 6548534 }
+    #         { date: "2025-01-09T00:00:00.000000Z", price: 0.2595, volume: 1543435 }
+    #         { date: "2025-01-10T00:00:00.000000Z", price: 0.252, volume: 2996697 }
+    #       ]
+    #     ) {
+    #       isin
+    #     }
+    #   }
+    # }    
+    # Should look like this:
+    # mutation {
+	#   stock {
+ 	# 	  adddata( 
+	# 	   	stockDataInput: {isin: "isincode", timeseriename: "name"},
+	# 	    timeSerieDataInput: [ { date:"date and time in zulu like: 2024-07-24T02:00:00.000Z", price: 110.00, volume: 1.00 } ] 
+    #     ) {
+    #       isin
+    #     }
+	#   }
+    # }
+
+elisDateTimeFormat = '%Y-%m-%dT%H:%M:%S.%fZ'
+nasdaqDateFormat = '%Y-%m-%d'
+beginDate = '2020-01-13'
+
+testcreateStockDataMutationFromNasdaqNordicResponse(elisDateTimeFormat, nasdaqDateFormat)
+#asyncio.run(main(beginDate, elisDateTimeFormat, nasdaqDateFormat))
