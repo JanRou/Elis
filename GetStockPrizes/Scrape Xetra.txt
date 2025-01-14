@@ -1,0 +1,9 @@
+Scrape Xetra
+
+https://api.boerse-frankfurt.de/v1/tradingview/history?symbol=XETR%3ADE000A0H08J9&resolution=1W&from=1537747200&to=1736812800&countback=330
+
+https://api.boerse-frankfurt.de/v1/tradingview/history?symbol=XETR%3ADE000A0H08J9&resolution=1M&from=-860025600&to=1736812800&countback=987
+
+https://api.boerse-frankfurt.de/v1/tradingview/history?symbol=XETR%3ADE000A0H08J9&resolution=1W&from=1730735527&to=1736783527&countback=2
+
+https://api.boerse-frankfurt.de/v1/tradingview/history?symbol=XETR%3ADE000A0H08J9&resolution=1D&from=1735919734&to=1736783734&countback=2
