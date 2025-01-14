@@ -6,6 +6,7 @@ using ElisBackend.Gateways.Repositories.Stock;
 using ElisBackend.Gateways.Repositories.TimeSeries;
 using ElisBackend.Presenters.GraphQLSchema;
 using GraphQL;
+using GraphQL.Server.Ui.GraphiQL;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -47,7 +48,7 @@ builder.Services.AddDbContext<ElisContext>(options => {
 
 builder.Services.AddHealthChecks().AddDbContextCheck<ElisContext>();
 
-// TODO Restrict how ever for now allow every call regarding CORS
+// TODO Restrict, how ever for now allow every call regarding CORS
 builder.Services.AddCors(options => {
     options.AddPolicy(
         name: "default",
@@ -72,13 +73,6 @@ app.UseWebSockets();
 
 app.UseGraphQL("/graphql");            // url to host GraphQL endpoint
 
-app.UseGraphQLPlayground(
-    "/",                               // url to host Playground at
-    new GraphQL.Server.Ui.Playground.PlaygroundOptions {
-        GraphQLEndPoint = "/graphql",         // url of GraphQL endpoint
-        SubscriptionsEndPoint = "/graphql",   // url of GraphQL endpoint
-    });
-
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment()) {
     app.UseSwagger();
@@ -86,6 +80,11 @@ if (app.Environment.IsDevelopment()) {
 }
 
 app.UseHttpsRedirection();
+
+app.UseGraphQLGraphiQL("/", new GraphiQLOptions() {
+    GraphQLEndPoint = "/graphql",         // url of GraphQL endpoint
+    SubscriptionsEndPoint = "/graphql",   // url of GraphQL endpoint
+});
 
 app.MapControllers();
 app.MapHealthChecks("/health");

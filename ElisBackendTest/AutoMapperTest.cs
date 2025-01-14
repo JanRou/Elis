@@ -87,7 +87,7 @@ namespace ElisBackendTest {
         {
             // Arrange
             var listTimeSerieDataIn = new List<TimeSerieDataIn>() {
-                new TimeSerieDataIn("2024-07-24T14:48:00.000Z", 100.0m, 1.0m)
+                new TimeSerieDataIn("2020-01-14T00:00:00.000000Z", 100.0m, 1.0m)
             };
 
             // Act

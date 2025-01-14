@@ -21,10 +21,12 @@ namespace ElisBackend.Core.Application.Command
         public async Task<StockDataOut> Handle(AddStockData request, CancellationToken cancellationToken)
         {
             List<ITimeSeriesFact> timeSerieData = mapper.Map<List<ITimeSeriesFact>>(request.TimeSerieDataIn);
+
             // Note: the mapper converts the string date from GraphQL to a DateTime
             var timeserie = new TimeSeries(request.StockData.TimeSerieName
                                                 , request.StockData.Isin, timeSerieData);
             return await stockHandling.AddData(timeserie);
+
         }
     }
 }

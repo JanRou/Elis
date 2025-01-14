@@ -8,6 +8,7 @@ import requests
 
 # GraphQl client
 import asyncio
+import httpx
 from gql import Client, gql
 from gql.transport.httpx import HTTPXAsyncTransport
 
@@ -41,10 +42,10 @@ def getExchangeDay( exchangeDay ):
         exchangeDay -= datetime.timedelta(days=1)
     return exchangeDay
 
-def createCqlTransport():
+def createCqlTransport(timeout):
     # Select your transport with a defined url endpoint
     # TODO Use https - how ever gives ssl certificate error
-    return HTTPXAsyncTransport(url="http://localhost:54676/graphql")
+    return HTTPXAsyncTransport(url="http://localhost:54676/graphql", timeout=timeout)
 
 def buildCqlQueryString(isin='', exchange=''):
     # query = """{stocks{stocks( isin: "12323", take: 0, skip: 0 ) {name, isin, instrumentCode}}}""""
@@ -66,7 +67,8 @@ def buildCqlQueryString(isin='', exchange=''):
 async def getStocks(isin='', exchange=''):
     # Create a GraphQL client using the defined transport
     # TODO authentication
-    transport = createCqlTransport()    
+    hxto = httpx.Timeout(300.0)
+    transport = createCqlTransport(hxto)
     async with Client(
         transport=transport,
         execute_timeout=300.0,
@@ -81,8 +83,9 @@ async def getStocks(isin='', exchange=''):
 async def setStockData(stockDataMutation):
     # Create a GraphQL client using the defined transport
     # TODO authentication
-    transport = createCqlTransport()
-    async with Client(
+    hxto = httpx.Timeout(300.0)
+    transport = createCqlTransport(hxto)
+    async with Client (
         transport=transport,
         execute_timeout=300.0
     ) as session:
@@ -97,16 +100,22 @@ def convertUnixDateTimeToStringZuluDate(unixdate, elisDateTimeFormat):
 def convertNasdaqDateToStringZuluDate(date, elisDateTimeFormat, nasdaqDateFormat):
      return datetime.datetime.strptime(date,nasdaqDateFormat).strftime(elisDateTimeFormat)
 
+def parseNasdaqData(x):
+    result = x.replace(',','')
+    if len(result) == 0:
+        result = '0.00'
+    return result
+
 # Generator of date, prize tuple
 def getTimeSeriesFactsFromJsonResponse(jsonResp, elisDateTimeFormat, nasdaqDateFormat):    
     data = jsonResp['data']
     chartData = data['chartData']
     cp = data['CP']
-    for datePrize in cp:
-        z = datePrize['z']
+    for datePriceAndVolume in cp:
+        z = datePriceAndVolume['z']
         dateTime = convertNasdaqDateToStringZuluDate(z['dateTime'], elisDateTimeFormat, nasdaqDateFormat)
-        close = z['close'].replace(',','')
-        volume = z['volume'].replace(',','')
+        close = parseNasdaqData(z['close'])
+        volume = parseNasdaqData(z['volume'])
         yield dateTime, close, volume
 
 def appendStockDataInput(stringBuilder, isin, timeseriename):
@@ -147,8 +156,13 @@ def createStockDataMutationFromNasdaqNordicResponse(isin, timeseriename, resp, e
 
     return ''.join(stringBuilder)
 
+async def saveInCqlFile( name, data):
+    fileName = name + '_Cql.txt'
+    with open(fileName, "w") as txtfile:
+        txtfile.write(data)
+
 async def main(beginDate, elisDateTimeFormat, nasdaqDateFormat):
-    # TODO magic start date
+
     print('')
 
     # 1. Get stock instrument code from backend
@@ -164,7 +178,7 @@ async def main(beginDate, elisDateTimeFormat, nasdaqDateFormat):
         resp = getStockPrizesAndVolumesFromNasdaq( stock['instrumentCode'], startDate, endDate)
         # 3. Store timeseries for stock in backend as GraphQL mutation
         stockDataMutation = createStockDataMutationFromNasdaqNordicResponse(stock['isin'], 'PriceAndVolume', resp, elisDateTimeFormat, nasdaqDateFormat)
-        print(stockDataMutation)
+        await saveInCqlFile( stock['isin'], stockDataMutation)
         result = await setStockData(stockDataMutation)
         # TODO Response from nasdag may be so slow that http transport times out for backend
         print('Stored ' + result)
@@ -207,7 +221,7 @@ def testcreateStockDataMutationFromNasdaqNordicResponse(elisDateTimeFormat, nasd
 
 elisDateTimeFormat = '%Y-%m-%dT%H:%M:%S.%fZ'
 nasdaqDateFormat = '%Y-%m-%d'
-beginDate = '2020-01-13'
+beginDate = '2015-01-01'
 
-testcreateStockDataMutationFromNasdaqNordicResponse(elisDateTimeFormat, nasdaqDateFormat)
-#asyncio.run(main(beginDate, elisDateTimeFormat, nasdaqDateFormat))
+#testcreateStockDataMutationFromNasdaqNordicResponse(elisDateTimeFormat, nasdaqDateFormat)
+asyncio.run(main(beginDate, elisDateTimeFormat, nasdaqDateFormat))
