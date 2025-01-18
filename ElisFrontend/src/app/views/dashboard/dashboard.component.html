@@ -10,7 +10,22 @@
         <mat-panel-description>
           {{stock.exchange}}
         </mat-panel-description>
-      </mat-expansion-panel-header>  
-      <p>{{stock.name}}, {{stock.isin}}, {{stock.currency}}, {{stock.exchange}}, {{stock.instrumentCode}}</p>
+      </mat-expansion-panel-header>
+      <table style="width:100%">
+        <tr>
+          <th>Name</th>
+          <th>Isin</th>
+          <th>Currency</th>        
+          <th>Exchange</th>
+          <th>Instrument code</th>
+        </tr>
+        <tr>
+          <td>{{stock.name}}</td>
+          <td>{{stock.isin}}</td>
+          <td>{{stock.currency}}</td>
+          <td>{{stock.exchange}}</td>
+          <td>{{stock.instrumentCode}}</td>
+        </tr>
+      </table>
   </mat-expansion-panel>
 </mat-accordion>
