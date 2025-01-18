@@ -1,7 +1,6 @@
 import { Component, ViewChild } from '@angular/core';
-import { BreakpointObserver } from '@angular/cdk/layout';
 import { CommonModule } from '@angular/common';
-import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
+import { RouterLink, RouterOutlet } from '@angular/router';
 
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatButtonModule } from '@angular/material/button';
@@ -11,25 +10,23 @@ import { MatSidenav } from '@angular/material/sidenav';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatListModule } from '@angular/material/list';
 
-import { HomeComponent } from './home/home.component';
 
 @Component({
-  selector: 'app-root',
-  standalone: true,
-  imports: [ 
-      HomeComponent
-    , CommonModule
-    , MatExpansionModule
-    , MatButtonModule
-    , MatIconModule
-    , MatSidenavModule
-    , MatToolbarModule
-    , MatListModule
-    , RouterOutlet
-    , RouterLink
-    , RouterLinkActive],
-  templateUrl: './app.component.html',
-  styleUrl: './app.component.css'
+    selector: 'app-root',
+    standalone: true,
+    imports: [
+        CommonModule,
+        MatExpansionModule,
+        MatButtonModule,
+        MatIconModule,
+        MatSidenavModule,
+        MatToolbarModule,
+        MatListModule,
+        RouterOutlet,
+        RouterLink
+    ],
+    templateUrl: './app.component.html',
+    styleUrl: './app.component.css'
 })
 export class AppComponent {
   title = 'Elis Your Stock Analyzer';

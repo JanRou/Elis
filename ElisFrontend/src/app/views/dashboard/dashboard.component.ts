@@ -6,15 +6,13 @@ import { CommonModule } from '@angular/common';
 
 
 @Component({
-  selector: 'app-dashboard',
-  standalone: true,
-  imports: [
-      MatExpansionModule
-    , CommonModule
-    , 
-  ],
-  templateUrl: './dashboard.component.html',
-  styleUrl: './dashboard.component.css'
+    selector: 'app-dashboard',
+    imports: [
+        MatExpansionModule,
+        CommonModule,
+    ],
+    templateUrl: './dashboard.component.html',
+    styleUrl: './dashboard.component.css'
 })
 export class DashboardComponent implements OnInit {
   stocks: any[] = [];
