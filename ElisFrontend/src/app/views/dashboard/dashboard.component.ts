@@ -26,17 +26,9 @@ export class DashboardComponent implements OnInit {
   ngOnInit(): void {
     this.apollo
       .watchQuery( {
-        query: gql`
-          {
-            stock {
-              name,
-              isin,
-              exchangeUrl
-            }
-          }
-        `
+        query: gql` { stocks { stocks( take: 0, skip: 0 ) { name, isin, exchange, currency, instrumentCode } } }`
       }).valueChanges.subscribe( (result: any) => {
-        this.stocks = result.data?.stock;
+        this.stocks = result.data?.stocks?.stocks;
         this.loading = result.loading;
         this.errors = result.errors;
       });

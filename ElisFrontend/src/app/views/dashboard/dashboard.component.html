@@ -7,7 +7,10 @@
         <mat-panel-description>
           {{stock.isin}}
         </mat-panel-description>
+        <mat-panel-description>
+          {{stock.exchange}}
+        </mat-panel-description>
       </mat-expansion-panel-header>  
-      <p>{{stock.name}}, {{stock.isin}}, {{stock.exchangeUrl}}</p>
+      <p>{{stock.name}}, {{stock.isin}}, {{stock.currency}}, {{stock.exchange}}, {{stock.instrumentCode}}</p>
   </mat-expansion-panel>
 </mat-accordion>
