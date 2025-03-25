@@ -57,7 +57,7 @@ EF gives me some issues:
 
 You have to have:
 * Cloned my Elis repository.
-* An IDE like Visual Studio Code, VSC, to code the frontend. You may choose to use VSC for the backend as well. I use Visual Studio, VS, for the backend.
+* An IDE like Visual Studio Code, VSC.
 * Docker and docker-compose to run the postgres database image in a container. I use Docker Desktop that includes docker-compose,
 * PgAdmin to inspect and look data up in database tables (note you may choose to have PgAdmin running in the container, if you know how),
 * Optional how ever it's very convenient with an text editor like Notepad++.
