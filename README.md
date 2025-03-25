@@ -3,7 +3,7 @@ The purpose of this project is to learn and combine technologies:
 * Entity Framework Core 8 (EF) - to code less SQL and make it easier to handle database migrations,
 * MediatR - to decouple GQL resolvers call from application behaviour,
 * AutoMapper - to make it easier to map betweeen dto's and dao's crossing layers,   
-* Swagger - for CQL and a health endpoint,
+* Swagger - for GQL and a health endpoint,
 * Postgres SQL database - to use a SQL database for free with npgsql as ODBC and EF Core driver,
 * Angular - to learn how to integrate a GQL backend,
 * Python - to learn how a python script intefaces to a GQL backend,
@@ -14,7 +14,7 @@ The purpose of this project is to learn and combine technologies:
 
 The domain is stocks and time series for day prizes from Nasdaq Nordic, where the application stores stock's day prices as timeseries for as long back data is available. In case I miss data then I can code calculated timeseries like moving average, Bollinger bands etc.
 
-I would like to see how the stack performs with GQL and EF, learn how to build CQL resolvers and code effective EF linq.
+I would like to see how the stack performs with GQL and EF, learn how to build GQL resolvers and code effective EF linq.
 The questions for EF are:
 * Can it search and read fast with advanced filters?
 * Can it store a huge timeseries fast?
@@ -24,8 +24,8 @@ The questions for EF are:
 **Status**
 
 I've programmed:
-* The backend with CQL that exposes query and mutation of stocks, exchanges, currencies and only add timeseries of day prizes.
-* A python script that gets timeseries of day prizes from Nasdag Nordic and stores the timeseries using CQL,
+* The backend with GQL that exposes query and mutation of stocks, exchanges, currencies and only add timeseries of day prizes.
+* A python script that gets timeseries of day prizes from Nasdag Nordic and stores the timeseries using GQL,
 * EF handling of stocks, currencies, exchanges and timeseries,
 * A simple Angular project that can show the stocks,
 * An advanced filter search for the stock queury with a PLSQL function called from EF,
@@ -34,14 +34,14 @@ I've programmed:
 I've launched the application in debug in vs2022 and the python script in debug in vsc. It works!
 
 My experience so far is:
-* GraphQL (GQL) - CQL works very well as a presenter in the clean code architecture,
+* GraphQL - works very well as a presenter in the clean code architecture,
 * MediatR - works out of the box,
 * AutoMapper - works well, when unit testing is set up of all mappings and configurations,
 * Entity Framework Core 8 (EF) - gives me issues see below,
 * Swagger - works out of the box,
 * Postgres SQL database - Postgres and npgsql works with out problems,
 * Angular - I did it and the page works. It's not easy as backend developer,
-* Python - it was fast and easy to code towards CQL,
+* Python - it was fast and easy to code towards GQL,
 * FluentMigrator - I've had to code the apply migrations. It works with embedded plpgsql scripts,
 * Dimensional modelling - I've problems with it and EF,
 * Clean code architecture - no comment,
@@ -77,7 +77,7 @@ The procedure is:
 14. Run unit tests
 
 **TODOs**
-* Program CQL subscriptions for time series,
-* Investigate CQL filtering and possibilities,
+* Program GQL subscriptions for time series,
+* Investigate GQL filtering and possibilities,
 * Insert tons of timeseries and facts to measure performance,
 * Organize docker different database volumes for unit testing and production.
