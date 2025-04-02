@@ -122,6 +122,7 @@ namespace ElisBackend.Gateways.Repositories.TimeSeries {
                     && f.Date.DateTimeUtc.CompareTo(start) >= 0
                     && f.Date.DateTimeUtc.CompareTo(end) < 0)
                     .Include(f => f.Date)
+                    .OrderBy(f => f.Date)
                     .ToListAsync();
             }
 

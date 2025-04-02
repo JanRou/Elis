@@ -45,6 +45,7 @@ def getExchangeDay( exchangeDay ):
 def createCqlTransport(timeout):
     # Select your transport with a defined url endpoint
     # TODO Use https - how ever gives ssl certificate error
+    # With proper certificate installed: propreturn HTTPXAsyncTransport(url="https://localhost:58879/graphql", timeout=timeout)    
     return HTTPXAsyncTransport(url="http://localhost:54676/graphql", timeout=timeout)
 
 def buildCqlQueryString(isin='', exchange=''):
@@ -161,7 +162,7 @@ async def saveInCqlFile( name, data):
     with open(fileName, "w") as txtfile:
         txtfile.write(data)
 
-async def main(beginDate, elisDateTimeFormat, nasdaqDateFormat):
+async def main(beginDate, elisDateTimeFormat, nasdaqDateFormat, saveMutationInCqlFile=False):
 
     print('')
 
@@ -178,7 +179,8 @@ async def main(beginDate, elisDateTimeFormat, nasdaqDateFormat):
         resp = getStockPrizesAndVolumesFromNasdaq( stock['instrumentCode'], startDate, endDate)
         # 3. Store timeseries for stock in backend as GraphQL mutation
         stockDataMutation = createStockDataMutationFromNasdaqNordicResponse(stock['isin'], 'PriceAndVolume', resp, elisDateTimeFormat, nasdaqDateFormat)
-        await saveInCqlFile( stock['isin'], stockDataMutation)
+        if saveMutationInCqlFile:
+            await saveInCqlFile( stock['isin'], stockDataMutation)
         result = await setStockData(stockDataMutation)
         # TODO Response from nasdag may be so slow that http transport times out for backend
         print('Stored ' + result)
@@ -224,4 +226,4 @@ nasdaqDateFormat = '%Y-%m-%d'
 beginDate = '2015-01-01'
 
 #testcreateStockDataMutationFromNasdaqNordicResponse(elisDateTimeFormat, nasdaqDateFormat)
-asyncio.run(main(beginDate, elisDateTimeFormat, nasdaqDateFormat))
+asyncio.run(main(beginDate, elisDateTimeFormat, nasdaqDateFormat, False)) #  Set last argument to True to view resulting mutation
