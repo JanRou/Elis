@@ -3,7 +3,7 @@ The purpose of this project is to learn and combine technologies:
 * Entity Framework Core 8 (EF) - to code less SQL and make it easier to handle database migrations,
 * MediatR - to decouple GQL resolvers call from application behaviour,
 * AutoMapper - to make it easier to map betweeen dto's and dao's crossing layers,   
-* Swagger - for CQL and a health endpoint,
+* Swagger - for GQL and a health endpoint,
 * Postgres SQL database - to use a SQL database for free with npgsql as ODBC and EF Core driver,
 * Angular - to learn how to integrate a GQL backend,
 * Python - to learn how a python script intefaces to a GQL backend,
@@ -14,7 +14,7 @@ The purpose of this project is to learn and combine technologies:
 
 The domain is stocks and time series for day prizes from Nasdaq Nordic, where the application stores stock's day prices as timeseries for as long back data is available. In case I miss data then I can code calculated timeseries like moving average, Bollinger bands etc.
 
-I would like to see how the stack performs with GQL and EF, learn how to build CQL resolvers and code effective EF linq.
+I would like to see how the stack performs with GQL and EF, learn how to build GQL resolvers and code effective EF linq.
 The questions for EF are:
 * Can it search and read fast with advanced filters?
 * Can it store a huge timeseries fast?
@@ -24,8 +24,8 @@ The questions for EF are:
 **Status**
 
 I've programmed:
-* The backend with CQL that exposes query and mutation of stocks, exchanges, currencies and only add timeseries of day prizes.
-* A python script that gets timeseries of day prizes from Nasdag Nordic and stores the timeseries using CQL,
+* The backend with GQL that exposes query and mutation of stocks, exchanges, currencies and only add timeseries of day prizes.
+* A python script that gets timeseries of day prizes from Nasdag Nordic and stores the timeseries using GQL,
 * EF handling of stocks, currencies, exchanges and timeseries,
 * A simple Angular project that can show the stocks,
 * An advanced filter search for the stock queury with a PLSQL function called from EF,
@@ -34,21 +34,21 @@ I've programmed:
 I've launched the application in debug in vs2022 and the python script in debug in vsc. It works!
 
 My experience so far is:
-* GraphQL (GQL) - CQL works very well as a presenter in the clean code architecture,
+* GraphQL - works very well as a presenter in the clean code architecture,
 * MediatR - works out of the box,
 * AutoMapper - works well, when unit testing is set up of all mappings and configurations,
 * Entity Framework Core 8 (EF) - gives me issues see below,
 * Swagger - works out of the box,
 * Postgres SQL database - Postgres and npgsql works with out problems,
 * Angular - I did it and the page works. It's not easy as backend developer,
-* Python - it was fast and easy to code towards CQL,
+* Python - it was fast and easy to code towards GQL,
 * FluentMigrator - I've had to code the apply migrations. It works with embedded plpgsql scripts,
 * Dimensional modelling - I've problems with it and EF,
 * Clean code architecture - no comment,
 * Docker Postgres database - works fine with a steep learning curve.
 
-EF gives me some issues:
-1) The unit tests with EF become long, unmainaintable and complex, because the unit test arrangement often becomes very long and cumbersome. The acting is typical short. And the following assertions of results are hard to understand. The database has to be seeded with a lot of data in arrangement section of the test for a particular situation. The same EF db context may not be used in arrangement for the acting, because EF caches the seed. A Docker image helps, because you can seed and prepare all situations in the database, so one can focus on testing.
+EF have given me some issues
+1) With docker is unit testing solveed. The tests don't have to be set up for particular situations. There is no longer code for seeding the database, so the it's clear and small. Otherwise unit testing with EF became long, unmainaintable and complex, because the unit test arrangement often became very long and cumbersome. The acting were typical short. And the following assertions of results are hard to understand. The database had to be seeded with a lot of data in arrangement section of the test for a particular situation. The same EF db context may not be used in arrangement for the acting, because EF caches the seed. A Docker image helps, because you can seed and prepare all situations in the database, so one can focus on testing.
 2) I'm used to write SQL functions or stored procedures that do the handling of data and relations. With EF you have to program the handling of existing related entries to a new entry for insertion. This implies to set the foreign keys and clear navigational properties in the entity inserted, otherwise related entries are inserted as duplicates.
 3) I've to think carefully which changes go together before calling EF SaveChanges(). With a SQL stored procedure I handed over these decision to the function or procedure.
 4) EF version 8 don't have any bulk insertion. Functions and store procedure do.
@@ -57,7 +57,7 @@ EF gives me some issues:
 
 You have to have:
 * Cloned my Elis repository.
-* An IDE like Visual Studio Code, VSC, to code the frontend. You may choose to use VSC for the backend as well. I use Visual Studio, VS, for the backend.
+* An IDE like Visual Studio, VS, or Visual Studio Code, VSC.
 * Docker and docker-compose to run the postgres database image in a container. I use Docker Desktop that includes docker-compose,
 * PgAdmin to inspect and look data up in database tables (note you may choose to have PgAdmin running in the container, if you know how),
 * Optional how ever it's very convenient with an text editor like Notepad++.
@@ -77,7 +77,8 @@ The procedure is:
 14. Run unit tests
 
 **TODOs**
-* Program CQL subscriptions for time series,
-* Investigate CQL filtering and possibilities,
+* Program GQL subscriptions for time series,
+* Investigate GQL filtering and possibilities,
 * Insert tons of timeseries and facts to measure performance,
 * Organize docker different database volumes for unit testing and production.
+* Add security and roles, so user has to log on. Superusers only can administrate the application.
