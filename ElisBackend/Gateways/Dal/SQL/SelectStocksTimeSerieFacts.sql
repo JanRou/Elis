@@ -17,7 +17,7 @@ WHERE
 	st."Isin" = 'DK0010253921' -- Schouw & Co
 	-- AND
 	-- da."DateTimeUtc" > '2025-01-01'
-ORDER BY da."DateTimeUtc" 
+ORDER BY da."DateTimeUtc"
 ;
 
 /*
