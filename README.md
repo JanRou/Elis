@@ -47,8 +47,8 @@ My experience so far is:
 * Clean code architecture - no comment,
 * Docker Postgres database - works fine with a steep learning curve.
 
-EF gives me some issues:
-1) The unit tests with EF become long, unmainaintable and complex, because the unit test arrangement often becomes very long and cumbersome. The acting is typical short. And the following assertions of results are hard to understand. The database has to be seeded with a lot of data in arrangement section of the test for a particular situation. The same EF db context may not be used in arrangement for the acting, because EF caches the seed. A Docker image helps, because you can seed and prepare all situations in the database, so one can focus on testing.
+EF have given me some issues
+1) With docker is unit testing solveed. The tests don't have to be set up for particular situations. There is no longer code for seeding the database, so the it's clear and small. Otherwise unit testing with EF became long, unmainaintable and complex, because the unit test arrangement often became very long and cumbersome. The acting were typical short. And the following assertions of results are hard to understand. The database had to be seeded with a lot of data in arrangement section of the test for a particular situation. The same EF db context may not be used in arrangement for the acting, because EF caches the seed. A Docker image helps, because you can seed and prepare all situations in the database, so one can focus on testing.
 2) I'm used to write SQL functions or stored procedures that do the handling of data and relations. With EF you have to program the handling of existing related entries to a new entry for insertion. This implies to set the foreign keys and clear navigational properties in the entity inserted, otherwise related entries are inserted as duplicates.
 3) I've to think carefully which changes go together before calling EF SaveChanges(). With a SQL stored procedure I handed over these decision to the function or procedure.
 4) EF version 8 don't have any bulk insertion. Functions and store procedure do.
@@ -57,7 +57,7 @@ EF gives me some issues:
 
 You have to have:
 * Cloned my Elis repository.
-* An IDE like Visual Studio Code, VSC.
+* An IDE like Visual Studio, VS, or Visual Studio Code, VSC.
 * Docker and docker-compose to run the postgres database image in a container. I use Docker Desktop that includes docker-compose,
 * PgAdmin to inspect and look data up in database tables (note you may choose to have PgAdmin running in the container, if you know how),
 * Optional how ever it's very convenient with an text editor like Notepad++.
@@ -81,3 +81,4 @@ The procedure is:
 * Investigate GQL filtering and possibilities,
 * Insert tons of timeseries and facts to measure performance,
 * Organize docker different database volumes for unit testing and production.
+* Add security and roles, so user has to log on. Superusers only can administrate the application.
