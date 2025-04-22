@@ -7,7 +7,10 @@ using ElisBackend.Gateways.Repositories.TimeSeries;
 using ElisBackend.Presenters.GraphQLSchema;
 using GraphQL;
 using GraphQL.Server.Ui.GraphiQL;
+using GraphQL.Types;
+using GraphQL.Utilities;
 using Microsoft.EntityFrameworkCore;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -53,7 +56,7 @@ builder.Services.AddCors(options => {
     options.AddPolicy(
         name: "default",
         builder => {
-            builder.WithOrigins("https://localhost:58879")
+            builder.WithOrigins("https://localhost:58879;http://localhost:54676")
                 .AllowAnyMethod()
                 .AllowAnyHeader()
                 .SetIsOriginAllowed(origin => true)  // Vigtig
@@ -63,7 +66,7 @@ builder.Services.AddCors(options => {
 
 var app = builder.Build();
 
-app.UseAuthorization();
+//app.UseAuthorization();
 
 app.UseCors("default");
 
@@ -71,7 +74,11 @@ app.UseDeveloperExceptionPage();
 
 app.UseWebSockets();
 
-app.UseGraphQL("/graphql");            // url to host GraphQL endpoint
+//app.UseGraphQL("/graphql");            // url to host GraphQL endpoint
+app.UseGraphQL("/graphql", config => {
+    config.CsrfProtectionEnabled = false;
+    config.CsrfProtectionHeaders = ["ElisHeader"];
+});
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment()) {
@@ -83,10 +90,11 @@ app.UseHttpsRedirection();
 
 app.UseGraphQLGraphiQL("/", new GraphiQLOptions() {
     GraphQLEndPoint = "/graphql",         // url of GraphQL endpoint
-    SubscriptionsEndPoint = "/graphql",   // url of GraphQL endpoint
+    //SubscriptionsEndPoint = "/graphql",   // url of GraphQL endpoint
 });
 
 app.MapControllers();
 app.MapHealthChecks("/health");
 
 app.Run();
+
