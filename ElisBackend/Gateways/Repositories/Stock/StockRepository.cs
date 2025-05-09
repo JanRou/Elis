@@ -62,7 +62,8 @@ namespace ElisBackend.Gateways.Repositories.Stock
                 .Include(s => s.Exchange)
                 .ToList();
 
-            // Sort by searchstocks result before returning
+            // Sort by Searchstocks result before returning
+            // TODO get rid of the linear search FindIndex
             return unsorted.OrderBy(u => stockIds.FindIndex( i => i == u.Id));            
         }
 
@@ -93,6 +94,8 @@ namespace ElisBackend.Gateways.Repositories.Stock
                  ).First().Id;
         }
 
+
+        // TODO DRY
         public async Task<bool> DeleteStock(int id) {
             var stock = db.Stocks.Where<StockDao>(s => s.Id == id).First();
 
@@ -105,6 +108,7 @@ namespace ElisBackend.Gateways.Repositories.Stock
             return result;
         }
 
+        // TODO DRY
         public async Task<bool> DeleteStock(string isin) {
             var stock = db.Stocks.Where<StockDao>(s => s.Isin == isin).First();
 

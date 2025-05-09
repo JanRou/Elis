@@ -75,7 +75,7 @@ app.UseDeveloperExceptionPage();
 app.UseWebSockets();
 
 //app.UseGraphQL("/graphql");            // url to host GraphQL endpoint
-app.UseGraphQL("/graphql", config => {
+app.UseGraphQL<ElisSchema>("/graphql", config => {
     config.CsrfProtectionEnabled = false;
     config.CsrfProtectionHeaders = ["ElisHeader"];
 });
