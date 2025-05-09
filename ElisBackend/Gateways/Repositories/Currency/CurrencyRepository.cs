@@ -32,7 +32,7 @@ namespace ElisBackend.Gateways.Repositories.Currency {
             await db.SaveChangesAsync();
             return currency;
         }
-
+        // TODO DRY
         public async Task<bool> Delete(int id) {
             var currency = db.Currencies.Where<CurrencyDao>(s => s.Id == id).FirstOrDefault();
 
@@ -44,7 +44,7 @@ namespace ElisBackend.Gateways.Repositories.Currency {
 
             return result;
         }
-
+        // TODO DRY
         public async Task<bool> Delete(string code) {
             var currency = db.Currencies.Where<CurrencyDao>(s => s.Code == code).FirstOrDefault();
 

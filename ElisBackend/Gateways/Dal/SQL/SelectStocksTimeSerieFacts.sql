@@ -10,10 +10,14 @@ JOIN public."Stocks" st ON st."Id" = ts."StockId"
 JOIN public."TimeSerieFacts" fa ON fa."TimeSerieId" = ts."Id"
 JOIN public."Dates" da ON da."Id" = fa."DateId"
 WHERE 
-	--st."Isin" = 'SE0009268717' 
-	st."Isin" = 'DK0061113511' 
+	-- st."Isin" = 'SE0009268717' -- Acarix
+	-- st."Isin" = 'DK0061113511' -- Konsolidator
+	-- st."Isin" = 'DK0062498333'-- Novo
+	-- st."Isin" = 'DK0010219153' -- Rockwool
+	st."Isin" = 'DK0010253921' -- Schouw & Co
 	-- AND
 	-- da."DateTimeUtc" > '2025-01-01'
+ORDER BY da."DateTimeUtc"
 ;
 
 /*

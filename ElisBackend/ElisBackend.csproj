@@ -9,7 +9,7 @@
 
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="14.0.0" />
-    <PackageReference Include="GraphQL" Version="8.4.1" />
+    <PackageReference Include="GraphQL" Version="8.5.0" />
     <PackageReference Include="GraphQL.Server.All" Version="8.2.0" />
     <PackageReference Include="MediatR" Version="12.5.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="9.0.3">

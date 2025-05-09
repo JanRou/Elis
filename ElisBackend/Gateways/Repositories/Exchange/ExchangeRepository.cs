@@ -35,7 +35,7 @@ namespace ElisBackend.Gateways.Repositories.Exchange
             await db.SaveChangesAsync();
             return exchange;
         }
-
+        // TODO DRY
         public async Task<bool> Delete(int id) {
             var exchange = db.Exchanges.Where<ExchangeDao>(s => s.Id == id).FirstOrDefault();
 
@@ -47,7 +47,7 @@ namespace ElisBackend.Gateways.Repositories.Exchange
 
             return result;
         }
-
+        // TODO DRY
         public async Task<bool> Delete(string name) {
             var exchange = db.Exchanges.Where<ExchangeDao>(s => s.Name == name).FirstOrDefault();
 

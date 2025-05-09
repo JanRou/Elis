@@ -38,6 +38,7 @@ namespace ElisBackend.Core.Application.UseCases
         public async Task<StockDataOut> AddData(TimeSeries timeSeries)
         {
             (bool isOk, string status) = Validate(timeSeries);
+            // isOk isn't used?
             int result = 0;
             var timeSeriesDao = mapper.Map<TimeSeriesDao>(timeSeries);  // Note: mapper doesn't map timeSeriesId
             int existingTimeSeriesId = await GetOrAddTimeSeries(timeSeries.Isin, timeSeries.Name);
