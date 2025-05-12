@@ -5,7 +5,6 @@ using ElisBackend.Gateways.Repositories.Exchange;
 using ElisBackend.Gateways.Repositories.Stock;
 using ElisBackend.Gateways.Repositories.TimeSeries;
 using ElisBackend.Presenters.GraphQLSchema;
-using ElisBackend.Presenters.HealthSdlFile;
 using GraphQL;
 using GraphQL.Server.Ui.GraphiQL;
 using GraphQL.Types;
@@ -50,8 +49,7 @@ builder.Services.AddDbContext<ElisContext>(options => {
     options.LogTo(Console.WriteLine, LogLevel.Information);
    });
 
-//builder.Services.AddHealthChecks().AddDbContextCheck<ElisContext>();
-builder.Services.AddHealthChecks().AddCheck<HealthSchema>("HealthSchema");
+builder.Services.AddHealthChecks().AddDbContextCheck<ElisContext>();
 
 // TODO Restrict, how ever for now allow every call regarding CORS
 builder.Services.AddCors(options => {
