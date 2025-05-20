@@ -13,8 +13,8 @@ namespace ElisBackend.Presenters.GraphQLSchema
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public IActionResult Get()
         {
+            // URL: https://localhost:58879/graphql/sdl
             ElisSchema schema = new ElisSchema();
-
 
             return new FileStreamResult(
                     CreateStreamForString(schema.Print())

@@ -18,7 +18,6 @@
           <th>Currency</th>        
           <th>Exchange</th>
           <th>Instrument code</th>
-          <th>Timeseries name</th>
         </tr>
         <tr>
           <td>{{stock.name}}</td>
@@ -26,7 +25,18 @@
           <td>{{stock.currency}}</td>
           <td>{{stock.exchange}}</td>
           <td>{{stock.instrumentCode}}</td>
-          <td *ngIf="stock.stockTimeSerieFacts !== {}">{{stock.stockTimeSerieFacts.name}}</td>
+        </tr>
+        <tr >
+          <td colspan="5" *ngIf="stock.stockTimeSerieFacts !== null">
+            <div style="display: block;">
+              <canvas baseChart width="600" height="300"
+                [type]="'line'"
+                [data]="getLineChartData(stock.isin)"
+                [options]="lineChartOptions"
+                [legend]="lineChartLegend">
+              </canvas>
+            </div>
+          </td>
         </tr>
       </table>
   </mat-expansion-panel>

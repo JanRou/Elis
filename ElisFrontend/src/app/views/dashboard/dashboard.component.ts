@@ -3,6 +3,8 @@ import { MatExpansionModule } from '@angular/material/expansion';
 import { Subscription, Observable, map} from 'rxjs'
 import { Apollo, gql } from 'apollo-angular';
 import { CommonModule } from '@angular/common';
+import { BaseChartDirective } from 'ng2-charts';
+import { ChartConfiguration, ChartOptions, ChartType } from "chart.js";
 
 const GET_STOCKS = gql` { 
   stocks { 
@@ -45,6 +47,7 @@ type stockType = {
     imports: [
         MatExpansionModule,
         CommonModule,
+        BaseChartDirective,
     ],
     templateUrl: './dashboard.component.html',
     styleUrl: './dashboard.component.css'
@@ -71,7 +74,7 @@ export class DashboardComponent implements OnInit, OnDestroy  {
           currency: s.currency,
           exchange: s.exchange,
           instrumentCode: s.instrumentCode,
-          stockTimeSerieFacts: {}
+          stockTimeSerieFacts: null
       }));
         this.loading = result.loading;
         this.errors = result.errors;
@@ -87,17 +90,32 @@ export class DashboardComponent implements OnInit, OnDestroy  {
     }
   }
 
+  getFrom() : string {
+    // TODO UTC
+    let today = new Date();
+    today.setFullYear(today.getFullYear()-1)
+    return today.toISOString(); 
+  }
+
+  getTo() : string {
+    // TODO UTC
+    let today = new Date();
+    return today.toISOString();     
+  }
+
   getTimeseries(isin: string) {
+    // TODO resolve cache error
     this.timeSeriesSubscription = this.apollo
       .watchQuery( { 
         query: GET_TIMESERIES,
         variables: {
           isin: isin,
           timeseriesname: "PriceAndVolume",
-          from: "2024-05-12 02:00:00+00",
-          to: "2025-05-12 02:00:00+00",
+          from: this.getFrom(),
+          to: this.getTo(),
         },
       }).valueChanges.subscribe( (result: any) => {
+          // TODO replace linear search
           let stockIx = this.stocks.findIndex( s => s.isin === isin);
           if (stockIx > -1 ) {
             this.stocks[stockIx].stockTimeSerieFacts= result.data?.timeseries?.stockTimeSerieFacts;
@@ -106,5 +124,38 @@ export class DashboardComponent implements OnInit, OnDestroy  {
           this.errors = result.errors;
       });
   }
+
+  // TODO Code a component for the stock chart, and resolve responsiveness
+  getLineChartData(isin: string) : ChartConfiguration<'line'>['data'] {
+    let stockIx = this.stocks.findIndex( s => s.isin === isin);
+    let result : ChartConfiguration<'line'>['data'] = { 
+      labels: [],
+      datasets: [
+      {
+        data: [],
+        label: '',
+        fill: true,
+        borderColor: 'black',
+        backgroundColor: 'rgba(120, 196, 240, 0.3)'
+      }
+    ]};
+    if ( (stockIx > -1) && (this.stocks[stockIx].stockTimeSerieFacts !== null ) ) {      
+      let timeSeriesData = this.stocks[stockIx].stockTimeSerieFacts.timeSeriesData;
+      result.datasets[0].label =  this.stocks[stockIx].stockTimeSerieFacts.name;
+      var i: number;
+      for (i=0; i<timeSeriesData.length; i++) {
+        let date = new Date(timeSeriesData[i].date);
+        result.labels?.push( date.toISOString().slice(0,10));
+        result.datasets[0].data.push(parseFloat(timeSeriesData[i].price))
+      };
+    }
+    return result;
+  }
+
+  public lineChartOptions: ChartOptions<'line'> = {
+    responsive: true
+  };
+
+  public lineChartLegend = false;
 
 }

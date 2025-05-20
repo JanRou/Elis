@@ -10,7 +10,6 @@ import { MatSidenav } from '@angular/material/sidenav';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatListModule } from '@angular/material/list';
 
-
 @Component({
     selector: 'app-root',
     standalone: true,
@@ -23,7 +22,7 @@ import { MatListModule } from '@angular/material/list';
         MatToolbarModule,
         MatListModule,
         RouterOutlet,
-        RouterLink
+        RouterLink,
     ],
     templateUrl: './app.component.html',
     styleUrl: './app.component.css'
