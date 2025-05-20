@@ -1,5 +1,5 @@
 <mat-accordion>
-  <mat-expansion-panel *ngFor="let stock of stocks; let i = index;">
+  <mat-expansion-panel *ngFor="let stock of stocks; let i = index;" (opened)="getTimeseries(stock.isin)">
       <mat-expansion-panel-header>
         <mat-panel-title>
           {{stock.name}}
@@ -25,6 +25,18 @@
           <td>{{stock.currency}}</td>
           <td>{{stock.exchange}}</td>
           <td>{{stock.instrumentCode}}</td>
+        </tr>
+        <tr >
+          <td colspan="5" *ngIf="stock.stockTimeSerieFacts !== null">
+            <div style="display: block;">
+              <canvas baseChart width="600" height="300"
+                [type]="'line'"
+                [data]="getLineChartData(stock.isin)"
+                [options]="lineChartOptions"
+                [legend]="lineChartLegend">
+              </canvas>
+            </div>
+          </td>
         </tr>
       </table>
   </mat-expansion-panel>

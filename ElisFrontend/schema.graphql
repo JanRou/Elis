@@ -1,20 +1,154 @@
 schema {
-  query: StockQuery
+  query: ElisQuery
+  mutation: ElisMutation
 }
 
-# Stock information
-type StockQuery {
-  stock(exchangeurl: String, isin: String, name: String): [StockType]
+"Get stock, exchange and currency information"
+type ElisQuery {
+  stocks: Stocks
+  timeseries: StockTimeSeriesQuery
+  exchanges: Exchanges
+  currencies: Currencies
 }
 
-# Basic stock information
-type StockType {
-  # The name of the stock
+type Stocks {
+  stocks(isin: String, name: String, exchange: String, currency: String, take: Int, skip: Int): [Stock]
+}
+
+"Basic stock information"
+type Stock {
+  "The name of the stock"
   name: String!
-
-  # The ISIN code for the stock
+  "The ISIN code for the stock"
   isin: String!
+  "The instrument code for the stock"
+  instrumentCode: String!
+  "The exchange name for the stock"
+  exchange: String!
+  "The currency code for the stock"
+  currency: String!
+}
 
-  # The exchange for the stock
-  exchangeUrl: String!
+type StockTimeSeriesQuery {
+  "Date in UTC ISO 8601 format: '2024-07-30T00:00:00.00000Z'"
+  stockTimeSerieFacts(isin: String, timeseriesname: String, from: String!, to: String!): TimeSeries
+}
+
+"Time series with facts"
+type TimeSeries {
+  "The ISIN code for the stock"
+  isin: String!
+  "The name of the time series"
+  name: String!
+  "List of facts"
+  timeSeriesData: [TimeSeriesFacts]
+}
+
+"The time serie facts for the stock"
+type TimeSeriesFacts {
+  "Date in UTC ISO 8601 format: '2024-07-24T00:00:00.00000Z'"
+  date: DateTime!
+  "Price as decimal"
+  price: Decimal!
+  "Volume as decimal"
+  volume: Decimal!
+}
+
+"The `DateTime` scalar type represents a date and time. `DateTime` expects timestamps to be formatted in accordance with the [ISO-8601](https://en.wikipedia.org/wiki/ISO_8601) standard."
+scalar DateTime
+
+scalar Decimal
+
+type Exchanges {
+  exchanges(name: String, exchange: String, url: String, take: Int, skip: Int): [Exchange]
+}
+
+type Exchange {
+  "The name of the exchange"
+  name: String!
+  "The country of the exchange"
+  country: String!
+  "The url to connect to the exchange"
+  url: String!
+}
+
+type Currencies {
+  currencies(name: String, code: String, take: Int, skip: Int): [Currency]
+}
+
+type Currency {
+  "The name of the currency"
+  name: String!
+  "The short name of the currency"
+  code: String!
+}
+
+"Create new stock, exchange or currency information"
+type ElisMutation {
+  stock: StockMutation
+  exchange: ExchangeMutation
+  currency: CurrencyMutation
+}
+
+type StockMutation {
+  create(stock: StockInput!): Stock
+  delete(isin: String!): Boolean
+  adddata(stockDataInput: StockDataInput!, timeSerieDataInput: [TimeSerieDataInput]!): StockDataAddResult
+}
+
+input StockInput {
+  name: String!
+  isin: String!
+  instrumentcode: String!
+  exchangename: String!
+  currencycode: String!
+}
+
+"Result of adding timeserie data to stock"
+type StockDataAddResult {
+  "The ISIN code for the stock"
+  isin: String!
+  "Name of timeserie added or updated with data"
+  timeSerieName: String!
+  "Number of data facts added to timeserie"
+  countTimeSerieFacts: Int!
+  "Status message like OK or Error including error description"
+  status: String!
+}
+
+input StockDataInput {
+  "Stock identification"
+  isin: String!
+  "Name of the timeseries usually 'PricesAndVolumes'"
+  timeseriename: String!
+}
+
+input TimeSerieDataInput {
+  "Date in UTC ISO 8601 format: '2024-07-24T00:00:00.00000Z'"
+  date: String!
+  "Price as decimal"
+  price: Decimal!
+  "Volume as decimal"
+  volume: Decimal!
+}
+
+type ExchangeMutation {
+  create(exchange: ExchangeInput!): Exchange
+  delete(name: String!): Boolean
+}
+
+input ExchangeInput {
+  name: String!
+  country: String!
+  url: String!
+}
+
+type CurrencyMutation {
+  create(currency: CurrencyInput!): Currency
+  delete(code: String!): Boolean
+}
+
+input CurrencyInput {
+  name: String!
+  code: String!
 }

@@ -286,8 +286,8 @@ async def main(beginDate, elisDateTimeFormat, nasdaqDateFormat, saveMutationInCq
 
     print('get Nasdaq stock data...\n')
     await getNasdaqStockData(beginDate, elisDateTimeFormat, nasdaqDateFormat)
-    print('get Xetra stock data...\n')
-    await getXetraStockData(beginDate, elisDateTimeFormat)
+    # print('get Xetra stock data...\n')
+    # await getXetraStockData(beginDate, elisDateTimeFormat)
 
 
 
@@ -343,5 +343,5 @@ nasdaqDateFormat = '%Y-%m-%d'
 beginDate = '2015-01-01'
 
 #testcreateStockDataMutationFromNasdaqNordicResponse(elisDateTimeFormat, nasdaqDateFormat)
-testcreateStockDataMutationFromXetraResponse(elisDateTimeFormat)
-#asyncio.run(main(beginDate, elisDateTimeFormat, nasdaqDateFormat, False)) #  Set last argument to True to view resulting mutation
+#testcreateStockDataMutationFromXetraResponse(elisDateTimeFormat)
+asyncio.run(main(beginDate, elisDateTimeFormat, nasdaqDateFormat, False)) #  Set last argument to True to view resulting mutation

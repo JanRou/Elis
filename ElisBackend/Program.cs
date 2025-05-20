@@ -34,7 +34,7 @@ builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(typeof(Pro
 builder.Services.AddGraphQL(builder => builder
     .AddSystemTextJson()
     .AddSchema<ElisSchema>()
-    .AddGraphTypes(typeof(ElisSchema).Assembly)
+    .AddGraphTypes(typeof(Program).Assembly)
     );
 
 builder.Services.AddControllers();
