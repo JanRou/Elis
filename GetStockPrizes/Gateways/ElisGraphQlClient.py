@@ -11,8 +11,8 @@ class ElisCqlClient:
           self.url = url # "http://localhost:54676/graphql"
 
     # inteface method for handover, returns (status)
-    def handle(self, pipeElement):
-        result = self.setStockData(pipeElement.mutation)
+    async def handle(self, pipeElement):
+        result = await self.setStockData(pipeElement.mutation)
         pipeElement.status.status = result == pipeElement.stock.isin      
         if pipeElement.status.status:
             pipeElement.status.message = ''
@@ -23,7 +23,8 @@ class ElisCqlClient:
     def createCqlTransport(self, timeout):
         # Select your transport with a defined url endpoint
         # TODO Use https - how ever gives ssl certificate error
-        # With proper certificate installed: propreturn HTTPXAsyncTransport(url="https://localhost:58879/graphql", timeout=timeout)
+        # With proper certificate installed: prop
+        # return HTTPXAsyncTransport(url="https://localhost:58879/graphql", timeout=timeout)
         return HTTPXAsyncTransport(url=self.url, timeout=timeout)
 
     async def getStocks(self, query):

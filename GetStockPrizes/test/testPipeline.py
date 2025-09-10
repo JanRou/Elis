@@ -1,6 +1,8 @@
 import unittest
-from unittest.mock import MagicMock
+from unittest import IsolatedAsyncioTestCase
+from unittest.mock import AsyncMock, MagicMock
 import datetime
+import asyncio
 
 from Core.Entities.PipeElement import PipeElement
 from Core.Entities.Stock import Stock
@@ -17,12 +19,12 @@ from Gateways.ElisGraphQlClient import ElisCqlClient
 if __name__ == '__main__':
     unittest.main()
 
-class TestPipeline(unittest.TestCase):
+class TestPipeline(IsolatedAsyncioTestCase):
     def __init__(self, *args, **kwargs):
         super(TestPipeline, self).__init__(*args, **kwargs)
         self.elisDateTimeFormat = '%Y-%m-%dT%H:%M:%S.%fZ'
         
-    def testAcquire(self):
+    async def testAcquire(self):
         #Arrange
         message = 'All good'
         exchangeClientMock = self.createExchangeClientMock(message)
@@ -32,7 +34,7 @@ class TestPipeline(unittest.TestCase):
         pipeElement = self.createPipeElement(exchange)
 
         #Act
-        result = dut.Execute(pipeElement)
+        result = await dut.Execute(pipeElement)
 
         #Assert
         self.assertIsNotNone(result)
@@ -41,7 +43,7 @@ class TestPipeline(unittest.TestCase):
         self.assertTrue(result.status.status)
         self.assertEqual(message, result.status.message)
 
-    def testAcquireHandlerNotFound(self):
+    async def testAcquireHandlerNotFound(self):
         #Arrange
         exchangeClientMock = self.createExchangeClientMock('All good')
         dut = Acquire()
@@ -50,14 +52,14 @@ class TestPipeline(unittest.TestCase):
         pipeElement = self.createPipeElement('bad-exchange')
 
         #Act
-        result = dut.Execute(pipeElement)
+        result = await dut.Execute(pipeElement)
 
         #Assert
         self.assertIsNotNone(result)
         self.assertIsNotNone(result.status)
         self.assertFalse(result.status.status)
 
-    def testProcess(self):
+    async def testProcess(self):
         #Arrange
         cqlStockMutationBuilderMock = CqlStockMutationBuilder()
         pipeElementWithMutation = self.createPipeElement('exchange')
@@ -68,7 +70,7 @@ class TestPipeline(unittest.TestCase):
         pipeElement = self.createPipeElement('exchange')
 
         #Act
-        result = dut.Execute(pipeElement)
+        result = await dut.Execute(pipeElement)
 
         #Assert
         self.assertIsNotNone(result)
@@ -76,43 +78,43 @@ class TestPipeline(unittest.TestCase):
         self.assertTrue(result.status.status)
         self.assertEqual(result.mutation, pipeElementWithMutation.mutation)
 
-    def testProcessHandlerNotFound(self):
+    async def testProcessHandlerNotFound(self):
         #Arrange
         dut = Process()
         pipeElement = self.createPipeElement('exchange')
 
         #Act
-        result = dut.Execute(pipeElement)
+        result = await dut.Execute(pipeElement)
 
         #Assert
         self.assertIsNotNone(result)
         self.assertIsNotNone(result.status)
         self.assertFalse(result.status.status)
 
-    def testHandover(self):
+    async def testHandover(self):
         #Arrange
         elisCqlClientMock = ElisCqlClient("https://someexchange.com")
         pipeElementWithOk = self.createPipeElement('exchange')
-        elisCqlClientMock.handle = MagicMock(return_value=pipeElementWithOk)
+        elisCqlClientMock.handle = AsyncMock(return_value=pipeElementWithOk)
         dut = Handover()
         dut.Register(elisCqlClientMock)
         pipeElement = self.createPipeElement('exchange')
 
         #Act
-        result = dut.Execute(pipeElement)
+        result = await dut.Execute(pipeElement)
         
         #Assert
         self.assertIsNotNone(result)
         self.assertIsNotNone(result.status)
         self.assertTrue(result.status.status)
 
-    def testHandoverHandlerNotFound(self):
+    async def testHandoverHandlerNotFound(self):
         #Arrange
         dut = Handover()
         pipeElement = self.createPipeElement('exchange')
 
         #Act
-        result = dut.Execute(pipeElement)
+        result = await dut.Execute(pipeElement)
         
         #Assert
         self.assertIsNotNone(result)

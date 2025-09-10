@@ -6,8 +6,8 @@ import datetime
 # http communication
 import requests
 
-from Core.Entities import PipeElement
-from Core.Entities import Status
+from Core.Entities.PipeElement import PipeElement
+from Core.Entities.Status import Status
 
 class NasdaqOmxClient():
     def __init__(self, elisDateTimeFormat):
@@ -16,7 +16,7 @@ class NasdaqOmxClient():
 
     # interface method to acquire stock data, returns (generator, status)
     def handle(self, pipeElement):
-        jsonData = self.getStockPrizesAndVolumes( pipeElement.stock.isin, pipeElement.stock.instrument, pipeElement.fromDate, pipeElement.toDate)
+        jsonData = self.getStockPrizesAndVolumes( pipeElement.stock.isin, pipeElement.stock.instrumentcode, pipeElement.fromDate, pipeElement.toDate)
         # TODO check jsonData or return status from getStockPrizesAndVolumes
         status = Status()
         result = (self.getPrizeAndVolumeGenerator(jsonData), status)
@@ -55,17 +55,11 @@ class NasdaqOmxClient():
     def convertNasdaqDateToStringZuluDate(self, date, elisDateTimeFormat, nasdaqDateFormat):
         return datetime.datetime.strptime(date,nasdaqDateFormat).strftime(elisDateTimeFormat)
 
-    def parseNasdaqPrizeData(self, x):
+    def parseNasdaqData(self, x):
         result = x.replace(',','')
         if len(result) == 0:
             result = '0.00'
         return float(result)
-
-    def parseNasdaqVolumeData(self, x):
-        result = x.replace(',','')
-        if len(result) == 0:
-            result = '0'
-        return int(result)
 
     # Generator of date, prize tuple for Nasdaq
     def getPrizeAndVolumeGenerator(self, jsonResp):
@@ -77,6 +71,6 @@ class NasdaqOmxClient():
             for datePriceAndVolume in cp:
                 z = datePriceAndVolume['z']
                 dateTime = self.convertNasdaqDateToStringZuluDate(z['dateTime'], self.elisDateTimeFormat, self.nasdaqDateFormat)
-                close = self.parseNasdaqPrizeData(z['close'])
-                volume = self.parseNasdaqVolumeData(z['volume'])
+                close = self.parseNasdaqData(z['close'])
+                volume = self.parseNasdaqData(z['volume'])
                 yield dateTime, close, volume

@@ -9,7 +9,7 @@ class Acquire:
     def Register(self, handler, key):
         self.handlers[key] = handler
 
-    def Execute(self, pipeElement):
+    async def Execute(self, pipeElement):
         # Look up handler registered to get data from exchange for the stock in the dictionary of handlers.
         # The stock exchange is key.
         # Call the handler, when found. Otherwise set error status false and a message that stays handler

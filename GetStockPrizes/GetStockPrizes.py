@@ -2,10 +2,10 @@
 import datetime
 import asyncio
 
-from Core.Application import Acquire
-from Core.Application import Process
-from Core.Application import Handover
-from Core.Entities import PipeElement
+from Core.Application.Acquire import Acquire
+from Core.Application.Process import Process
+from Core.Application.Handover import Handover
+from Core.Entities.PipeElement import PipeElement
 from Exchanges.NasdaqOmxClient import NasdaqOmxClient
 from Exchanges.XetraClient import XetraClient
 from Gateways.ElisGraphQlClient import ElisCqlClient
@@ -61,11 +61,11 @@ elisDateTimeFormat = '%Y-%m-%dT%H:%M:%S.%fZ'
 url = 'http://localhost:54676/graphql'
  # TODO not in nasdaq format
 fromDate = datetime.datetime.strptime( '2020-01-01', '%Y-%m-%d')
-toDate = getExchangeDay(datetime.date.today()) #.strftime(elisDateTimeFormat)
+toDate = getExchangeDay(datetime.datetime.now() )
 saveMutationInCqlFile = False
 # Stock filter for the stocks to get data for
-isin = ''
-exchange = ''
+isin = ''  #'IE00B5BMR087'
+exchange = '' #'XETR'
 
 elisCqlClient = ElisCqlClient(url) # TODO ???
 
@@ -99,23 +99,22 @@ async def main():
     pipeline = buildPipeline()
     # Acquire list of stocks
     stockQueryBuilder = CqlStocksQueryBuilder() # TODO Is a class necessary?
-    query = stockQueryBuilder.buildCqlStocksQuery()
+    query = stockQueryBuilder.buildCqlStocksQuery(isin, exchange)
     stocks = await elisCqlClient.getStocks( query)
     # Iterate through the list executing operations in sequences
     for stock in stocks:
-        pipeElement = PipeElement()
-        pipeElement.stock = stock # TODO do it right like
+        pipeElement = PipeElement(fromDate, toDate, stock)        
         # report working on stock ...
-        pipeElement.fromDate = fromDate
-        pipeElement.toDate = toDate        
+        print('Gets stock data for ' + pipeElement.stock.name)
         for operation in pipeline:
-            result = operation.Execute(pipeElement)
+            result = await operation.Execute(pipeElement)
             # report operation done with status
             if not result.status.status:
                 break
             pipeElement = result
         # Save mutation 
         if saveMutationInCqlFile:
+            print('Save GraphQL mutation for ' + pipeElement.stock.name)
             await saveInCqlFile( pipeElement.stock.isin, pipeElement.mutation)
         # destruct pipeElement for garbage collection
         del pipeElement

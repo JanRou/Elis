@@ -10,7 +10,7 @@ class Process:
     def Register(self, handler):
         self.handler = handler
 
-    def Execute(self, pipeElement):
+    async def Execute(self, pipeElement):
         # Call GraphQL mutation handler. 
         # Set the mutation property in the pipe element to the result of the handler, when the handler
         # succeeded. Otherwise update status with the error.

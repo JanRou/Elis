@@ -93,7 +93,7 @@ export class DashboardComponent implements OnInit, OnDestroy  {
   getFrom() : string {
     // TODO UTC
     let today = new Date();
-    today.setFullYear(today.getFullYear()-1)
+    today.setFullYear(today.getFullYear()-5)
     return today.toISOString(); 
   }
 

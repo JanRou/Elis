@@ -6,8 +6,8 @@ import datetime
 # http communication
 import requests
 
-from Core.Entities import PipeElement
-from Core.Entities import Status
+from Core.Entities.PipeElement import PipeElement
+from Core.Entities.Status import Status
 
 class XetraClient:
     def __init__(self, elisDateTimeFormat):
@@ -17,7 +17,7 @@ class XetraClient:
 
     # inteface method for acquire stock data, returns (generator, status)
     def handle(self, pipeElement):
-        jsonData = self.getStockPrizesAndVolumes( pipeElement.stock.isin, pipeElement.stock.instrument, pipeElement.fromDate, pipeElement.toDate)
+        jsonData = self.getStockPrizesAndVolumes( pipeElement.stock.isin, pipeElement.stock.instrumentcode, pipeElement.fromDate, pipeElement.toDate)
         # TODO check jsonData or return status from getStockPrizesAndVolumes
         status = Status()
         result = (self.getPrizeAndVolumeGenerator(jsonData), status)
