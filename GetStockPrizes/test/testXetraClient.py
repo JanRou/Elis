@@ -75,15 +75,3 @@ class TestXetraClient(unittest.TestCase):
             self.assertEqual(expected[ix][1],prizeAndVolume[1])
             self.assertEqual(expected[ix][2],prizeAndVolume[2])
             ix += 1
-
-# def testcreateStockDataMutationFromXetraResponse(elisDateTimeFormat):
-#     # Isin: DE000A0H08J9
-#     # resolution: 1D
-#     # from:   1735919734
-#     # to:	    1736783734
-#     # countback:  2
-#     # https://api.boerse-frankfurt.de/v1/tradingview/history?symbol=XETR%3ADE000A0H08J9&resolution=1D&from=1735919734&to=1736783734&countback=2
-#     resp = json.loads("""{"s":"ok","t":[1736125200,1736211600,1736298000,1736384400,1736470800,1736730000],"c":[89.77,89.71,89.88,90.07,89.54,88.23],"o":[88.5,89.91,89.75,89.31,90.03,88.65],"h":[89.77,90,90.54,90.14,90.19,88.86],"l":[88.33,89.31,89.47,89.31,89.11,87.75],"v":[4395680.47,1579085.22,3297222.87,515360.57,5000581.62,3485169.56]}""")
-#     stockDataMutation = createStockDataMutationFromXetraResponse( 'DE000A0H08J9', 'PriceAndVolume', resp, elisDateTimeFormat, xetraDateFormat)
-#     print('')
-#     print(stockDataMutation)

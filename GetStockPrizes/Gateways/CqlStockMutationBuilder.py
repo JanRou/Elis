@@ -1,16 +1,14 @@
-from Core.Entities import PipeElement
-from Core.Entities import Status
+from Core.Entities.PipeElement import PipeElement
+from Core.Entities.Status import Status
 
 class CqlStockMutationBuilder:
 
     # inteface method for process, returns (mutation, status)
     def handle(self, pipeElement):
-        mutation = ''
-        result = (mutation, Status())
-        result.mutation = self.createStockDataMutation(pipeElement.stock.isin, 'PriceAndVolume', pipeElement.generator)
+        pipeElement.mutation = self.createStockDataMutation(pipeElement.stock.isin, 'PriceAndVolume', pipeElement.generator)
         # TODO evaluate mutation and set status
-        result.status = Status()
-        return result
+        pipeElement.status = Status()
+        return pipeElement
 
     def createStockDataMutation( self, isin, timeseriename, prizeAndVolumeGenerator):
         stringBuilder = []
@@ -40,13 +38,13 @@ class CqlStockMutationBuilder:
         stringBuilder.append(timeseriename)
         stringBuilder.append("\"}")
 
-    def appendDatePriceVolume(stringBuilder, prizeAndVolume):
+    def appendDatePriceVolume(self, stringBuilder, prizeAndVolume):
         stringBuilder.append("{date:\"")
         stringBuilder.append(prizeAndVolume[0])
         stringBuilder.append("\",")
         stringBuilder.append("price:")
-        stringBuilder.append(prizeAndVolume[1])
+        stringBuilder.append(str(prizeAndVolume[1]))
         stringBuilder.append(",")
         stringBuilder.append("volume:")
-        stringBuilder.append(prizeAndVolume[2])
+        stringBuilder.append(str(prizeAndVolume[2]))
         stringBuilder.append("}")

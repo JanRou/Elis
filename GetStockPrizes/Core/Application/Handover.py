@@ -10,9 +10,9 @@ class Handover:
 
     def Execute(self, pipeElement):
         if self.handler is not None:
-            pipeElement.status = self.handler.handle(pipeElement)
+            pipeElement = self.handler.handle(pipeElement)
         else:
-            pipeElement.status = False
+            pipeElement.status.status = False
             pipeElement.status.message = 'Handler for handover mutation not found.'
 
         return pipeElement        

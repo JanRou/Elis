@@ -111,7 +111,7 @@ async def main():
         for operation in pipeline:
             result = operation.Execute(pipeElement)
             # report operation done with status
-            if not result.status:
+            if not result.status.status:
                 break
             pipeElement = result
         # Save mutation 

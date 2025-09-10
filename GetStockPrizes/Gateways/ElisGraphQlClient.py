@@ -12,12 +12,13 @@ class ElisCqlClient:
 
     # inteface method for handover, returns (status)
     def handle(self, pipeElement):
-        result = self.setStockData(pipeElement.mutation)        
-        status = Status()
-        # check result and set status accordingly
-        # if result .... :
-        #   status.status = ...
-        return status
+        result = self.setStockData(pipeElement.mutation)
+        pipeElement.status.status = result == pipeElement.stock.isin      
+        if pipeElement.status.status:
+            pipeElement.status.message = ''
+        else:
+            pipeElement.status.message = 'Handover mutation failed'
+        return pipeElement
 
     def createCqlTransport(self, timeout):
         # Select your transport with a defined url endpoint
