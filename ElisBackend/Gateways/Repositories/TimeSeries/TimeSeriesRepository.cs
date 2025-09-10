@@ -89,7 +89,7 @@ namespace ElisBackend.Gateways.Repositories.TimeSeries {
                     // Get existing fact at existing date, otherwise no existing fact thus null
                     var existingFact = fact.DateId != 0 ? db.TimeSerieFacts.Find(fact.TimeSerieId, fact.DateId) : null;
                     if (existingFact != null) {
-                        // Update existing with new price and volue for the date
+                        // Update existing with new price and volume for the date
                         existingFact.Price = fact.Price;
                         existingFact.Volume = fact.Volume;
                         db.Update(existingFact);
