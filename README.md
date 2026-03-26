@@ -1,3 +1,5 @@
+The repository is no longer maintained on GitHub due to concerns about access uncertainty in the event of geopolitical disagreements between the European Union and the USA.
+
 The purpose of this project is to learn and combine technologies:
 * GraphQL (GQL) - to have one and only one endpoint that expose advanced services,
 * Entity Framework Core 8 (EF) - to code less SQL and make it easier to handle database migrations,
